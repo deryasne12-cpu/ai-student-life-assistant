@@ -1,5 +1,7 @@
 import streamlit as st
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from sklearn.tree import DecisionTreeClassifier
+import numpy as np
 
 st.set_page_config(page_title="AI Student Life Assistant", page_icon="🎓")
 
@@ -7,9 +9,44 @@ st.title("🎓 AI Student Life Assistant")
 
 st.write(
     "This application analyzes a student's mood, sleep time, and study time "
-    "to generate a simple productivity prediction and personalized suggestion."
+    "to predict productivity and generate personalized daily suggestions."
 )
 
+# -------------------------
+# Simple ML Model
+# -------------------------
+X = np.array([
+    [4, -0.7, 1],
+    [5, -0.4, 2],
+    [6, 0.0, 2],
+    [7, 0.3, 3],
+    [8, 0.6, 4],
+    [3, -0.8, 1],
+    [9, 0.7, 5],
+    [6, 0.2, 4],
+    [4, 0.1, 1],
+    [7, -0.2, 3]
+])
+
+y = [
+    "Low",
+    "Low",
+    "Medium",
+    "High",
+    "High",
+    "Low",
+    "High",
+    "Medium",
+    "Low",
+    "Medium"
+]
+
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X, y)
+
+# -------------------------
+# User Inputs
+# -------------------------
 mood_text = st.text_area("How do you feel today?")
 
 sleep_hours = st.slider("Sleep Hours", 0, 12, 6)
@@ -32,12 +69,7 @@ if st.button("Analyze"):
         else:
             mood = "Neutral"
 
-        if sleep_hours < 5 or sentiment < -0.2:
-            productivity = "Low"
-        elif sleep_hours >= 7 and study_hours >= 2 and sentiment > 0:
-            productivity = "High"
-        else:
-            productivity = "Medium"
+        productivity = model.predict([[sleep_hours, sentiment, study_hours]])[0]
 
         if productivity == "Low":
             suggestion = (
@@ -59,8 +91,13 @@ if st.button("Analyze"):
             daily_plan = "90 min deep work → 15 min break → 60 min study"
 
         st.subheader("Results")
-        st.write("Mood:", mood)
-        st.write("Sentiment Score:", sentiment)
-        st.write("Productivity Level:", productivity)
-        st.write("Suggestion:", suggestion)
-        st.write("Daily Plan:", daily_plan)
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Mood", mood)
+        col2.metric("Sentiment Score", round(sentiment, 2))
+        col3.metric("Productivity", productivity)
+
+        st.success(suggestion)
+
+        st.subheader("Daily Study Plan")
+        st.write(daily_plan)
