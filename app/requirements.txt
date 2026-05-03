@@ -2,3 +2,4 @@ streamlit
 vaderSentiment
 scikit-learn
 numpy
+pandas
