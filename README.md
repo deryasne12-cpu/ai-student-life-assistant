@@ -4,6 +4,9 @@ An AI-powered system that analyzes a student's mood, sleep habits, and study tim
 
 ---
 
+## 🚀 Live Demo
+https://YOUR-LINK.streamlit.app
+
 ## 🚀 Overview
 
 This project integrates **Natural Language Processing (NLP)** and **Machine Learning (ML)** to help students better manage their productivity and daily routines.
@@ -69,6 +72,11 @@ The project uses a **Decision Tree Classifier**.
 Open in browser:
 
 http://localhost:8501
+
+To open localhost, please use a terminal connection. I'm sharing the code below:
+
+cd ai-student-life-assistant
+python -m streamlit run app/main.py  
 
 🧪 Example Scenarios
 🔴 Scenario 1 – Low Productivity
