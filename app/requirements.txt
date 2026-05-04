@@ -3,3 +3,4 @@ vaderSentiment
 scikit-learn
 numpy
 pandas
+matplotlib
