@@ -4,6 +4,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 st.set_page_config(
     page_title="AI Student Life Assistant",
@@ -11,11 +12,11 @@ st.set_page_config(
     layout="centered"
 )
 
-st.title("🎓 AI Student Life Assistant")
+st.title("🎓 Yapay Zeka Destekli Öğrenci Yaşam Asistanı")
 
 st.write(
-    "This AI-powered application analyzes mood, sleep, and study habits "
-    "to predict productivity and generate personalized study suggestions."
+    "Bu uygulama, öğrencinin ruh halini, uyku süresini ve çalışma süresini analiz ederek "
+    "verimlilik tahmini ve kişiselleştirilmiş çalışma önerileri üretir."
 )
 
 # --------------------------
@@ -34,28 +35,28 @@ y = data["productivity"]
 model = DecisionTreeClassifier(random_state=42)
 model.fit(X, y)
 
-predictions = model.predict(X)
-accuracy = accuracy_score(y, predictions)
+training_predictions = model.predict(X)
+accuracy = accuracy_score(y, training_predictions)
 
 labels = {
-    0: "Low",
-    1: "Medium",
-    2: "High"
+    0: "Düşük",
+    1: "Orta",
+    2: "Yüksek"
 }
 
 # --------------------------
 # User Inputs
 # --------------------------
-mood_text = st.text_area("How do you feel today?")
-sleep_hours = st.slider("Sleep Hours", 0, 12, 6)
-study_hours = st.slider("Study Hours", 0, 10, 2)
+mood_text = st.text_area("Bugün nasıl hissediyorsunuz?")
+sleep_hours = st.slider("Uyku Saatleri", 0, 12, 6)
+study_hours = st.slider("Çalışma Saatleri", 0, 10, 2)
 
 analyzer = SentimentIntensityAnalyzer()
 
-if st.button("Analyze"):
+if st.button("Analiz et"):
 
     if mood_text.strip() == "":
-        st.warning("Please enter your mood text first.")
+        st.warning("Lütfen önce ruh halinizi yazın.")
     else:
         score = analyzer.polarity_scores(mood_text)
         sentiment = score["compound"]
@@ -64,46 +65,76 @@ if st.button("Analyze"):
         productivity = labels[prediction]
 
         if sentiment >= 0.05:
-            mood = "Positive"
+            mood = "Olumlu"
         elif sentiment <= -0.05:
-            mood = "Negative"
+            mood = "Olumsuz"
         else:
-            mood = "Neutral"
+            mood = "Nötr"
 
         if prediction == 0:
-            suggestion = "Take a break, reduce workload, and focus on one small task."
-            plan = "25 min light study → 5 min break → rest"
+            suggestion = "Kısa bir mola verin, iş yükünüzü azaltın ve küçük bir göreve odaklanın."
+            plan = "25 dakika hafif çalışma → 5 dakika ara → dinlenme"
         elif prediction == 1:
-            suggestion = "Maintain steady work and avoid distractions."
-            plan = "45 min study → 10 min break → repeat"
+            suggestion = "Orta düzeyde işler yapın ve aynı anda birden fazla iş yapmaktan kaçının."
+            plan = "45 dakika çalışma → 10 dakika ara → tekrar"
         else:
-            suggestion = "Great energy! Start with difficult tasks and use deep work."
-            plan = "60 min deep work → 10 min break → repeat"
+            suggestion = "Enerjiniz iyi görünüyor. Zor görevlerle başlayın ve derin çalışma yapın."
+            plan = "60 dakika derin çalışma → 10 dakika ara → tekrar"
 
-        st.subheader("Results")
+        st.subheader("Sonuçlar")
 
         col1, col2, col3 = st.columns(3)
-        col1.metric("Mood", mood)
-        col2.metric("Sentiment", round(sentiment, 2))
-        col3.metric("Productivity", productivity)
+        col1.metric("Ruh Hali", mood)
+        col2.metric("Duygu Puanı", round(sentiment, 2))
+        col3.metric("Verimlilik", productivity)
 
         st.success(suggestion)
+        st.write(f"**Günlük Plan:** {plan}")
 
-        st.subheader("Daily Study Plan")
-        st.write(plan)
+        st.subheader("📊 Analiz Grafikleri")
 
-        st.subheader("Model Information")
-        st.write(f"Training Accuracy: **{round(accuracy * 100, 2)}%**")
+        # 1. Sentiment Score Chart
+        fig1, ax1 = plt.subplots()
+        ax1.bar(["Duygu Puanı"], [sentiment])
+        ax1.set_ylim(-1, 1)
+        ax1.set_title("Duygu Puanı Analizi")
+        ax1.set_ylabel("Skor")
+        st.pyplot(fig1)
+
+        # 2. Sleep vs Study Chart
+        fig2, ax2 = plt.subplots()
+        ax2.bar(["Uyku Saatleri", "Çalışma Saatleri"], [sleep_hours, study_hours])
+        ax2.set_title("Uyku ve Çalışma Karşılaştırması")
+        ax2.set_ylabel("Saat")
+        st.pyplot(fig2)
+
+        # 3. Productivity Chart
+        productivity_map = {
+            "Düşük": 1,
+            "Orta": 2,
+            "Yüksek": 3
+        }
+
+        fig3, ax3 = plt.subplots()
+        ax3.barh(["Verimlilik"], [productivity_map[productivity]])
+        ax3.set_xlim(0, 3)
+        ax3.set_title("Verimlilik Seviyesi")
+        ax3.set_xlabel("Seviye")
+        st.pyplot(fig3)
+
+        st.subheader("🤖 Model Bilgisi")
+        st.write(f"Model: **Decision Tree Classifier**")
+        st.write(f"Eğitim doğruluğu: **{round(accuracy * 100, 2)}%**")
 
         feature_importance = pd.DataFrame({
-            "Feature": ["Sleep Hours", "Sentiment Score", "Study Hours"],
-            "Importance": model.feature_importances_
+            "Özellik": ["Uyku Saatleri", "Duygu Puanı", "Çalışma Saatleri"],
+            "Önem": model.feature_importances_
         })
 
-        st.subheader("Feature Importance")
-        st.bar_chart(feature_importance.set_index("Feature"))
+        st.subheader("📌 Özellik Önem Grafiği")
+        st.bar_chart(feature_importance.set_index("Özellik"))
 
-        st.subheader("Training Dataset Preview")
+        st.subheader("📁 Eğitim Veri Seti")
         preview_data = data.copy()
         preview_data["productivity"] = preview_data["productivity"].map(labels)
         st.dataframe(preview_data)
