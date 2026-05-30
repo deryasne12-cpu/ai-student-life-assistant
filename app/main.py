@@ -12,10 +12,20 @@ st.set_page_config(
 
 st.title("🎓 AI Student Life Assistant")
 
-st.write(
-    "This application analyzes a student's mood, sleep duration, and study time "
+st.info(
+    "Analyze mood, sleep habits, and study hours using NLP and Machine Learning "
     "to predict productivity and generate personalized recommendations."
 )
+
+with st.sidebar:
+    st.header("Project Information")
+    st.write("**AI Student Life Assistant**")
+    st.write("Technologies:")
+    st.write("- NLP: VADER Sentiment Analysis")
+    st.write("- ML: Decision Tree Classifier")
+    st.write("- UI: Streamlit")
+    st.write("- Data: Pandas")
+    st.write("Version: 1.0")
 
 data = pd.DataFrame({
     "sleep_hours": [4, 5, 6, 7, 8, 3, 9, 2, 6, 7, 5, 8],
@@ -30,14 +40,15 @@ y = data["productivity"]
 model = DecisionTreeClassifier(random_state=42)
 model.fit(X, y)
 
-training_predictions = model.predict(X)
-accuracy = accuracy_score(y, training_predictions)
+accuracy = accuracy_score(y, model.predict(X))
 
 labels = {
     0: "Low",
     1: "Medium",
     2: "High"
 }
+
+st.subheader("Student Input")
 
 mood_text = st.text_area("How do you feel today?")
 sleep_hours = st.slider("Sleep Hours", 0, 12, 6)
@@ -79,6 +90,7 @@ if st.button("Analyze"):
             suggestion = "Great energy level. Start with difficult tasks and use deep work."
             plan = "60 min deep work → 10 min break → repeat"
 
+        st.divider()
         st.subheader("Results")
 
         col1, col2, col3 = st.columns(3)
@@ -89,32 +101,43 @@ if st.button("Analyze"):
         st.success(suggestion)
         st.write(f"**Daily Plan:** {plan}")
 
+        st.divider()
         st.subheader("Charts")
 
-        chart_data = pd.DataFrame({
-            "Value": [sleep_hours, study_hours, sentiment],
-        }, index=["Sleep Hours", "Study Hours", "Sentiment Score"])
+        st.write("Sleep, Study, and Sentiment Overview")
+        overview_chart = pd.DataFrame(
+            {"Value": [sleep_hours, study_hours, sentiment]},
+            index=["Sleep Hours", "Study Hours", "Sentiment Score"]
+        )
+        st.bar_chart(overview_chart)
 
-        st.bar_chart(chart_data)
-
-        productivity_chart = pd.DataFrame({
-            "Productivity Level": [prediction + 1]
-        }, index=[productivity])
-
+        st.write("Productivity Level Chart")
+        productivity_chart = pd.DataFrame(
+            {"Level": [prediction + 1]},
+            index=[productivity]
+        )
         st.bar_chart(productivity_chart)
 
-        feature_importance = pd.DataFrame({
-            "Importance": model.feature_importances_
-        }, index=["Sleep Hours", "Sentiment Score", "Study Hours"])
+        st.write("Feature Importance")
+        importance_chart = pd.DataFrame(
+            {"Importance": model.feature_importances_},
+            index=["Sleep Hours", "Sentiment Score", "Study Hours"]
+        )
+        st.bar_chart(importance_chart)
 
-        st.subheader("Feature Importance")
-        st.bar_chart(feature_importance)
-
+        st.divider()
         st.subheader("Model Information")
+
         st.write("Model: **Decision Tree Classifier**")
-        st.write(f"Training Accuracy: **{round(accuracy * 100, 2)}%**")
+        st.metric("Model Accuracy", f"{round(accuracy * 100, 2)}%")
+        st.caption(
+            "The model uses a small sample dataset for demonstration purposes. "
+            "The accuracy value is calculated on the training dataset."
+        )
 
         st.subheader("Training Dataset")
+        st.caption("Sample training dataset used for demonstration purposes.")
+
         preview_data = data.copy()
         preview_data["productivity"] = preview_data["productivity"].map(labels)
         st.dataframe(preview_data)
