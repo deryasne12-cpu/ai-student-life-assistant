@@ -17,9 +17,6 @@ except Exception:
     PDF_AVAILABLE = False
 
 
-# =========================
-# PAGE CONFIG
-# =========================
 st.set_page_config(
     page_title="AI Student Performance Tracker",
     page_icon="student",
@@ -27,9 +24,6 @@ st.set_page_config(
 )
 
 
-# =========================
-# THEMES
-# =========================
 THEMES = {
     "Neon Blue": {
         "primary": "#38bdf8",
@@ -67,14 +61,11 @@ THEMES = {
 
 
 with st.sidebar:
-    selected_theme = st.selectbox("Choose Dashboard Theme", list(THEMES.keys()))
+    selected_theme = st.selectbox("Dashboard Temasını Seç", list(THEMES.keys()))
 
 theme = THEMES[selected_theme]
 
 
-# =========================
-# CSS
-# =========================
 st.markdown(
     f"""
 <style>
@@ -158,28 +149,81 @@ st.markdown(
     font-size: 15px;
     color: #e5e7eb;
 }}
+
+/* Normal Streamlit buttons */
 div.stButton > button {{
-    background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]});
+    background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]}, {theme["accent"]});
     color: white;
     border: 0;
-    border-radius: 14px;
-    padding: 0.85rem 1.5rem;
+    border-radius: 999px;
+    padding: 0.85rem 1.7rem;
     font-weight: 900;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.30);
-    transition: 0.25s;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.40);
+    transition: all 0.25s ease-in-out;
 }}
 div.stButton > button:hover {{
-    transform: scale(1.02);
-    border: 1px solid white;
+    transform: translateY(-3px) scale(1.04);
+    filter: brightness(1.20);
+    box-shadow: 0 0 25px {theme["primary"]};
     color: white;
 }}
 .stDownloadButton > button {{
-    background: linear-gradient(135deg, {theme["accent"]}, {theme["primary"]});
+    background: linear-gradient(135deg, #ff0080, #7928ca, #00d4ff);
     color: white;
     border: 0;
-    border-radius: 14px;
-    padding: 0.85rem 1.5rem;
+    border-radius: 999px;
+    padding: 0.85rem 1.7rem;
     font-weight: 900;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.40);
+}}
+
+/* GRADIENT TAB BUTTONS */
+button[data-baseweb="tab"] {{
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]}, {theme["accent"]}) !important;
+    color: white !important;
+    border-radius: 999px !important;
+    padding: 12px 22px !important;
+    margin: 5px 7px 9px 0 !important;
+    font-weight: 900 !important;
+    border: 0 !important;
+    box-shadow: 0 9px 25px rgba(0,0,0,0.35);
+    transition: all 0.25s ease-in-out;
+}}
+button[data-baseweb="tab"]::before {{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -90%;
+    width: 70%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform: skewX(-18deg);
+    transition: all 0.55s ease;
+}}
+button[data-baseweb="tab"]:hover::before {{
+    left: 130%;
+}}
+button[data-baseweb="tab"]:hover {{
+    transform: translateY(-3px) scale(1.045);
+    filter: brightness(1.25);
+    box-shadow: 0 0 26px {theme["primary"]}, 0 10px 30px rgba(0,0,0,0.45);
+}}
+button[data-baseweb="tab"][aria-selected="true"] {{
+    background: linear-gradient(135deg, #ff0080, #7928ca, #00d4ff) !important;
+    color: white !important;
+    box-shadow: 0 0 30px {theme["accent"]}, 0 10px 28px rgba(0,0,0,0.45);
+}}
+button[data-baseweb="tab"] p {{
+    color: white !important;
+    font-weight: 900 !important;
+}}
+button[data-baseweb="tab"] div {{
+    color: white !important;
+}}
+div[data-baseweb="tab-highlight"] {{
+    background: transparent !important;
 }}
 </style>
 """,
@@ -187,25 +231,22 @@ div.stButton > button:hover {{
 )
 
 
-# =========================
-# HEADER
-# =========================
 st.markdown(
-    '<div class="main-title">AI Student Performance & Wellness Tracker</div>',
+    '<div class="main-title">Yapay Zeka Öğrenci Performansı ve Sağlık Takipçisi</div>',
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<div class="sub-title">A complete AI dashboard for student productivity, sleep, wellness, nutrition, exercise, weekly reports, AI coaching, database tracking and future smart integrations.</div>',
+    '<div class="sub-title">Öğrenci verimliliği, uyku, sağlık, beslenme, egzersiz, haftalık raporlar, yapay zeka koçluğu, veritabanı takibi ve gelecekteki akıllı entegrasyonlar için tam kapsamlı bir yapay zeka paneli.</div>',
     unsafe_allow_html=True,
 )
 
 st.markdown(
     """
 <div class="hero-card">
-<h2>Project Concept</h2>
+<h2>Proje Konsepti</h2>
 <p>
-This platform tracks student performance over time. It does not only analyze one daily input.
-It combines academic performance, sleep habits, stress level, nutrition, exercise, and AI-based recommendations.
+Bu platform, öğrenci performansını zaman içinde takip eder. Sadece günlük bir girdiyi analiz etmiyor.
+Akademik performans, uyku alışkanlıkları, stres seviyesi, beslenme, egzersiz ve yapay zeka tabanlı önerileri birleştirir.
 </p>
 </div>
 """,
@@ -213,31 +254,28 @@ It combines academic performance, sleep habits, stress level, nutrition, exercis
 )
 
 
-# =========================
-# SIDEBAR - NO GREEN TICKS
-# =========================
 with st.sidebar:
     st.divider()
-    st.header("Core Modules")
+    st.header("Temel Modüller")
 
     modules = [
-        "Login / Student Profile",
-        "Daily Tracking",
-        "Wellness & Nutrition",
-        "Exercise Program",
-        "Analytics Dashboard",
-        "AI Coach",
-        "Weekly PDF Report",
-        "Smartwatch Integration",
-        "Long-Term Behavior Analysis",
-        "SQLite Database History",
+        "Giriş / Öğrenci Profili",
+        "Günlük Takip",
+        "Wellness & Beslenme",
+        "Egzersiz Programı",
+        "Analitik Kontrol Paneli",
+        "Yapay Zeka Koçu",
+        "Haftalık PDF Raporu",
+        "Akıllı saat Entegrasyonu",
+        "Uzun Vadeli Davranış Analizi",
+        "SQLite Veritabanı Geçmişi",
     ]
 
     for module in modules:
         st.markdown(f'<div class="module-item">• {module}</div>', unsafe_allow_html=True)
 
     st.divider()
-    st.header("Technologies")
+    st.header("Teknolojiler")
 
     technologies = [
         "Python",
@@ -254,9 +292,6 @@ with st.sidebar:
         st.markdown(f'<div class="tech-item">• {tech}</div>', unsafe_allow_html=True)
 
 
-# =========================
-# DATABASE
-# =========================
 DB_NAME = "student_tracker.db"
 
 
@@ -344,9 +379,6 @@ def load_records_from_db():
     return df
 
 
-# =========================
-# NLP / INITIAL DATA
-# =========================
 analyzer = SentimentIntensityAnalyzer()
 init_database()
 
@@ -396,9 +428,6 @@ if "records" not in st.session_state:
     )
 
 
-# =========================
-# HELPERS
-# =========================
 def calculate_scores(df):
     df = df.copy()
 
@@ -483,12 +512,12 @@ def get_bmi_status(bmi):
 
 def get_status_emoji(avg_productivity, avg_stress, avg_sleep):
     if avg_productivity >= 70 and avg_stress <= 5 and avg_sleep >= 7:
-        return "\U0001F680", "Excellent"
+        return "🚀", "Excellent"
     if avg_productivity >= 55 and avg_stress <= 6:
-        return "\U0001F642", "Stable"
+        return "🙂", "Stable"
     if avg_stress >= 7 or avg_sleep < 6:
-        return "\u26A0\uFE0F", "Needs Attention"
-    return "\U0001F331", "Improving"
+        return "⚠️", "Needs Attention"
+    return "🌱", "Improving"
 
 
 def get_motivation_quote(avg_productivity, avg_stress, avg_sleep):
@@ -665,9 +694,6 @@ def create_pdf_report(profile, weekly_summary, recommendations, status_note):
     return buffer
 
 
-# =========================
-# ML MODEL
-# =========================
 training_data = pd.DataFrame(
     {
         "sleep_hours": [4, 5, 6, 7, 8, 3, 9, 2, 6, 7, 5, 8, 6, 4, 9, 7, 8, 5, 6, 3, 7, 8, 6, 5],
@@ -702,61 +728,55 @@ model.fit(training_data[features], training_data["productivity"])
 accuracy = accuracy_score(training_data["productivity"], model.predict(training_data[features]))
 
 
-# =========================
-# TABS
-# =========================
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
     [
-        "Login / Profile",
-        "Daily Tracker",
-        "Nutrition & Health",
-        "Exercise Plan",
-        "Analytics",
-        "AI Coach",
-        "Weekly Report",
-        "Smart Integrations",
-        "Database History",
+        "Giriş / Profil",
+        "Günlük Takip Cihazı",
+        "Beslenme ve Sağlık",
+        "Tatbikat Planı",
+        "Analitikler",
+        "Yapay Zeka Koçu",
+        "Haftalık Rapor",
+        "Akıllı Entegrasyonlar",
+        "Veritabanı Tarihi",
     ]
 )
 
 
-# =========================
-# TAB 1 PROFILE
-# =========================
 with tab1:
-    st.subheader("Student Login & Profile")
+    st.subheader("Öğrenci Girişi ve Profili")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        name = st.text_input("Full Name", st.session_state.profile["name"])
-        student_id = st.text_input("Student ID", st.session_state.profile["student_id"])
+        name = st.text_input("Tam isim", st.session_state.profile["name"])
+        student_id = st.text_input("Öğrenci Kimliği", st.session_state.profile["student_id"])
 
     with col2:
         faculty = st.selectbox(
-            "Faculty",
-            ["Software Engineering", "Computer Science", "AI Engineering", "Business", "Design"],
+            "Fakülte",
+            ["Yazılım Mühendisliği", "Computer Science", "AI Engineering", "Business", "Design"],
             index=0,
         )
-        semester = st.slider("Semester", 1, 8, st.session_state.profile["semester"])
+        semester = st.slider("Dönem", 1, 8, st.session_state.profile["semester"])
 
     with col3:
-        age = st.number_input("Age", min_value=10, max_value=80, value=st.session_state.profile["age"])
+        age = st.number_input("Yaş", min_value=10, max_value=80, value=st.session_state.profile["age"])
         goal = st.selectbox(
-            "Main Goal",
-            ["Improve Productivity", "Gain Weight", "Lose Fat", "Reduce Stress", "Improve Sleep", "Build Discipline"],
+            "Ana Hedef",
+            ["Verimliliği Artır", "Kilo Al", "Yağ Kaybet", "Stresi Azalt", "Uykuyu İyileştir", "Disiplin Kur"],
             index=0,
         )
 
     col4, col5 = st.columns(2)
 
     with col4:
-        height_cm = st.number_input("Height (cm)", min_value=120, max_value=230, value=st.session_state.profile["height_cm"])
+        height_cm = st.number_input("Boy (cm)", min_value=120, max_value=230, value=st.session_state.profile["height_cm"])
 
     with col5:
-        weight_kg = st.number_input("Weight (kg)", min_value=35, max_value=180, value=st.session_state.profile["weight_kg"])
+        weight_kg = st.number_input("Ağırlık (kg)", min_value=35, max_value=180, value=st.session_state.profile["weight_kg"])
 
-    if st.button("Save Student Profile"):
+    if st.button("Öğrenci Profilini Kaydet"):
         st.session_state.profile = {
             "name": name,
             "student_id": student_id,
@@ -768,7 +788,7 @@ with tab1:
             "goal": goal,
         }
         save_profile_to_db(st.session_state.profile)
-        st.success("Student profile saved successfully and stored in SQLite database.")
+        st.success("Öğrenci profili başarıyla kaydedildi ve SQLite veritabanına işlendi.")
 
     bmi = round(weight_kg / ((height_cm / 100) ** 2), 2)
     bmi_status, bmi_advice = get_bmi_status(bmi)
@@ -778,8 +798,8 @@ with tab1:
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("BMI", bmi)
     m2.metric("BMI Status", bmi_status)
-    m3.metric("Semester", semester)
-    m4.metric("Goal", goal)
+    m3.metric("Dönem", semester)
+    m4.metric("Hedef", goal)
 
     st.info(bmi_advice)
 
@@ -804,7 +824,7 @@ with tab1:
     st.markdown(
         f"""
         <div class="status-card">
-        <h3>{emoji} Student Status: {status_label}</h3>
+        <h3>{emoji} Öğrenci Durumu: {status_label}</h3>
         <p>{status_note}</p>
         </div>
         """,
@@ -814,7 +834,7 @@ with tab1:
     st.markdown(
         f"""
         <div class="quote-card">
-        <h3>Daily Motivation</h3>
+        <h3>Günlük Motivasyon</h3>
         <p><i>"{quote}"</i></p>
         </div>
         """,
@@ -822,29 +842,26 @@ with tab1:
     )
 
 
-# =========================
-# TAB 2 DAILY
-# =========================
 with tab2:
-    st.subheader("Daily Student Tracking")
+    st.subheader("Günlük Öğrenci Takibi")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        entry_date = st.date_input("Date", value=date.today())
-        mood_text = st.text_area("How do you feel today?", value="I feel focused and ready to study.")
-        sleep_hours = st.slider("Sleep Hours", 0, 12, 7)
-        study_hours = st.slider("Study Hours", 0, 10, 4)
-        task_completion = st.slider("Task Completion (%)", 0, 100, 65)
+        entry_date = st.date_input("Tarih", value=date.today())
+        mood_text = st.text_area("Bugün nasıl hissediyorsun?", value="I feel focused and ready to study.")
+        sleep_hours = st.slider("Uyku Saatleri", 0, 12, 7)
+        study_hours = st.slider("Çalışma Saatleri", 0, 10, 4)
+        task_completion = st.slider("Görev Tamamlama (%)", 0, 100, 65)
 
     with col2:
-        focus_level = st.slider("Focus Level", 1, 10, 7)
-        stress_level = st.slider("Stress Level", 1, 10, 4)
-        exercise_minutes = st.slider("Exercise Minutes", 0, 120, 25)
-        water_liters = st.slider("Water Intake (Liters)", 0.0, 4.0, 2.0)
-        nutrition_quality = st.slider("Nutrition Quality", 1, 10, 7)
+        focus_level = st.slider("Odak Seviyesi", 1, 10, 7)
+        stress_level = st.slider("Stres Seviyesi", 1, 10, 4)
+        exercise_minutes = st.slider("Egzersiz Dakikaları", 0, 120, 25)
+        water_liters = st.slider("Su Tüketimi (Litre)", 0.0, 4.0, 2.0)
+        nutrition_quality = st.slider("Beslenme Kalitesi", 1, 10, 7)
 
-    if st.button("Save Today and Generate AI Analysis"):
+    if st.button("Bugünü Kaydet ve Yapay Zeka Analizi Oluştur"):
         new_row = pd.DataFrame(
             [
                 {
@@ -901,7 +918,7 @@ with tab2:
         emoji, status_label = get_status_emoji(productivity_score, stress_level, sleep_hours)
 
         st.divider()
-        st.subheader("Today’s AI Analysis")
+        st.subheader("Bugünün Yapay Zeka Analizi")
 
         c1, c2, c3, c4, c5 = st.columns(5)
         c1.metric("Mood", mood)
@@ -949,15 +966,12 @@ with tab2:
             ],
         )
 
-        st.subheader("Today’s Tracking Chart")
+        st.subheader("Bugünün Takip Grafiği")
         st.bar_chart(today_chart)
 
 
-# =========================
-# TAB 3 NUTRITION
-# =========================
 with tab3:
-    st.subheader("Nutrition & Health Planner")
+    st.subheader("Beslenme ve Sağlık Planlayıcı")
 
     profile = st.session_state.profile
     height_cm = profile["height_cm"]
@@ -998,24 +1012,21 @@ with tab3:
 
     st.dataframe(food_data, use_container_width=True)
 
-    if goal == "Gain Weight":
+    if goal == "Kilo Al":
         st.success("Nutrition Focus: Increase calories with protein, oats, rice, potatoes, olive oil and healthy snacks.")
-    elif goal == "Lose Fat":
+    elif goal == "Yağ Kaybet":
         st.info("Nutrition Focus: Increase protein, vegetables, water intake and reduce processed foods.")
-    elif goal == "Improve Sleep":
+    elif goal == "Uykuyu İyileştir":
         st.info("Nutrition Focus: Avoid caffeine late in the day and eat lighter meals before sleep.")
     else:
         st.success("Nutrition Focus: Keep balanced meals and stable hydration for consistent energy.")
 
 
-# =========================
-# TAB 4 EXERCISE
-# =========================
 with tab4:
-    st.subheader("Personalized Exercise Program")
+    st.subheader("Kişiselleştirilmiş Egzersiz Programı")
 
     fitness_goal = st.selectbox(
-        "Choose Exercise Goal",
+        "Egzersiz Hedefi Seç",
         ["General Health", "Weight Gain / Muscle", "Fat Loss", "Stress Reduction", "Posture & Mobility"],
     )
 
@@ -1066,15 +1077,12 @@ with tab4:
         st.write("•", item)
 
 
-# =========================
-# TAB 5 ANALYTICS
-# =========================
 with tab5:
     records = calculate_scores(st.session_state.records)
     records["date"] = pd.to_datetime(records["date"])
     dashboard = records.sort_values("date").set_index("date")
 
-    st.subheader("Analytics Dashboard")
+    st.subheader("Analitik Kontrol Paneli")
 
     m1, m2, m3, m4, m5 = st.columns(5)
     m1.metric("Avg Sleep", round(records["sleep_hours"].mean(), 2))
@@ -1109,13 +1117,10 @@ with tab5:
     st.dataframe(records, use_container_width=True)
 
 
-# =========================
-# TAB 6 AI COACH
-# =========================
 with tab6:
     records = calculate_scores(st.session_state.records)
 
-    st.subheader("Personal AI Coach")
+    st.subheader("Kişisel Yapay Zeka Koçu")
 
     avg_productivity = records["productivity_score"].mean()
     avg_stress = records["stress_level"].mean()
@@ -1191,13 +1196,10 @@ with tab6:
     st.metric("Training Accuracy", f"{round(accuracy * 100, 2)}%")
 
 
-# =========================
-# TAB 7 REPORT
-# =========================
 with tab7:
     records = calculate_scores(st.session_state.records)
 
-    st.subheader("Automatic Weekly Report")
+    st.subheader("Otomatik Haftalık Rapor")
 
     weekly_summary = pd.DataFrame(
         {
@@ -1276,11 +1278,8 @@ with tab7:
         st.warning("PDF export is not active. Add reportlab to requirements.txt and install it.")
 
 
-# =========================
-# TAB 8 SMART
-# =========================
 with tab8:
-    st.subheader("Smart Integrations & Future Tracking")
+    st.subheader("Akıllı Entegrasyonlar ve Gelecek Takip Sistemi")
 
     st.write("This section shows how the system can evolve from manual input into automated student tracking.")
 
@@ -1374,9 +1373,6 @@ with tab8:
     )
 
 
-# =========================
-# TAB 9 DATABASE
-# =========================
 with tab9:
     st.subheader("SQLite Database History")
 
