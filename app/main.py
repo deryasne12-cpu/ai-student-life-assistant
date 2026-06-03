@@ -150,6 +150,48 @@ st.markdown(
     color: #e5e7eb;
 }}
 
+.side-menu-title {
+    font-size: 24px;
+    font-weight: 900;
+    margin: 12px 0 18px 0;
+    color: #f8fafc;
+}
+.side-menu-item {
+    padding: 14px 16px;
+    margin: 10px 0;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.48);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    color: #e5e7eb;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+}
+.side-menu-item.active {
+    background: linear-gradient(135deg, rgba(124,58,237,0.62), rgba(59,130,246,0.55));
+    border: 1px solid rgba(255,255,255,0.24);
+    color: white;
+    box-shadow: 0 0 18px rgba(124,58,237,0.25);
+}
+.language-card {
+    margin-top: 14px;
+    padding: 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(15,23,42,0.72), rgba(30,41,59,0.72));
+    border: 1px solid rgba(148,163,184,0.20);
+    color: #f8fafc;
+    font-size: 15px;
+}
+.side-note {
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    color: #cbd5e1;
+    line-height: 1.55;
+}
+
+
 /* Normal Streamlit buttons */
 div.stButton > button {{
     background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]});
@@ -313,40 +355,51 @@ Akademik performans, uyku alışkanlıkları, stres seviyesi, beslenme, egzersiz
 
 with st.sidebar:
     st.divider()
-    st.header("Temel Modüller")
 
-    modules = [
-        "Giriş / Öğrenci Profili",
-        "Günlük Takip",
-        "Wellness & Beslenme",
-        "Egzersiz Programı",
-        "Analitik Kontrol Paneli",
-        "Yapay Zeka Koçu",
-        "Haftalık PDF Raporu",
-        "Akıllı saat Entegrasyonu",
-        "Uzun Vadeli Davranış Analizi",
-        "SQLite Veritabanı Geçmişi",
-    ]
-
-    for module in modules:
-        st.markdown(f'<div class="module-item">• {module}</div>', unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="side-menu-title">Kontrol Paneli</div>
+        <div class="side-menu-item active">👤 Giriş / Login</div>
+        <div class="side-menu-item">⚙️ Ayarlar</div>
+        <div class="side-menu-item">🗄️ Veritabanı Geçmişi</div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.divider()
-    st.header("Teknolojiler")
 
-    technologies = [
-        "Python",
-        "Streamlit",
-        "VADER NLP",
-        "Scikit-learn",
-        "Random Forest",
-        "Pandas",
-        "SQLite",
-        "ReportLab PDF",
-    ]
+    selected_language = st.selectbox(
+        "Dil / Language",
+        [
+            "Türkçe",
+            "English",
+            "Deutsch",
+            "Русский",
+            "Español",
+        ],
+        index=0,
+    )
 
-    for tech in technologies:
-        st.markdown(f'<div class="tech-item">• {tech}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="language-card">
+            <b>Aktif Dil:</b><br>{selected_language}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.divider()
+
+    st.markdown(
+        """
+        <div class="side-note">
+            <b>AI Student Tracker</b><br>
+            Login, settings, database history and language control are managed from this sidebar.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 DB_NAME = "student_tracker.db"
