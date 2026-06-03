@@ -152,19 +152,19 @@ st.markdown(
 
 /* Normal Streamlit buttons */
 div.stButton > button {{
-    background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]}, {theme["accent"]});
+    background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]});
     color: white;
-    border: 0;
-    border-radius: 999px;
-    padding: 0.85rem 1.7rem;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px;
+    padding: 0.85rem 1.45rem;
     font-weight: 900;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.40);
-    transition: all 0.25s ease-in-out;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.28);
+    transition: all 0.22s ease-in-out;
 }}
 div.stButton > button:hover {{
-    transform: translateY(-3px) scale(1.04);
-    filter: brightness(1.20);
-    box-shadow: 0 0 25px {theme["primary"]};
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 0 16px rgba(148,163,184,0.24), 0 12px 25px rgba(0,0,0,0.32);
     color: white;
 }}
 .stDownloadButton > button {{
@@ -177,52 +177,109 @@ div.stButton > button:hover {{
     box-shadow: 0 10px 28px rgba(0,0,0,0.40);
 }}
 
-/* GRADIENT TAB BUTTONS */
-button[data-baseweb="tab"] {{
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]}, {theme["accent"]}) !important;
-    color: white !important;
-    border-radius: 999px !important;
-    padding: 12px 22px !important;
-    margin: 5px 7px 9px 0 !important;
-    font-weight: 900 !important;
-    border: 0 !important;
-    box-shadow: 0 9px 25px rgba(0,0,0,0.35);
-    transition: all 0.25s ease-in-out;
+/* CALM PREMIUM TAB BUTTONS - same style as the reference image */
+div[data-testid="stTabs"] div[role="tablist"] {{
+    gap: 14px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    padding-bottom: 16px;
+    flex-wrap: wrap;
 }}
-button[data-baseweb="tab"]::before {{
+
+button[data-baseweb="tab"],
+div[data-testid="stTabs"] button[role="tab"],
+div[data-testid="stTabs"] [role="tab"] {{
+    min-height: 48px !important;
+    min-width: 132px !important;
+    max-width: 210px !important;
+    border-radius: 14px !important;
+    padding: 12px 18px !important;
+    margin: 0 !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    color: #f8fafc !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.2px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    transition: all 0.22s ease-in-out !important;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.20) !important;
+}}
+
+button[data-baseweb="tab"]:nth-child(1),
+div[data-testid="stTabs"] [role="tab"]:nth-child(1) {{
+    background: linear-gradient(135deg, rgba(124,58,237,0.72), rgba(59,130,246,0.60)) !important;
+}}
+button[data-baseweb="tab"]:nth-child(2),
+div[data-testid="stTabs"] [role="tab"]:nth-child(2) {{
+    background: linear-gradient(135deg, rgba(37,99,235,0.62), rgba(14,165,233,0.52)) !important;
+}}
+button[data-baseweb="tab"]:nth-child(3),
+div[data-testid="stTabs"] [role="tab"]:nth-child(3) {{
+    background: linear-gradient(135deg, rgba(22,163,74,0.62), rgba(20,184,166,0.50)) !important;
+}}
+button[data-baseweb="tab"]:nth-child(4),
+div[data-testid="stTabs"] [role="tab"]:nth-child(4) {{
+    background: linear-gradient(135deg, rgba(13,148,136,0.60), rgba(6,182,212,0.46)) !important;
+}}
+button[data-baseweb="tab"]:nth-child(5),
+div[data-testid="stTabs"] [role="tab"]:nth-child(5) {{
+    background: linear-gradient(135deg, rgba(99,102,241,0.62), rgba(168,85,247,0.48)) !important;
+}}
+button[data-baseweb="tab"]:nth-child(6),
+div[data-testid="stTabs"] [role="tab"]:nth-child(6) {{
+    background: linear-gradient(135deg, rgba(202,138,4,0.62), rgba(234,179,8,0.48)) !important;
+}}
+button[data-baseweb="tab"]:nth-child(7),
+div[data-testid="stTabs"] [role="tab"]:nth-child(7) {{
+    background: linear-gradient(135deg, rgba(190,24,93,0.58), rgba(244,114,182,0.44)) !important;
+}}
+button[data-baseweb="tab"]:nth-child(8),
+div[data-testid="stTabs"] [role="tab"]:nth-child(8) {{
+    background: linear-gradient(135deg, rgba(14,116,144,0.60), rgba(56,189,248,0.44)) !important;
+}}
+button[data-baseweb="tab"]:nth-child(9),
+div[data-testid="stTabs"] [role="tab"]:nth-child(9) {{
+    background: linear-gradient(135deg, rgba(51,65,85,0.70), rgba(100,116,139,0.48)) !important;
+}}
+
+button[data-baseweb="tab"]::before,
+div[data-testid="stTabs"] [role="tab"]::before {{
     content: "";
     position: absolute;
-    top: 0;
-    left: -90%;
-    width: 70%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
-    transform: skewX(-18deg);
-    transition: all 0.55s ease;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.16), transparent 35%);
+    opacity: 0.75;
+    pointer-events: none;
 }}
-button[data-baseweb="tab"]:hover::before {{
-    left: 130%;
+
+button[data-baseweb="tab"]:hover,
+div[data-testid="stTabs"] [role="tab"]:hover {{
+    transform: translateY(-2px) !important;
+    filter: brightness(1.10) saturate(1.05) !important;
+    box-shadow: 0 0 16px rgba(148,163,184,0.22), 0 12px 25px rgba(0,0,0,0.30) !important;
+    border: 1px solid rgba(255,255,255,0.20) !important;
 }}
-button[data-baseweb="tab"]:hover {{
-    transform: translateY(-3px) scale(1.045);
-    filter: brightness(1.25);
-    box-shadow: 0 0 26px {theme["primary"]}, 0 10px 30px rgba(0,0,0,0.45);
+
+button[data-baseweb="tab"][aria-selected="true"],
+div[data-testid="stTabs"] [role="tab"][aria-selected="true"] {{
+    transform: translateY(-2px) !important;
+    border: 1px solid rgba(255,255,255,0.32) !important;
+    box-shadow: 0 0 18px rgba(139,92,246,0.32), 0 14px 28px rgba(0,0,0,0.35) !important;
 }}
-button[data-baseweb="tab"][aria-selected="true"] {{
-    background: linear-gradient(135deg, #ff0080, #7928ca, #00d4ff) !important;
-    color: white !important;
-    box-shadow: 0 0 30px {theme["accent"]}, 0 10px 28px rgba(0,0,0,0.45);
-}}
-button[data-baseweb="tab"] p {{
-    color: white !important;
+
+button[data-baseweb="tab"] p,
+button[data-baseweb="tab"] div,
+div[data-testid="stTabs"] [role="tab"] p,
+div[data-testid="stTabs"] [role="tab"] div {{
+    color: #ffffff !important;
     font-weight: 900 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 13px !important;
 }}
-button[data-baseweb="tab"] div {{
-    color: white !important;
-}}
-div[data-baseweb="tab-highlight"] {{
+
+div[data-baseweb="tab-highlight"],
+div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {{
     background: transparent !important;
 }}
 </style>
