@@ -693,6 +693,13 @@ div[data-testid="stTabs"] [role="tab"][aria-selected="true"] {{
     border: 1px solid rgba(255,255,255,0.32) !important;
     box-shadow: 0 0 18px rgba(139,92,246,0.32), 0 14px 28px rgba(0,0,0,0.35) !important;
 }}
+button[data-baseweb="tab"],
+div[data-testid="stTabs"] button[role="tab"],
+div[data-testid="stTabs"] [role="tab"] {{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}}
 button[data-baseweb="tab"] p,
 button[data-baseweb="tab"] div,
 div[data-testid="stTabs"] [role="tab"] p,
@@ -703,6 +710,13 @@ div[data-testid="stTabs"] [role="tab"] div {{
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     font-size: 13px !important;
+    line-height: 1.1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
 }}
 div[data-baseweb="tab-highlight"],
 div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {{
@@ -1144,24 +1158,20 @@ def render_login_profile():
 
     st.info(bmi_advice)
 
-    current_records = calculate_scores(st.session_state.records)
-    status_note = create_status_note(current_records, {
-        "name": name,
-        "student_id": student_id,
-        "faculty": faculty,
-        "semester": semester,
-        "age": age,
-        "height_cm": height_cm,
-        "weight_kg": weight_kg,
-        "goal": goal,
-    })
 
-    avg_productivity = current_records["productivity_score"].mean()
-    avg_stress = current_records["stress_level"].mean()
-    avg_sleep = current_records["sleep_hours"].mean()
+
+def render_student_bottom_summary():
+    records = calculate_scores(st.session_state.records)
+    status_note = create_status_note(records, st.session_state.profile)
+
+    avg_productivity = records["productivity_score"].mean()
+    avg_stress = records["stress_level"].mean()
+    avg_sleep = records["sleep_hours"].mean()
+
     emoji, status_label = get_status_emoji(avg_productivity, avg_stress, avg_sleep)
     quote = get_motivation_quote(avg_productivity, avg_stress, avg_sleep)
 
+    st.divider()
     st.markdown(
         f"""
         <div class="status-card">
@@ -1676,3 +1686,4 @@ elif st.session_state.sidebar_page == "database":
 
 st.divider()
 render_dashboard_tabs()
+render_student_bottom_summary()
