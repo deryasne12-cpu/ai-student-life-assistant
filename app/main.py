@@ -19,8 +19,8 @@ except Exception:
 
 st.set_page_config(
     page_title="AI Student Performance Tracker",
-    page_icon="student",
-    layout="wide"
+    page_icon="🎓",
+    layout="wide",
 )
 
 
@@ -61,102 +61,79 @@ THEMES = {
 
 
 with st.sidebar:
-    selected_theme = st.selectbox("Dashboard Temasını Seç", list(THEMES.keys()))
+    selected_theme = st.selectbox("Dashboard Temasını Seç", list(THEMES.keys()), index=3)
 
 theme = THEMES[selected_theme]
 
 
-st.markdown(
-    f"""
+def apply_css(theme_dict):
+    css = """
 <style>
 .main-title {{
-    font-size: 48px;
-    font-weight: 900;
-    margin-bottom: 8px;
+    font-size: 46px;
+    font-weight: 950;
+    margin-bottom: 10px;
+    letter-spacing: -1.2px;
 }}
 .sub-title {{
     font-size: 18px;
     color: #cbd5e1;
-    margin-bottom: 26px;
+    line-height: 1.6;
+    margin-bottom: 28px;
 }}
 .hero-card {{
-    padding: 28px;
+    padding: 30px;
     border-radius: 22px;
-    background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]});
+    background: linear-gradient(135deg, {secondary}, {primary});
     color: white;
-    margin-bottom: 22px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+    margin-bottom: 26px;
+    box-shadow: 0 18px 42px rgba(0,0,0,0.34);
+    border: 1px solid rgba(255,255,255,0.12);
 }}
 .info-card {{
     padding: 22px;
     border-radius: 18px;
-    background: #111827;
-    border: 1px solid #374151;
+    background: rgba(15, 23, 42, 0.78);
+    border: 1px solid rgba(148, 163, 184, 0.20);
     color: white;
     margin-bottom: 15px;
 }}
 .status-card {{
     padding: 24px;
     border-radius: 20px;
-    background: linear-gradient(135deg, {theme["soft"]}, #111827);
-    border: 1px solid {theme["primary"]};
+    background: linear-gradient(135deg, {soft}, #111827);
+    border: 1px solid {primary};
     color: white;
     margin-bottom: 18px;
+    box-shadow: 0 12px 34px rgba(0,0,0,0.28);
 }}
 .quote-card {{
     padding: 22px;
     border-radius: 18px;
-    background: linear-gradient(135deg, #111827, {theme["secondary"]});
+    background: linear-gradient(135deg, #111827, {secondary});
     color: white;
     margin-bottom: 18px;
-    border-left: 6px solid {theme["accent"]};
+    border-left: 6px solid {accent};
 }}
-.card-blue {{
+.card-blue, .card-green, .card-purple, .card-orange {{
     padding: 22px;
     border-radius: 18px;
-    background: linear-gradient(135deg, #1e3a8a, {theme["primary"]});
     color: white;
     margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.12);
 }}
-.card-green {{
-    padding: 22px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #064e3b, {theme["accent"]});
-    color: white;
-    margin-bottom: 15px;
-}}
-.card-purple {{
-    padding: 22px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #581c87, #a855f7);
-    color: white;
-    margin-bottom: 15px;
-}}
-.card-orange {{
-    padding: 22px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #9a3412, {theme["warning"]});
-    color: white;
-    margin-bottom: 15px;
-}}
-.module-item {{
-    padding: 8px 0;
-    font-size: 16px;
-    color: #f3f4f6;
-}}
-.tech-item {{
-    padding: 6px 0;
-    font-size: 15px;
-    color: #e5e7eb;
-}}
+.card-blue {{ background: linear-gradient(135deg, #1e3a8a, {primary}); }}
+.card-green {{ background: linear-gradient(135deg, #064e3b, {accent}); }}
+.card-purple {{ background: linear-gradient(135deg, #581c87, #a855f7); }}
+.card-orange {{ background: linear-gradient(135deg, #9a3412, {warning}); }}
 
-.side-menu-title {
+.side-menu-title {{
     font-size: 24px;
     font-weight: 900;
     margin: 12px 0 18px 0;
     color: #f8fafc;
-}
-.side-menu-item {
+}}
+.side-menu-item {{
     padding: 14px 16px;
     margin: 10px 0;
     border-radius: 16px;
@@ -166,14 +143,14 @@ st.markdown(
     font-size: 16px;
     font-weight: 800;
     box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-}
-.side-menu-item.active {
+}}
+.side-menu-item.active {{
     background: linear-gradient(135deg, rgba(124,58,237,0.62), rgba(59,130,246,0.55));
     border: 1px solid rgba(255,255,255,0.24);
     color: white;
     box-shadow: 0 0 18px rgba(124,58,237,0.25);
-}
-.language-card {
+}}
+.language-card {{
     margin-top: 14px;
     padding: 16px;
     border-radius: 16px;
@@ -181,20 +158,19 @@ st.markdown(
     border: 1px solid rgba(148,163,184,0.20);
     color: #f8fafc;
     font-size: 15px;
-}
-.side-note {
+}}
+.side-note {{
     padding: 16px;
     border-radius: 16px;
     background: rgba(15, 23, 42, 0.55);
     border: 1px solid rgba(148, 163, 184, 0.16);
     color: #cbd5e1;
     line-height: 1.55;
-}
+}}
 
-
-/* Normal Streamlit buttons */
+/* Premium normal buttons */
 div.stButton > button {{
-    background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]});
+    background: linear-gradient(135deg, {secondary}, {primary});
     color: white;
     border: 1px solid rgba(255,255,255,0.14);
     border-radius: 14px;
@@ -210,29 +186,27 @@ div.stButton > button:hover {{
     color: white;
 }}
 .stDownloadButton > button {{
-    background: linear-gradient(135deg, #ff0080, #7928ca, #00d4ff);
+    background: linear-gradient(135deg, {secondary}, {primary});
     color: white;
-    border: 0;
-    border-radius: 999px;
-    padding: 0.85rem 1.7rem;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px;
+    padding: 0.85rem 1.45rem;
     font-weight: 900;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.40);
 }}
 
-/* CALM PREMIUM TAB BUTTONS - same style as the reference image */
+/* Calm premium tab buttons */
 div[data-testid="stTabs"] div[role="tablist"] {{
     gap: 14px;
     border-bottom: 1px solid rgba(148, 163, 184, 0.18);
     padding-bottom: 16px;
     flex-wrap: wrap;
 }}
-
 button[data-baseweb="tab"],
 div[data-testid="stTabs"] button[role="tab"],
 div[data-testid="stTabs"] [role="tab"] {{
     min-height: 48px !important;
     min-width: 132px !important;
-    max-width: 210px !important;
+    max-width: 220px !important;
     border-radius: 14px !important;
     padding: 12px 18px !important;
     margin: 0 !important;
@@ -245,54 +219,33 @@ div[data-testid="stTabs"] [role="tab"] {{
     transition: all 0.22s ease-in-out !important;
     box-shadow: 0 10px 22px rgba(0,0,0,0.20) !important;
 }}
-
-button[data-baseweb="tab"]:nth-child(1),
-div[data-testid="stTabs"] [role="tab"]:nth-child(1) {{
+button[data-baseweb="tab"]:nth-child(1), div[data-testid="stTabs"] [role="tab"]:nth-child(1) {{
     background: linear-gradient(135deg, rgba(124,58,237,0.72), rgba(59,130,246,0.60)) !important;
 }}
-button[data-baseweb="tab"]:nth-child(2),
-div[data-testid="stTabs"] [role="tab"]:nth-child(2) {{
+button[data-baseweb="tab"]:nth-child(2), div[data-testid="stTabs"] [role="tab"]:nth-child(2) {{
     background: linear-gradient(135deg, rgba(37,99,235,0.62), rgba(14,165,233,0.52)) !important;
 }}
-button[data-baseweb="tab"]:nth-child(3),
-div[data-testid="stTabs"] [role="tab"]:nth-child(3) {{
+button[data-baseweb="tab"]:nth-child(3), div[data-testid="stTabs"] [role="tab"]:nth-child(3) {{
     background: linear-gradient(135deg, rgba(22,163,74,0.62), rgba(20,184,166,0.50)) !important;
 }}
-button[data-baseweb="tab"]:nth-child(4),
-div[data-testid="stTabs"] [role="tab"]:nth-child(4) {{
+button[data-baseweb="tab"]:nth-child(4), div[data-testid="stTabs"] [role="tab"]:nth-child(4) {{
     background: linear-gradient(135deg, rgba(13,148,136,0.60), rgba(6,182,212,0.46)) !important;
 }}
-button[data-baseweb="tab"]:nth-child(5),
-div[data-testid="stTabs"] [role="tab"]:nth-child(5) {{
+button[data-baseweb="tab"]:nth-child(5), div[data-testid="stTabs"] [role="tab"]:nth-child(5) {{
     background: linear-gradient(135deg, rgba(99,102,241,0.62), rgba(168,85,247,0.48)) !important;
 }}
-button[data-baseweb="tab"]:nth-child(6),
-div[data-testid="stTabs"] [role="tab"]:nth-child(6) {{
+button[data-baseweb="tab"]:nth-child(6), div[data-testid="stTabs"] [role="tab"]:nth-child(6) {{
     background: linear-gradient(135deg, rgba(202,138,4,0.62), rgba(234,179,8,0.48)) !important;
 }}
-button[data-baseweb="tab"]:nth-child(7),
-div[data-testid="stTabs"] [role="tab"]:nth-child(7) {{
+button[data-baseweb="tab"]:nth-child(7), div[data-testid="stTabs"] [role="tab"]:nth-child(7) {{
     background: linear-gradient(135deg, rgba(190,24,93,0.58), rgba(244,114,182,0.44)) !important;
 }}
-button[data-baseweb="tab"]:nth-child(8),
-div[data-testid="stTabs"] [role="tab"]:nth-child(8) {{
+button[data-baseweb="tab"]:nth-child(8), div[data-testid="stTabs"] [role="tab"]:nth-child(8) {{
     background: linear-gradient(135deg, rgba(14,116,144,0.60), rgba(56,189,248,0.44)) !important;
 }}
-button[data-baseweb="tab"]:nth-child(9),
-div[data-testid="stTabs"] [role="tab"]:nth-child(9) {{
+button[data-baseweb="tab"]:nth-child(9), div[data-testid="stTabs"] [role="tab"]:nth-child(9) {{
     background: linear-gradient(135deg, rgba(51,65,85,0.70), rgba(100,116,139,0.48)) !important;
 }}
-
-button[data-baseweb="tab"]::before,
-div[data-testid="stTabs"] [role="tab"]::before {{
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.16), transparent 35%);
-    opacity: 0.75;
-    pointer-events: none;
-}}
-
 button[data-baseweb="tab"]:hover,
 div[data-testid="stTabs"] [role="tab"]:hover {{
     transform: translateY(-2px) !important;
@@ -300,14 +253,12 @@ div[data-testid="stTabs"] [role="tab"]:hover {{
     box-shadow: 0 0 16px rgba(148,163,184,0.22), 0 12px 25px rgba(0,0,0,0.30) !important;
     border: 1px solid rgba(255,255,255,0.20) !important;
 }}
-
 button[data-baseweb="tab"][aria-selected="true"],
 div[data-testid="stTabs"] [role="tab"][aria-selected="true"] {{
     transform: translateY(-2px) !important;
     border: 1px solid rgba(255,255,255,0.32) !important;
     box-shadow: 0 0 18px rgba(139,92,246,0.32), 0 14px 28px rgba(0,0,0,0.35) !important;
 }}
-
 button[data-baseweb="tab"] p,
 button[data-baseweb="tab"] div,
 div[data-testid="stTabs"] [role="tab"] p,
@@ -319,43 +270,20 @@ div[data-testid="stTabs"] [role="tab"] div {{
     text-overflow: ellipsis !important;
     font-size: 13px !important;
 }}
-
 div[data-baseweb="tab-highlight"],
 div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {{
     background: transparent !important;
 }}
 </style>
-""",
-    unsafe_allow_html=True,
-)
+"""
+    st.markdown(css.format(**theme_dict), unsafe_allow_html=True)
 
 
-st.markdown(
-    '<div class="main-title">Yapay Zeka Öğrenci Performansı ve Sağlık Takipçisi</div>',
-    unsafe_allow_html=True,
-)
-st.markdown(
-    '<div class="sub-title">Öğrenci verimliliği, uyku, sağlık, beslenme, egzersiz, haftalık raporlar, yapay zeka koçluğu, veritabanı takibi ve gelecekteki akıllı entegrasyonlar için tam kapsamlı bir yapay zeka paneli.</div>',
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    """
-<div class="hero-card">
-<h2>Proje Konsepti</h2>
-<p>
-Bu platform, öğrenci performansını zaman içinde takip eder. Sadece günlük bir girdiyi analiz etmiyor.
-Akademik performans, uyku alışkanlıkları, stres seviyesi, beslenme, egzersiz ve yapay zeka tabanlı önerileri birleştirir.
-</p>
-</div>
-""",
-    unsafe_allow_html=True,
-)
+apply_css(theme)
 
 
 with st.sidebar:
     st.divider()
-
     st.markdown(
         """
         <div class="side-menu-title">Kontrol Paneli</div>
@@ -365,21 +293,12 @@ with st.sidebar:
         """,
         unsafe_allow_html=True,
     )
-
     st.divider()
-
     selected_language = st.selectbox(
         "Dil / Language",
-        [
-            "Türkçe",
-            "English",
-            "Deutsch",
-            "Русский",
-            "Español",
-        ],
+        ["Türkçe", "English", "Deutsch", "Русский", "Español"],
         index=0,
     )
-
     st.markdown(
         f"""
         <div class="language-card">
@@ -388,9 +307,7 @@ with st.sidebar:
         """,
         unsafe_allow_html=True,
     )
-
     st.divider()
-
     st.markdown(
         """
         <div class="side-note">
@@ -423,7 +340,7 @@ def init_database():
             goal TEXT,
             created_at TEXT
         )
-    """
+        """
     )
 
     cursor.execute(
@@ -446,7 +363,7 @@ def init_database():
             productivity_score REAL,
             risk_score REAL
         )
-    """
+        """
     )
 
     conn.commit()
@@ -464,7 +381,7 @@ def save_profile_to_db(profile):
             height_cm, weight_kg, goal, created_at
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """,
+        """,
         (
             profile["name"],
             profile["student_id"],
@@ -489,6 +406,44 @@ def load_records_from_db():
     return df
 
 
+def save_daily_record_to_db(row):
+    scored = calculate_scores(row).iloc[0]
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        INSERT OR REPLACE INTO daily_records (
+            record_date, mood_text, sleep_hours, study_hours, focus_level,
+            stress_level, exercise_minutes, task_completion, water_liters,
+            nutrition_quality, steps, sentiment_score, wellness_score,
+            productivity_score, risk_score
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            str(scored["date"]),
+            scored["mood_text"],
+            float(scored["sleep_hours"]),
+            float(scored["study_hours"]),
+            float(scored["focus_level"]),
+            float(scored["stress_level"]),
+            float(scored["exercise_minutes"]),
+            float(scored["task_completion"]),
+            float(scored["water_liters"]),
+            float(scored["nutrition_quality"]),
+            int(scored["steps"]),
+            float(scored["sentiment_score"]),
+            float(scored["wellness_score"]),
+            float(scored["productivity_score"]),
+            float(scored["risk_score"]),
+        ),
+    )
+
+    conn.commit()
+    conn.close()
+
+
 analyzer = SentimentIntensityAnalyzer()
 init_database()
 
@@ -496,12 +451,12 @@ if "profile" not in st.session_state:
     st.session_state.profile = {
         "name": "Student",
         "student_id": "0000",
-        "faculty": "Software Engineering",
+        "faculty": "Yazılım Mühendisliği",
         "semester": 2,
         "age": 22,
         "height_cm": 175,
         "weight_kg": 70,
-        "goal": "Improve Productivity",
+        "goal": "Verimliliği Artır",
     }
 
 if "records" not in st.session_state:
@@ -540,11 +495,9 @@ if "records" not in st.session_state:
 
 def calculate_scores(df):
     df = df.copy()
-
     df["sentiment_score"] = df["mood_text"].apply(
         lambda x: analyzer.polarity_scores(str(x))["compound"]
     )
-
     df["wellness_score"] = (
         (df["sleep_hours"] / 12 * 18)
         + (df["focus_level"] / 10 * 18)
@@ -553,61 +506,19 @@ def calculate_scores(df):
         + (df["water_liters"].clip(0, 2.5) / 2.5 * 15)
         + (df["nutrition_quality"] / 10 * 15)
     ).round(2)
-
     df["productivity_score"] = (
         (df["study_hours"] / 10 * 25)
         + (df["task_completion"] / 100 * 35)
         + (df["focus_level"] / 10 * 25)
         + (df["sentiment_score"].clip(lower=0) * 15)
     ).round(2)
-
     df["risk_score"] = (
         (df["stress_level"] * 7)
         + ((12 - df["sleep_hours"]) * 3)
         + ((10 - df["focus_level"]) * 3)
         + ((2.5 - df["water_liters"].clip(0, 2.5)) * 5)
     ).round(2)
-
     return df
-
-
-def save_daily_record_to_db(row):
-    scored = calculate_scores(row).iloc[0]
-
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        INSERT OR REPLACE INTO daily_records (
-            record_date, mood_text, sleep_hours, study_hours, focus_level,
-            stress_level, exercise_minutes, task_completion, water_liters,
-            nutrition_quality, steps, sentiment_score, wellness_score,
-            productivity_score, risk_score
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """,
-        (
-            str(scored["date"]),
-            scored["mood_text"],
-            float(scored["sleep_hours"]),
-            float(scored["study_hours"]),
-            float(scored["focus_level"]),
-            float(scored["stress_level"]),
-            float(scored["exercise_minutes"]),
-            float(scored["task_completion"]),
-            float(scored["water_liters"]),
-            float(scored["nutrition_quality"]),
-            int(scored["steps"]),
-            float(scored["sentiment_score"]),
-            float(scored["wellness_score"]),
-            float(scored["productivity_score"]),
-            float(scored["risk_score"]),
-        ),
-    )
-
-    conn.commit()
-    conn.close()
 
 
 def get_bmi_status(bmi):
@@ -652,38 +563,37 @@ def create_status_note(records, profile):
     avg_exercise = records["exercise_minutes"].mean()
     avg_water = records["water_liters"].mean()
 
-    student_name = profile.get("name", "Student")
-    if not student_name or student_name.strip() == "":
-        student_name = "Student"
+    student_name = profile.get("name", "Student") or "Student"
 
-    if avg_productivity >= 70:
-        productivity_text = "your productivity level is strong"
-    elif avg_productivity >= 50:
-        productivity_text = "your productivity level is moderate"
-    else:
-        productivity_text = "your productivity level needs improvement"
-
-    if avg_stress >= 7:
-        stress_text = "your stress level is high, so recovery time should be increased"
-    elif avg_stress >= 5:
-        stress_text = "your stress level is manageable but should still be watched"
-    else:
-        stress_text = "your stress level is currently under control"
-
-    if avg_sleep < 6:
-        sleep_text = "your sleep duration is low and may reduce focus"
-    else:
-        sleep_text = "your sleep duration looks acceptable"
-
-    if avg_exercise < 20:
-        exercise_text = "your exercise activity is low, so light walking or mobility work is recommended"
-    else:
-        exercise_text = "your exercise activity supports your wellness"
-
-    if avg_water < 1.8:
-        water_text = "your hydration is low, so drink more water during the day"
-    else:
-        water_text = "your hydration looks acceptable"
+    productivity_text = (
+        "your productivity level is strong"
+        if avg_productivity >= 70
+        else "your productivity level is moderate"
+        if avg_productivity >= 50
+        else "your productivity level needs improvement"
+    )
+    stress_text = (
+        "your stress level is high, so recovery time should be increased"
+        if avg_stress >= 7
+        else "your stress level is manageable but should still be watched"
+        if avg_stress >= 5
+        else "your stress level is currently under control"
+    )
+    sleep_text = (
+        "your sleep duration is low and may reduce focus"
+        if avg_sleep < 6
+        else "your sleep duration looks acceptable"
+    )
+    exercise_text = (
+        "your exercise activity is low, so light walking or mobility work is recommended"
+        if avg_exercise < 20
+        else "your exercise activity supports your wellness"
+    )
+    water_text = (
+        "your hydration is low, so drink more water during the day"
+        if avg_water < 1.8
+        else "your hydration looks acceptable"
+    )
 
     return (
         f"{student_name}, based on your saved tracking data, {productivity_text}. "
@@ -704,30 +614,11 @@ def get_ai_recommendations(records):
 
     messages = []
 
-    if avg_sleep < 6:
-        messages.append(("warning", "Sleep is low. Try to increase sleep by at least 1 hour."))
-    else:
-        messages.append(("success", "Sleep duration is acceptable."))
-
-    if avg_stress > 6:
-        messages.append(("error", "Stress trend is high. Add recovery time and reduce workload intensity."))
-    else:
-        messages.append(("success", "Stress level is manageable."))
-
-    if avg_nutrition < 6:
-        messages.append(("warning", "Nutrition quality is low. Add protein, fruit, vegetables and stable meals."))
-    else:
-        messages.append(("success", "Nutrition quality is acceptable."))
-
-    if avg_exercise < 20:
-        messages.append(("warning", "Exercise activity is low. Add walking or mobility sessions."))
-    else:
-        messages.append(("success", "Exercise supports wellness and focus."))
-
-    if avg_water < 1.8:
-        messages.append(("warning", "Water intake is low. Increase hydration for better focus."))
-    else:
-        messages.append(("success", "Hydration level is acceptable."))
+    messages.append(("warning", "Sleep is low. Try to increase sleep by at least 1 hour.") if avg_sleep < 6 else ("success", "Sleep duration is acceptable."))
+    messages.append(("error", "Stress trend is high. Add recovery time and reduce workload intensity.") if avg_stress > 6 else ("success", "Stress level is manageable."))
+    messages.append(("warning", "Nutrition quality is low. Add protein, fruit, vegetables and stable meals.") if avg_nutrition < 6 else ("success", "Nutrition quality is acceptable."))
+    messages.append(("warning", "Exercise activity is low. Add walking or mobility sessions.") if avg_exercise < 20 else ("success", "Exercise supports wellness and focus."))
+    messages.append(("warning", "Water intake is low. Increase hydration for better focus.") if avg_water < 1.8 else ("success", "Hydration level is acceptable."))
 
     if avg_productivity >= 70:
         messages.append(("success", "Productivity trend is strong. Deep work sessions can be increased."))
@@ -743,11 +634,10 @@ def create_pdf_report(profile, weekly_summary, recommendations, status_note):
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
-
     y = height - 50
+
     pdf.setFont("Helvetica-Bold", 18)
     pdf.drawString(50, y, "AI Student Weekly Performance Report")
-
     y -= 35
     pdf.setFont("Helvetica", 11)
 
@@ -764,7 +654,6 @@ def create_pdf_report(profile, weekly_summary, recommendations, status_note):
     y -= 20
     pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(50, y, "Student Status Summary")
-
     y -= 22
     pdf.setFont("Helvetica", 10)
 
@@ -775,7 +664,6 @@ def create_pdf_report(profile, weekly_summary, recommendations, status_note):
     y -= 15
     pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(50, y, "Weekly Metrics")
-
     y -= 25
     pdf.setFont("Helvetica", 11)
 
@@ -786,14 +674,12 @@ def create_pdf_report(profile, weekly_summary, recommendations, status_note):
     y -= 20
     pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(50, y, "AI Coach Recommendations")
-
     y -= 25
     pdf.setFont("Helvetica", 10)
 
     for _, msg in recommendations:
         pdf.drawString(60, y, f"- {msg}"[:95])
         y -= 18
-
         if y < 80:
             pdf.showPage()
             y = height - 50
@@ -838,6 +724,25 @@ model.fit(training_data[features], training_data["productivity"])
 accuracy = accuracy_score(training_data["productivity"], model.predict(training_data[features]))
 
 
+st.markdown('<div class="main-title">🎓 Yapay Zeka Öğrenci Performansı ve Sağlık Takipçisi</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="sub-title">Öğrenci verimliliği, uyku, sağlık, beslenme, egzersiz, haftalık raporlar, yapay zeka koçluğu, veritabanı takibi ve gelecekteki akıllı entegrasyonlar için tam kapsamlı bir yapay zeka paneli.</div>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    """
+<div class="hero-card">
+<h2>Proje Konsepti</h2>
+<p>
+Bu platform, öğrenci performansını zaman içinde takip eder. Sadece günlük bir girdiyi analiz etmiyor.
+Akademik performans, uyku alışkanlıkları, stres seviyesi, beslenme, egzersiz ve yapay zeka tabanlı önerileri birleştirir.
+</p>
+</div>
+""",
+    unsafe_allow_html=True,
+)
+
+
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
     [
         "👤 Giriş / Profil",
@@ -854,7 +759,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
 
 
 with tab1:
-    st.subheader("Öğrenci Girişi ve Profili")
+    st.subheader("👤 Öğrenci Girişi ve Profili")
 
     col1, col2, col3 = st.columns(3)
 
@@ -886,7 +791,7 @@ with tab1:
     with col5:
         weight_kg = st.number_input("Ağırlık (kg)", min_value=35, max_value=180, value=st.session_state.profile["weight_kg"])
 
-    if st.button("Öğrenci Profilini Kaydet"):
+    if st.button("💾 Öğrenci Profilini Kaydet"):
         st.session_state.profile = {
             "name": name,
             "student_id": student_id,
@@ -944,7 +849,7 @@ with tab1:
     st.markdown(
         f"""
         <div class="quote-card">
-        <h3>Günlük Motivasyon</h3>
+        <h3>✨ Günlük Motivasyon</h3>
         <p><i>"{quote}"</i></p>
         </div>
         """,
@@ -953,7 +858,7 @@ with tab1:
 
 
 with tab2:
-    st.subheader("Günlük Öğrenci Takibi")
+    st.subheader("📅 Günlük Öğrenci Takibi")
 
     col1, col2 = st.columns(2)
 
@@ -971,7 +876,7 @@ with tab2:
         water_liters = st.slider("Su Tüketimi (Litre)", 0.0, 4.0, 2.0)
         nutrition_quality = st.slider("Beslenme Kalitesi", 1, 10, 7)
 
-    if st.button("Bugünü Kaydet ve Yapay Zeka Analizi Oluştur"):
+    if st.button("🚀 Bugünü Kaydet ve Yapay Zeka Analizi Oluştur"):
         new_row = pd.DataFrame(
             [
                 {
@@ -1081,7 +986,7 @@ with tab2:
 
 
 with tab3:
-    st.subheader("Beslenme ve Sağlık Planlayıcı")
+    st.subheader("🥗 Beslenme ve Sağlık Planlayıcı")
 
     profile = st.session_state.profile
     height_cm = profile["height_cm"]
@@ -1133,7 +1038,7 @@ with tab3:
 
 
 with tab4:
-    st.subheader("Kişiselleştirilmiş Egzersiz Programı")
+    st.subheader("🎯 Kişiselleştirilmiş Egzersiz Programı")
 
     fitness_goal = st.selectbox(
         "Egzersiz Hedefi Seç",
@@ -1175,11 +1080,11 @@ with tab4:
 
     st.markdown(
         f"""
-    <div class="card-green">
-    <h3>{fitness_goal}</h3>
-    <p>This exercise plan supports physical health, focus, recovery and student productivity.</p>
-    </div>
-    """,
+        <div class="card-green">
+        <h3>{fitness_goal}</h3>
+        <p>This exercise plan supports physical health, focus, recovery and student productivity.</p>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -1192,7 +1097,7 @@ with tab5:
     records["date"] = pd.to_datetime(records["date"])
     dashboard = records.sort_values("date").set_index("date")
 
-    st.subheader("Analitik Kontrol Paneli")
+    st.subheader("📊 Analitik Kontrol Paneli")
 
     m1, m2, m3, m4, m5 = st.columns(5)
     m1.metric("Avg Sleep", round(records["sleep_hours"].mean(), 2))
@@ -1206,20 +1111,16 @@ with tab5:
     with col1:
         st.subheader("Sleep Trend")
         st.line_chart(dashboard["sleep_hours"])
-
         st.subheader("Stress Trend")
         st.line_chart(dashboard["stress_level"])
-
         st.subheader("Nutrition Quality Trend")
         st.line_chart(dashboard["nutrition_quality"])
 
     with col2:
         st.subheader("Study Trend")
         st.line_chart(dashboard["study_hours"])
-
         st.subheader("Productivity Trend")
         st.line_chart(dashboard["productivity_score"])
-
         st.subheader("Wellness Trend")
         st.line_chart(dashboard["wellness_score"])
 
@@ -1230,7 +1131,7 @@ with tab5:
 with tab6:
     records = calculate_scores(st.session_state.records)
 
-    st.subheader("Kişisel Yapay Zeka Koçu")
+    st.subheader("🤖 Kişisel Yapay Zeka Koçu")
 
     avg_productivity = records["productivity_score"].mean()
     avg_stress = records["stress_level"].mean()
@@ -1252,7 +1153,7 @@ with tab6:
     st.markdown(
         f"""
         <div class="quote-card">
-        <h3>Daily Motivation Quote</h3>
+        <h3>✨ Daily Motivation Quote</h3>
         <p><i>"{quote}"</i></p>
         </div>
         """,
@@ -1272,7 +1173,6 @@ with tab6:
             st.warning(msg)
 
     st.divider()
-
     latest = records.sort_values("date").iloc[-1]
 
     st.markdown(
@@ -1294,11 +1194,7 @@ with tab6:
     )
 
     st.subheader("Model Feature Importance")
-    importance_data = pd.DataFrame(
-        {"Importance": model.feature_importances_},
-        index=features,
-    ).sort_values("Importance", ascending=False)
-
+    importance_data = pd.DataFrame({"Importance": model.feature_importances_}, index=features).sort_values("Importance", ascending=False)
     st.bar_chart(importance_data)
 
     st.subheader("Model Information")
@@ -1309,7 +1205,7 @@ with tab6:
 with tab7:
     records = calculate_scores(st.session_state.records)
 
-    st.subheader("Otomatik Haftalık Rapor")
+    st.subheader("📄 Otomatik Haftalık Rapor")
 
     weekly_summary = pd.DataFrame(
         {
@@ -1356,7 +1252,6 @@ with tab7:
         unsafe_allow_html=True,
     )
 
-    st.subheader("Weekly AI Recommendation")
     for level, msg in recommendations:
         if level == "success":
             st.success(msg)
@@ -1368,7 +1263,6 @@ with tab7:
             st.warning(msg)
 
     csv = weekly_summary.to_csv(index=False).encode("utf-8")
-
     st.download_button(
         label="Download Weekly Report as CSV",
         data=csv,
@@ -1389,8 +1283,7 @@ with tab7:
 
 
 with tab8:
-    st.subheader("Akıllı Entegrasyonlar ve Gelecek Takip Sistemi")
-
+    st.subheader("⌚ Akıllı Entegrasyonlar ve Gelecek Takip Sistemi")
     st.write("This section shows how the system can evolve from manual input into automated student tracking.")
 
     col1, col2 = st.columns(2)
@@ -1398,17 +1291,17 @@ with tab8:
     with col1:
         st.markdown(
             """
-        <div class="card-blue">
-        <h3>Smartwatch Sleep Tracking</h3>
-        <p>Future versions can collect real sleep cycle data from Apple Watch, Fitbit, Garmin, or sleep tracking apps.</p>
-        <ul>
-            <li>Deep sleep duration</li>
-            <li>REM sleep</li>
-            <li>Sleep quality score</li>
-            <li>Recovery score</li>
-        </ul>
-        </div>
-        """,
+            <div class="card-blue">
+            <h3>Smartwatch Sleep Tracking</h3>
+            <p>Future versions can collect real sleep cycle data from Apple Watch, Fitbit, Garmin, or sleep tracking apps.</p>
+            <ul>
+                <li>Deep sleep duration</li>
+                <li>REM sleep</li>
+                <li>Sleep quality score</li>
+                <li>Recovery score</li>
+            </ul>
+            </div>
+            """,
             unsafe_allow_html=True,
         )
 
@@ -1420,23 +1313,22 @@ with tab8:
             },
             index=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
         )
-
         st.line_chart(sleep_data)
 
     with col2:
         st.markdown(
             """
-        <div class="card-green">
-        <h3>Exercise Tracking</h3>
-        <p>The system can connect exercise and activity data with productivity analysis.</p>
-        <ul>
-            <li>Step count</li>
-            <li>Training duration</li>
-            <li>Activity intensity</li>
-            <li>Energy score</li>
-        </ul>
-        </div>
-        """,
+            <div class="card-green">
+            <h3>Exercise Tracking</h3>
+            <p>The system can connect exercise and activity data with productivity analysis.</p>
+            <ul>
+                <li>Step count</li>
+                <li>Training duration</li>
+                <li>Activity intensity</li>
+                <li>Energy score</li>
+            </ul>
+            </div>
+            """,
             unsafe_allow_html=True,
         )
 
@@ -1448,7 +1340,6 @@ with tab8:
             },
             index=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
         )
-
         st.bar_chart(exercise_data)
 
     col3, col4 = st.columns(2)
@@ -1456,27 +1347,26 @@ with tab8:
     with col3:
         st.markdown(
             """
-        <div class="card-purple">
-        <h3>Weekly Reports</h3>
-        <p>The system can automatically generate weekly academic, wellness, nutrition and exercise reports.</p>
-        </div>
-        """,
+            <div class="card-purple">
+            <h3>Weekly Reports</h3>
+            <p>The system can automatically generate weekly academic, wellness, nutrition and exercise reports.</p>
+            </div>
+            """,
             unsafe_allow_html=True,
         )
 
     with col4:
         st.markdown(
             """
-        <div class="card-orange">
-        <h3>Long-Term Behavior Analysis</h3>
-        <p>The system can detect patterns such as sleep-productivity relationship, stress impact, and study consistency.</p>
-        </div>
-        """,
+            <div class="card-orange">
+            <h3>Long-Term Behavior Analysis</h3>
+            <p>The system can detect patterns such as sleep-productivity relationship, stress impact, and study consistency.</p>
+            </div>
+            """,
             unsafe_allow_html=True,
         )
 
     st.divider()
-
     st.subheader("Final Vision")
     st.success(
         "The final version can become a full AI student coaching platform combining academic tracking, health habits, nutrition, exercise, smartwatch data, PDF reports and personalized AI recommendations."
@@ -1484,7 +1374,7 @@ with tab8:
 
 
 with tab9:
-    st.subheader("SQLite Database History")
+    st.subheader("🗄️ SQLite Database History")
 
     db_records = load_records_from_db()
 
@@ -1508,10 +1398,10 @@ with tab9:
 
         st.markdown(
             f"""
-        <div class="card-green">
-        <h3>Current Student Status</h3>
-        <p>{status_note}</p>
-        </div>
-        """,
+            <div class="card-green">
+            <h3>Current Student Status</h3>
+            <p>{status_note}</p>
+            </div>
+            """,
             unsafe_allow_html=True,
         )
