@@ -589,21 +589,21 @@ div[role="radiogroup"] {{
     gap: 12px;
 }}
 
-section[data-testid="stSidebar"] div[data-testid="stRadio"] {
+section[data-testid="stSidebar"] div[data-testid="stRadio"] {{
     width: 100% !important;
-}
-section[data-testid="stSidebar"] div[data-testid="stRadio"] > div {
+}}
+section[data-testid="stSidebar"] div[data-testid="stRadio"] > div {{
     width: 100% !important;
-}
-section[data-testid="stSidebar"] div[role="radiogroup"] {
+}}
+section[data-testid="stSidebar"] div[role="radiogroup"] {{
     width: 100% !important;
-}
-section[data-testid="stSidebar"] div[role="radiogroup"] label {
+}}
+section[data-testid="stSidebar"] div[role="radiogroup"] label {{
     width: 100% !important;
-}
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+}}
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {{
     width: 100% !important;
-}
+}}
 
 div[role="radiogroup"] label {{
     width: 100% !important;
