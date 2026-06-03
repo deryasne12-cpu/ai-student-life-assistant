@@ -58,7 +58,7 @@ TRANSLATIONS = {
         "analytics": "📊 Analitikler",
         "coach": "🤖 Yapay Zeka Koçu",
         "report": "📄 Haftalık Rapor",
-        "smart": "⌚ Akıllı Entegrasyonlar",
+        "smart": "⌚ Akıllı Entegr.",
         "theme": "Dashboard Temasını Seç",
         "background": "Arka Plan Modu",
         "background_soft": "Yumuşak Çoklu Renk",
@@ -114,7 +114,7 @@ TRANSLATIONS = {
         "analytics": "📊 Analytics",
         "coach": "🤖 AI Coach",
         "report": "📄 Weekly Report",
-        "smart": "⌚ Smart Integrations",
+        "smart": "⌚ Smart Integr.",
         "theme": "Choose Dashboard Theme",
         "background": "Background Mode",
         "background_soft": "Soft Multi Color",
@@ -170,7 +170,7 @@ TRANSLATIONS = {
         "analytics": "📊 Analysen",
         "coach": "🤖 KI-Coach",
         "report": "📄 Wochenbericht",
-        "smart": "⌚ Smart-Integrationen",
+        "smart": "⌚ Smart-Integr.",
         "theme": "Dashboard-Thema wählen",
         "background": "Hintergrundmodus",
         "background_soft": "Sanfte Mehrfarben",
@@ -226,7 +226,7 @@ TRANSLATIONS = {
         "analytics": "📊 Аналитика",
         "coach": "🤖 ИИ-коуч",
         "report": "📄 Еженедельный отчет",
-        "smart": "⌚ Smart-интеграции",
+        "smart": "⌚ Smart-интегр.",
         "theme": "Выберите тему панели",
         "background": "Режим фона",
         "background_soft": "Мягкие цвета",
@@ -282,7 +282,7 @@ TRANSLATIONS = {
         "analytics": "📊 Analíticas",
         "coach": "🤖 Coach IA",
         "report": "📄 Informe semanal",
-        "smart": "⌚ Integraciones inteligentes",
+        "smart": "⌚ Integr. inteligentes",
         "theme": "Elegir tema del dashboard",
         "background": "Modo de fondo",
         "background_soft": "Colores suaves",
@@ -743,82 +743,117 @@ div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {{
 }}
 
 
-/* === FINAL CLEAN TAB + SIDEBAR ALIGNMENT PATCH === */
 
-/* Top module tabs: stable, centered, no vertical slipping */
+/* === FINAL EXACT LAYOUT PATCH === */
+
+/* Keep tab menu clean: one line only, no duplicate top/middle divider */
 div[data-testid="stTabs"] div[role="tablist"] {{
     display: flex !important;
     align-items: center !important;
-    gap: 18px !important;
-    flex-wrap: wrap !important;
-    padding: 18px 0 20px 0 !important;
-    border-top: 1px solid rgba(148, 163, 184, 0.20) !important;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.20) !important;
+    justify-content: flex-start !important;
+    gap: 14px !important;
+
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    padding: 16px 0 18px 0 !important;
+    margin: 0 !important;
+
+    border-top: none !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
+    scroll-behavior: smooth !important;
 }}
 
+/* Hide ugly scrollbar on tab row */
+div[data-testid="stTabs"] div[role="tablist"]::-webkit-scrollbar {{
+    height: 0px !important;
+}}
+
+/* All top buttons same height and professional width */
 div[data-testid="stTabs"] button[role="tab"],
 div[data-testid="stTabs"] [role="tab"] {{
-    height: 58px !important;
-    min-height: 58px !important;
-    max-height: 58px !important;
-    min-width: 178px !important;
-    max-width: 235px !important;
-    padding: 0 22px !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+
+    width: 190px !important;
+    min-width: 190px !important;
+    max-width: 190px !important;
+
+    padding: 0 16px !important;
     margin: 0 !important;
+
     border-radius: 17px !important;
+    box-sizing: border-box !important;
 
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
 
     overflow: hidden !important;
-    box-sizing: border-box !important;
     line-height: 1 !important;
 }}
 
+/* Tab text and emoji: centered, slightly up, no slipping */
 div[data-testid="stTabs"] button[role="tab"] p,
 div[data-testid="stTabs"] [role="tab"] p {{
-    margin: 0 !important;
+    margin: -2px 0 0 0 !important;
     padding: 0 !important;
+
+    line-height: 1 !important;
+    height: 18px !important;
 
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
 
-    transform: translateY(-1px) !important;
-    line-height: 1 !important;
-
-    font-size: 14px !important;
+    font-size: 13px !important;
     font-weight: 900 !important;
+
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }}
 
-/* Prevent nested divs/spans from pulling emoji downward */
+/* Prevent internal Streamlit wrappers from moving the emoji down */
 div[data-testid="stTabs"] button[role="tab"] div,
 div[data-testid="stTabs"] [role="tab"] div,
 div[data-testid="stTabs"] button[role="tab"] span,
 div[data-testid="stTabs"] [role="tab"] span {{
     margin: 0 !important;
     padding: 0 !important;
+
     line-height: 1 !important;
+    height: auto !important;
+
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
 }}
 
-/* Sidebar radio buttons: same width as language select/card */
+/* Remove BaseWeb tab underline/highlight so our buttons stay clean */
+div[data-baseweb="tab-highlight"],
+div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {{
+    background: transparent !important;
+    height: 0 !important;
+}}
+
+/* Sidebar: menu buttons same full width as language select and active language card */
 section[data-testid="stSidebar"] div[data-testid="stRadio"] {{
     width: 100% !important;
+    max-width: 100% !important;
 }}
 
 section[data-testid="stSidebar"] div[data-testid="stRadio"] > div {{
     width: 100% !important;
+    max-width: 100% !important;
 }}
 
 section[data-testid="stSidebar"] div[role="radiogroup"] {{
     width: 100% !important;
+    max-width: 100% !important;
+
     display: flex !important;
     flex-direction: column !important;
     gap: 16px !important;
@@ -829,8 +864,8 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label {{
     min-width: 100% !important;
     max-width: 100% !important;
 
-    min-height: 66px !important;
     height: 66px !important;
+    min-height: 66px !important;
 
     display: flex !important;
     align-items: center !important;
@@ -845,6 +880,7 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label {{
 section[data-testid="stSidebar"] div[role="radiogroup"] label p {{
     margin: 0 !important;
     padding: 0 !important;
+
     line-height: 1 !important;
     font-size: 16px !important;
     font-weight: 900 !important;
@@ -857,6 +893,16 @@ section[data-testid="stSidebar"] .side-note {{
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
+}}
+
+/* Make the select and sidebar cards visually aligned with radio buttons */
+section[data-testid="stSidebar"] div[data-baseweb="select"] > div {{
+    min-height: 58px !important;
+    border-radius: 16px !important;
+}}
+
+section[data-testid="stSidebar"] .language-card {{
+    border-radius: 18px !important;
 }}
 
 </style>
