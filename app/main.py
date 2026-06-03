@@ -351,7 +351,7 @@ if "theme_name" not in st.session_state:
 if "background_mode" not in st.session_state:
     st.session_state.background_mode = "Yumuşak Çoklu Renk"
 if "sidebar_page" not in st.session_state:
-    st.session_state.sidebar_page = "Giriş / Login"
+    st.session_state.sidebar_page = "login"
 
 
 def get_text():
@@ -366,6 +366,7 @@ with st.sidebar:
         t["theme"],
         list(THEMES.keys()),
         index=list(THEMES.keys()).index(st.session_state.theme_name),
+        key="theme_select",
     )
 
     st.divider()
@@ -376,12 +377,22 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-    sidebar_page = st.radio(
+    page_labels = {
+        "login": t["login"],
+        "settings": t["settings"],
+        "database": t["db"],
+    }
+
+    selected_label = st.radio(
         "Navigation",
-        [t["login"], t["settings"], t["db"]],
+        [page_labels["login"], page_labels["settings"], page_labels["database"]],
+        index=["login", "settings", "database"].index(st.session_state.sidebar_page),
         label_visibility="collapsed",
+        key="sidebar_radio_visible",
     )
-    st.session_state.sidebar_page = sidebar_page
+
+    reverse_page_labels = {v: k for k, v in page_labels.items()}
+    st.session_state.sidebar_page = reverse_page_labels[selected_label]
 
     st.divider()
 
@@ -389,8 +400,13 @@ with st.sidebar:
         t["language"],
         ["Türkçe", "English", "Deutsch", "Русский", "Español"],
         index=["Türkçe", "English", "Deutsch", "Русский", "Español"].index(st.session_state.language),
+        key="language_select",
     )
-    st.session_state.language = selected_language
+
+    if selected_language != st.session_state.language:
+        st.session_state.language = selected_language
+        st.rerun()
+
     t = get_text()
 
     st.markdown(
@@ -417,7 +433,7 @@ with st.sidebar:
 
     st.divider()
 
-    if st.button(t["logout"]):
+    if st.button(t["logout"], key="logout_button"):
         st.session_state.profile = {
             "name": "Student",
             "student_id": "0000",
@@ -567,17 +583,31 @@ def apply_css(theme_dict, bg_mode):
     box-shadow: 0 12px 28px rgba(0,0,0,0.22);
 }}
 
+div[role="radiogroup"] {{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}}
 div[role="radiogroup"] label {{
+    width: 100% !important;
+    min-height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
     background: rgba(15, 23, 42, 0.50);
     border: 1px solid rgba(148, 163, 184, 0.18);
     border-radius: 16px;
-    padding: 12px 14px;
-    margin: 8px 0;
+    padding: 12px 16px !important;
+    margin: 0 !important;
     box-shadow: 0 8px 18px rgba(0,0,0,0.18);
 }}
 div[role="radiogroup"] label:hover {{
     background: linear-gradient(135deg, rgba(124,58,237,0.28), rgba(59,130,246,0.22));
     border: 1px solid rgba(255,255,255,0.20);
+}}
+div[role="radiogroup"] label p {{
+    font-weight: 800 !important;
+    font-size: 15px !important;
+    margin: 0 !important;
 }}
 
 div.stButton > button {{
@@ -1233,20 +1263,20 @@ def render_dashboard_tabs():
         col1, col2 = st.columns(2)
 
         with col1:
-            entry_date = st.date_input("Date", value=date.today())
-            mood_text = st.text_area(t["mood_question"], value="I feel focused and ready to study.")
-            sleep_hours = st.slider(t["sleep"], 0, 12, 7)
-            study_hours = st.slider(t["study"], 0, 10, 4)
-            task_completion = st.slider(t["task"], 0, 100, 65)
+            entry_date = st.date_input("Date", value=date.today(), key="daily_entry_date")
+            mood_text = st.text_area(t["mood_question"], value="I feel focused and ready to study.", key="daily_mood_text")
+            sleep_hours = st.slider(t["sleep"], 0, 12, 7, key="daily_sleep_hours")
+            study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours")
+            task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion")
 
         with col2:
-            focus_level = st.slider(t["focus"], 1, 10, 7)
-            stress_level = st.slider(t["stress"], 1, 10, 4)
-            exercise_minutes = st.slider(t["exercise_min"], 0, 120, 25)
-            water_liters = st.slider(t["water"], 0.0, 4.0, 2.0)
-            nutrition_quality = st.slider(t["nutrition_quality"], 1, 10, 7)
+            focus_level = st.slider(t["focus"], 1, 10, 7, key="daily_focus_level")
+            stress_level = st.slider(t["stress"], 1, 10, 4, key="daily_stress_level")
+            exercise_minutes = st.slider(t["exercise_min"], 0, 120, 25, key="daily_exercise_minutes")
+            water_liters = st.slider(t["water"], 0.0, 4.0, 2.0, key="daily_water_liters")
+            nutrition_quality = st.slider(t["nutrition_quality"], 1, 10, 7, key="daily_nutrition_quality")
 
-        if st.button(t["save_day"]):
+        if st.button(t["save_day"], key="save_daily_record_button"):
             new_row = pd.DataFrame(
                 [
                     {
@@ -1637,14 +1667,12 @@ def render_dashboard_tabs():
 
 render_header()
 
-if st.session_state.sidebar_page == t["login"]:
+if st.session_state.sidebar_page == "login":
     render_login_profile()
-elif st.session_state.sidebar_page == t["settings"]:
+elif st.session_state.sidebar_page == "settings":
     render_settings()
-elif st.session_state.sidebar_page == t["db"]:
+elif st.session_state.sidebar_page == "database":
     render_database_history()
-else:
-    render_dashboard_tabs()
 
 st.divider()
 render_dashboard_tabs()
