@@ -588,17 +588,36 @@ div[role="radiogroup"] {{
     flex-direction: column;
     gap: 12px;
 }}
+
+section[data-testid="stSidebar"] div[data-testid="stRadio"] {
+    width: 100% !important;
+}
+section[data-testid="stSidebar"] div[data-testid="stRadio"] > div {
+    width: 100% !important;
+}
+section[data-testid="stSidebar"] div[role="radiogroup"] {
+    width: 100% !important;
+}
+section[data-testid="stSidebar"] div[role="radiogroup"] label {
+    width: 100% !important;
+}
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {
+    width: 100% !important;
+}
+
 div[role="radiogroup"] label {{
     width: 100% !important;
-    min-height: 52px !important;
+    min-width: 100% !important;
+    min-height: 58px !important;
     display: flex !important;
     align-items: center !important;
     background: rgba(15, 23, 42, 0.50);
     border: 1px solid rgba(148, 163, 184, 0.18);
     border-radius: 16px;
-    padding: 12px 16px !important;
+    padding: 14px 18px !important;
     margin: 0 !important;
     box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+    box-sizing: border-box !important;
 }}
 div[role="radiogroup"] label:hover {{
     background: linear-gradient(135deg, rgba(124,58,237,0.28), rgba(59,130,246,0.22));
@@ -1677,13 +1696,17 @@ def render_dashboard_tabs():
 
 render_header()
 
-if st.session_state.sidebar_page == "login":
-    render_login_profile()
-elif st.session_state.sidebar_page == "settings":
-    render_settings()
-elif st.session_state.sidebar_page == "database":
-    render_database_history()
-
 st.divider()
 render_dashboard_tabs()
+
+if st.session_state.sidebar_page == "login":
+    st.divider()
+    render_login_profile()
+elif st.session_state.sidebar_page == "settings":
+    st.divider()
+    render_settings()
+elif st.session_state.sidebar_page == "database":
+    st.divider()
+    render_database_history()
+
 render_student_bottom_summary()
