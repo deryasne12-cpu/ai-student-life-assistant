@@ -724,13 +724,13 @@ button[data-baseweb="tab"] div,
 div[data-testid="stTabs"] [role="tab"] p,
 div[data-testid="stTabs"] [role="tab"] div {{
     color: #ffffff !important;
-    font-weight:800 !important;
+    font-weight:600 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     font-size: 13px !important;
     line-height: 1 !important;
-    margin: -4px 0 0 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -799,17 +799,17 @@ div[data-testid="stTabs"] [role="tab"] {{
 /* Emoji + text vertical alignment */
 div[data-testid="stTabs"] button[role="tab"] p,
 div[data-testid="stTabs"] [role="tab"] p {{
-    margin: -4px 0 0 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
 
     line-height: 1 !important;
-    height: 16px !important;
+    height: auto !important;
 
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
 
-    font-size:16px !important;
+    font-size:15px !important;
     font-weight: 900 !important;
 
     white-space: nowrap !important;
