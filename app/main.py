@@ -787,15 +787,15 @@ accuracy = accuracy_score(training_data["productivity"], model.predict(training_
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
     [
-        "Giriş / Profil",
-        "Günlük Takip Cihazı",
-        "Beslenme ve Sağlık",
-        "Tatbikat Planı",
-        "Analitikler",
-        "Yapay Zeka Koçu",
-        "Haftalık Rapor",
-        "Akıllı Entegrasyonlar",
-        "Veritabanı Tarihi",
+        "👤 Giriş / Profil",
+        "📅 Günlük Takip",
+        "🥗 Beslenme ve Sağlık",
+        "🎯 Tatbikat Planı",
+        "📊 Analitikler",
+        "🤖 Yapay Zeka Koçu",
+        "📄 Haftalık Rapor",
+        "⌚ Akıllı Entegrasyonlar",
+        "🗄️ Veritabanı Tarihi",
     ]
 )
 
