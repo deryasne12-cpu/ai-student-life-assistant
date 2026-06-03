@@ -742,65 +742,121 @@ div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {{
     background: transparent !important;
 }}
 
-/* FINAL SIDEBAR WIDTH + TAB ALIGNMENT FIX */
-section[data-testid="stSidebar"] div[data-testid="stRadio"] {{
-    width: 100% !important;
-}}
-section[data-testid="stSidebar"] div[data-testid="stRadio"] > div {{
-    width: 100% !important;
-}}
-section[data-testid="stSidebar"] div[role="radiogroup"] {{
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 14px !important;
-}}
-section[data-testid="stSidebar"] div[role="radiogroup"] label {{
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    min-height: 66px !important;
-    box-sizing: border-box !important;
+
+/* === FINAL CLEAN TAB + SIDEBAR ALIGNMENT PATCH === */
+
+/* Top module tabs: stable, centered, no vertical slipping */
+div[data-testid="stTabs"] div[role="tablist"] {{
     display: flex !important;
     align-items: center !important;
-    padding: 16px 20px !important;
-    margin: 0 !important;
-    border-radius: 18px !important;
+    gap: 18px !important;
+    flex-wrap: wrap !important;
+    padding: 18px 0 20px 0 !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.20) !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.20) !important;
 }}
-section[data-testid="stSidebar"] div[role="radiogroup"] label p {{
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 16px !important;
-    font-weight: 850 !important;
-    line-height: 1.1 !important;
-}}
-section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {{
-    width: 100% !important;
-}}
-section[data-testid="stSidebar"] div[data-baseweb="select"] {{
-    width: 100% !important;
-}}
-section[data-testid="stSidebar"] .language-card {{
-    width: 100% !important;
-    box-sizing: border-box !important;
-}}
-button[data-baseweb="tab"],
+
 div[data-testid="stTabs"] button[role="tab"],
 div[data-testid="stTabs"] [role="tab"] {{
+    height: 58px !important;
+    min-height: 58px !important;
+    max-height: 58px !important;
+    min-width: 178px !important;
+    max-width: 235px !important;
+    padding: 0 22px !important;
+    margin: 0 !important;
+    border-radius: 17px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    line-height: 1 !important;
+}}
+
+div[data-testid="stTabs"] button[role="tab"] p,
+div[data-testid="stTabs"] [role="tab"] p {{
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    transform: translateY(-1px) !important;
+    line-height: 1 !important;
+
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}}
+
+/* Prevent nested divs/spans from pulling emoji downward */
+div[data-testid="stTabs"] button[role="tab"] div,
+div[data-testid="stTabs"] [role="tab"] div,
+div[data-testid="stTabs"] button[role="tab"] span,
+div[data-testid="stTabs"] [role="tab"] span {{
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
 }}
-button[data-baseweb="tab"] p,
-button[data-baseweb="tab"] div,
-div[data-testid="stTabs"] [role="tab"] p,
-div[data-testid="stTabs"] [role="tab"] div {{
-    line-height: 1 !important;
-    margin-top: -4px !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    display: inline-flex !important;
+
+/* Sidebar radio buttons: same width as language select/card */
+section[data-testid="stSidebar"] div[data-testid="stRadio"] {{
+    width: 100% !important;
+}}
+
+section[data-testid="stSidebar"] div[data-testid="stRadio"] > div {{
+    width: 100% !important;
+}}
+
+section[data-testid="stSidebar"] div[role="radiogroup"] {{
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+}}
+
+section[data-testid="stSidebar"] div[role="radiogroup"] label {{
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 66px !important;
+    height: 66px !important;
+
+    display: flex !important;
     align-items: center !important;
+
+    padding: 0 22px !important;
+    margin: 0 !important;
+
+    border-radius: 18px !important;
+    box-sizing: border-box !important;
+}}
+
+section[data-testid="stSidebar"] div[role="radiogroup"] label p {{
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+}}
+
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"],
+section[data-testid="stSidebar"] div[data-baseweb="select"],
+section[data-testid="stSidebar"] .language-card,
+section[data-testid="stSidebar"] .side-note {{
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }}
 
 </style>
