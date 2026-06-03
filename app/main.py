@@ -724,7 +724,7 @@ button[data-baseweb="tab"] div,
 div[data-testid="stTabs"] [role="tab"] p,
 div[data-testid="stTabs"] [role="tab"] div {{
     color: #ffffff !important;
-    font-weight: 900 !important;
+    font-weight:800 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -809,7 +809,7 @@ div[data-testid="stTabs"] [role="tab"] p {{
     align-items: center !important;
     justify-content: center !important;
 
-    font-size: 12.5px !important;
+    font-size:16px !important;
     font-weight: 900 !important;
 
     white-space: nowrap !important;
