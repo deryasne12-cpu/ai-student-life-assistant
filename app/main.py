@@ -150,6 +150,48 @@ st.markdown(
     color: #e5e7eb;
 }}
 
+.side-menu-title {
+    font-size: 24px;
+    font-weight: 900;
+    margin: 12px 0 18px 0;
+    color: #f8fafc;
+}
+.side-menu-item {
+    padding: 14px 16px;
+    margin: 10px 0;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.48);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    color: #e5e7eb;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+}
+.side-menu-item.active {
+    background: linear-gradient(135deg, rgba(124,58,237,0.62), rgba(59,130,246,0.55));
+    border: 1px solid rgba(255,255,255,0.24);
+    color: white;
+    box-shadow: 0 0 18px rgba(124,58,237,0.25);
+}
+.language-card {
+    margin-top: 14px;
+    padding: 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(15,23,42,0.72), rgba(30,41,59,0.72));
+    border: 1px solid rgba(148,163,184,0.20);
+    color: #f8fafc;
+    font-size: 15px;
+}
+.side-note {
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    color: #cbd5e1;
+    line-height: 1.55;
+}
+
+
 /* Normal Streamlit buttons */
 div.stButton > button {{
     background: linear-gradient(135deg, {theme["secondary"]}, {theme["primary"]});
@@ -282,48 +324,6 @@ div[data-baseweb="tab-highlight"],
 div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {{
     background: transparent !important;
 }}
-
-.side-menu-title {
-    font-size: 24px;
-    font-weight: 900;
-    margin: 12px 0 18px 0;
-    color: #f8fafc;
-}
-.side-menu-item {
-    padding: 14px 16px;
-    margin: 10px 0;
-    border-radius: 16px;
-    background: rgba(15, 23, 42, 0.48);
-    border: 1px solid rgba(148, 163, 184, 0.18);
-    color: #e5e7eb;
-    font-size: 16px;
-    font-weight: 800;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-}
-.side-menu-item.active {
-    background: linear-gradient(135deg, rgba(124,58,237,0.62), rgba(59,130,246,0.55));
-    border: 1px solid rgba(255,255,255,0.24);
-    color: white;
-    box-shadow: 0 0 18px rgba(124,58,237,0.25);
-}
-.language-card {
-    margin-top: 14px;
-    padding: 16px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(15,23,42,0.72), rgba(30,41,59,0.72));
-    border: 1px solid rgba(148,163,184,0.20);
-    color: #f8fafc;
-    font-size: 15px;
-}
-.side-note {
-    padding: 16px;
-    border-radius: 16px;
-    background: rgba(15, 23, 42, 0.55);
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    color: #cbd5e1;
-    line-height: 1.55;
-}
-
 </style>
 """,
     unsafe_allow_html=True,
