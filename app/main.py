@@ -729,8 +729,8 @@ div[data-testid="stTabs"] [role="tab"] div {{
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     font-size: 13px !important;
-    line-height: 1.1 !important;
-    margin: 0 !important;
+    line-height: 1 !important;
+    margin: -4px 0 0 0 !important;
     padding: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -741,6 +741,68 @@ div[data-baseweb="tab-highlight"],
 div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {{
     background: transparent !important;
 }}
+
+/* FINAL SIDEBAR WIDTH + TAB ALIGNMENT FIX */
+section[data-testid="stSidebar"] div[data-testid="stRadio"] {{
+    width: 100% !important;
+}}
+section[data-testid="stSidebar"] div[data-testid="stRadio"] > div {{
+    width: 100% !important;
+}}
+section[data-testid="stSidebar"] div[role="radiogroup"] {{
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+}}
+section[data-testid="stSidebar"] div[role="radiogroup"] label {{
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    min-height: 66px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 16px 20px !important;
+    margin: 0 !important;
+    border-radius: 18px !important;
+}}
+section[data-testid="stSidebar"] div[role="radiogroup"] label p {{
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 16px !important;
+    font-weight: 850 !important;
+    line-height: 1.1 !important;
+}}
+section[data-testid="stSidebar"] div[data-testid="stSelectbox"] {{
+    width: 100% !important;
+}}
+section[data-testid="stSidebar"] div[data-baseweb="select"] {{
+    width: 100% !important;
+}}
+section[data-testid="stSidebar"] .language-card {{
+    width: 100% !important;
+    box-sizing: border-box !important;
+}}
+button[data-baseweb="tab"],
+div[data-testid="stTabs"] button[role="tab"],
+div[data-testid="stTabs"] [role="tab"] {{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}}
+button[data-baseweb="tab"] p,
+button[data-baseweb="tab"] div,
+div[data-testid="stTabs"] [role="tab"] p,
+div[data-testid="stTabs"] [role="tab"] div {{
+    line-height: 1 !important;
+    margin-top: -4px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}}
+
 </style>
 """
     css = css.format(background_style=background_css(bg_mode), **theme_dict)
