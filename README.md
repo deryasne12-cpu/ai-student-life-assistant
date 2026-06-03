@@ -5,7 +5,7 @@ An AI-powered system that analyzes a student's mood, sleep habits, and study tim
 ---
 
 ## 🚀 Live Demo
-https://YOUR-LINK.streamlit.app
+[https://YOUR-LINK.streamlit.app](https://ai-student-life-assistant-jdoywjyewvfejkqgmrcxgc.streamlit.app/)
 
 ## 🚀 Overview
 
