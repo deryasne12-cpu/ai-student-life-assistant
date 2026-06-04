@@ -818,17 +818,6 @@ with st.sidebar:
 
     st.markdown(
         f"""
-        <div class="language-card">
-            <b>{t["active_language"]}:</b><br>{st.session_state.language}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.divider()
-
-    st.markdown(
-        f"""
         <div class="side-note">
             <div style="font-size:28px;">❝</div>
             <b>{t["motivation"]}</b><br><br>
@@ -1396,6 +1385,30 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label p {
 .ai-avatar-card li { margin: 5px 0; }
 @media (max-width: 900px) {
     .welcome-card { grid-template-columns: 1fr; }
+}
+
+/* === V10 SIDEBAR CLEANUP === */
+.side-menu-title {
+    font-size: 24px !important;
+    font-weight: 720 !important;
+}
+section[data-testid="stSidebar"] div[role="radiogroup"] label p {
+    font-size: 14px !important;
+    font-weight: 680 !important;
+}
+section[data-testid="stSidebar"] .side-note {
+    margin-top: 20px !important;
+    padding: 22px 24px !important;
+    background: linear-gradient(135deg, rgba(30,41,59,0.92), rgba(49,46,129,0.82)) !important;
+    border: 1px solid rgba(129,140,248,0.28) !important;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.26) !important;
+}
+section[data-testid="stSidebar"] .side-note b {
+    font-weight: 720 !important;
+}
+section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    background: linear-gradient(135deg, rgba(30,41,59,0.95), rgba(49,46,129,0.86)) !important;
+    border: 1px solid rgba(129,140,248,0.30) !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -2006,6 +2019,8 @@ def render_dashboard_tabs():
     )
 
     with tab1:
+        render_home_booster()
+        st.divider()
         st.subheader(t["daily_title"])
 
         col1, col2 = st.columns(2)
@@ -2394,8 +2409,6 @@ def render_dashboard_tabs():
 # Login/Profile, Settings, and Database pages stay clean and separate.
 if st.session_state.sidebar_page == "home":
     render_header()
-    render_home_booster()
-    st.divider()
     render_dashboard_tabs()
     render_student_bottom_summary()
 elif st.session_state.sidebar_page == "login":
