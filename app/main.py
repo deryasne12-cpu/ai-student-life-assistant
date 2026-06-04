@@ -5480,119 +5480,189 @@ def get_live_accountability_items():
 
 
 def render_home_notes_and_accountability():
-    """Premium notes board matching the compact blue glass mockup."""
+    """Single unified blue-glass notes board: list + add note inside one premium container."""
     t_local = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"])
     recent = load_daily_notes(limit=8)
     note_count = 0 if recent.empty else len(recent)
 
     notes_title_clean = t_local["notes_panel_title"].replace("📝 ", "")
     save_title_clean = t_local["note_add"].replace("➕ ", "")
-    empty_title = t_local["no_notes"]
     memory_label = t_local["memory_link"]
     placeholder = t_local["note_placeholder"]
+
+    lang = st.session_state.language
+    note_ui = {
+        "Türkçe": {
+            "list_title": "Notlarım",
+            "empty_big": "Henüz hiç not eklemedin.",
+            "empty_small": "İlk notunu sağdaki panelden ekle; burada düzenli şekilde görünecek.",
+            "hero_empty": "Henüz not yok. İlk notunu ekle.",
+            "hero_count": "kayıtlı not",
+            "input_title": "Notu Kaydet",
+            "input_help": "Aklına gelen görevi, fikri veya ders notunu kısa yaz. Sistem bunu öğrenci hafızasına bağlar.",
+            "delete": "Notu sil",
+        },
+        "English": {
+            "list_title": "My Notes",
+            "empty_big": "No notes added yet.",
+            "empty_small": "Add your first note from the right panel; it will appear here cleanly.",
+            "hero_empty": "No notes yet. Add your first one.",
+            "hero_count": "saved notes",
+            "input_title": "Save Note",
+            "input_help": "Write a task, idea, or study note briefly. The system connects it to student memory.",
+            "delete": "Delete note",
+        },
+        "Deutsch": {
+            "list_title": "Meine Notizen",
+            "empty_big": "Noch keine Notizen hinzugefügt.",
+            "empty_small": "Füge rechts deine erste Notiz hinzu; sie erscheint hier sauber geordnet.",
+            "hero_empty": "Noch keine Notizen. Füge die erste hinzu.",
+            "hero_count": "gespeicherte Notizen",
+            "input_title": "Notiz speichern",
+            "input_help": "Schreibe kurz eine Aufgabe, Idee oder Lernnotiz. Das System verbindet sie mit dem Studenten-Gedächtnis.",
+            "delete": "Notiz löschen",
+        },
+        "Русский": {
+            "list_title": "Мои заметки",
+            "empty_big": "Заметок пока нет.",
+            "empty_small": "Добавь первую заметку справа; она аккуратно появится здесь.",
+            "hero_empty": "Заметок пока нет. Добавь первую.",
+            "hero_count": "сохранённых заметок",
+            "input_title": "Сохранить заметку",
+            "input_help": "Коротко запиши задачу, идею или учебную заметку. Система связывает её с памятью студента.",
+            "delete": "Удалить заметку",
+        },
+        "Español": {
+            "list_title": "Mis notas",
+            "empty_big": "Aún no hay notas.",
+            "empty_small": "Añade tu primera nota desde el panel derecho; aparecerá aquí de forma ordenada.",
+            "hero_empty": "Aún no hay notas. Añade la primera.",
+            "hero_count": "notas guardadas",
+            "input_title": "Guardar nota",
+            "input_help": "Escribe brevemente una tarea, idea o nota de estudio. El sistema la conecta con la memoria del estudiante.",
+            "delete": "Eliminar nota",
+        },
+    }.get(lang, {})
 
     st.markdown(
         """
         <style>
-        .notes-premium-board {
+        .notes-oneboard {
             position: relative;
-            margin: 24px 0 32px 0;
-            padding: 28px 30px 30px 30px;
-            border-radius: 28px;
+            margin: 24px 0 34px 0;
+            padding: 30px 32px 34px 32px;
+            border-radius: 30px;
             background:
-                radial-gradient(circle at 12% 6%, rgba(59,130,246,.24), transparent 32%),
-                radial-gradient(circle at 88% 8%, rgba(249,115,22,.14), transparent 30%),
-                linear-gradient(135deg, rgba(8,20,38,.94), rgba(12,26,50,.88) 48%, rgba(20,24,42,.84));
-            border: 1px solid rgba(96,165,250,.32);
-            box-shadow: 0 34px 90px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.05);
+                radial-gradient(circle at 9% 8%, rgba(59,130,246,.30), transparent 31%),
+                radial-gradient(circle at 92% 6%, rgba(249,115,22,.13), transparent 28%),
+                radial-gradient(circle at 70% 88%, rgba(124,58,237,.17), transparent 32%),
+                linear-gradient(135deg, rgba(8,22,44,.96), rgba(10,24,48,.91) 46%, rgba(17,24,39,.88));
+            border: 1px solid rgba(96,165,250,.34);
+            box-shadow:
+                0 34px 90px rgba(0,0,0,.40),
+                inset 0 1px 0 rgba(255,255,255,.055);
             overflow: hidden;
         }
-        .notes-premium-board::before {
+        .notes-oneboard::before {
             content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
+            position:absolute;
+            inset:0;
+            pointer-events:none;
             background:
-                linear-gradient(115deg, transparent 0%, rgba(255,255,255,.035) 48%, transparent 72%),
-                radial-gradient(circle at 72% 44%, rgba(96,165,250,.10), transparent 28%);
+                linear-gradient(120deg, transparent 0%, rgba(255,255,255,.035) 46%, transparent 70%),
+                radial-gradient(circle at 82% 37%, rgba(96,165,250,.10), transparent 24%);
+        }
+        .notes-oneboard-head,
+        .notes-oneboard-hero,
+        .notes-oneboard-grid {
+            position: relative;
+            z-index: 1;
         }
         .notes-memory-pill {
-            position: relative;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             padding: 10px 16px;
             border-radius: 999px;
-            background: linear-gradient(135deg, rgba(59,130,246,.26), rgba(124,58,237,.22));
-            border: 1px solid rgba(147,197,253,.28);
+            background: linear-gradient(135deg, rgba(59,130,246,.28), rgba(124,58,237,.24));
+            border: 1px solid rgba(147,197,253,.30);
             color: #dbeafe;
             font-weight: 850;
             box-shadow: 0 12px 26px rgba(37,99,235,.16);
         }
-        .notes-board-title {
-            position: relative;
-            margin-top: 24px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
+        .notes-main-title {
+            display:flex;
+            align-items:center;
+            gap:14px;
+            margin: 24px 0 10px 0;
         }
-        .notes-board-title .title-icon {
-            width: 50px;
-            height: 50px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(59,130,246,.22), rgba(168,85,247,.16));
+        .notes-main-title .notes-title-icon {
+            width: 52px;
+            height: 52px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(96,165,250,.24), rgba(168,85,247,.16));
             border: 1px solid rgba(147,197,253,.20);
             font-size: 2rem;
         }
-        .notes-board-title h3 {
-            margin: 0;
-            color: #f8fafc;
-            font-size: 2.15rem;
-            letter-spacing: -.045em;
+        .notes-main-title h3 {
+            margin:0;
+            color:#f8fafc;
+            font-size:2.18rem;
+            letter-spacing:-.045em;
         }
-        .notes-board-subtitle {
-            position: relative;
-            margin: 16px 0 22px 0;
-            max-width: 960px;
-            color: #dbeafe;
-            font-size: 1.02rem;
-            line-height: 1.65;
+        .notes-oneboard-sub {
+            max-width: 950px;
+            color:#dbeafe;
+            font-size:1.02rem;
+            line-height:1.65;
+            margin: 0 0 22px 0;
         }
-        .notes-hero-strip {
-            position: relative;
+        .notes-oneboard-hero {
             min-height: 112px;
             padding: 24px 28px;
             border-radius: 22px;
             background:
-                radial-gradient(circle at 86% 45%, rgba(56,189,248,.22), transparent 24%),
-                linear-gradient(135deg, rgba(30,64,175,.24), rgba(15,23,42,.58));
-            border: 1px solid rgba(96,165,250,.35);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 22px;
-            margin-bottom: 22px;
-        }
-        .notes-hero-strip b { color:#f8fafc; font-size:1.13rem; }
-        .notes-hero-strip small { display:block; color:#93c5fd; margin-top:9px; font-size:.94rem; }
-        .notes-hero-art {
-            min-width: 120px;
-            text-align: center;
-            font-size: 4.4rem;
-            filter: drop-shadow(0 18px 28px rgba(59,130,246,.28));
-            opacity: .95;
-        }
-        .notes-card-title-row {
+                radial-gradient(circle at 86% 45%, rgba(56,189,248,.24), transparent 24%),
+                linear-gradient(135deg, rgba(30,64,175,.29), rgba(15,23,42,.58));
+            border: 1px solid rgba(96,165,250,.36);
             display:flex;
             align-items:center;
             justify-content:space-between;
-            gap:12px;
-            margin-bottom: 18px;
+            gap: 20px;
+            margin: 18px 0 24px 0;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
         }
-        .notes-card-heading {
+        .notes-oneboard-hero b { color:#f8fafc; font-size:1.18rem; }
+        .notes-oneboard-hero small { display:block; color:#93c5fd; margin-top:9px; font-size:.95rem; }
+        .notes-hero-art { font-size:4.4rem; min-width:120px; text-align:center; filter: drop-shadow(0 18px 28px rgba(59,130,246,.28)); }
+        .notes-oneboard-grid {
+            display:grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+        .notes-inner-card {
+            min-height: 335px;
+            padding: 24px;
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at 15% 14%, rgba(124,58,237,.18), transparent 35%),
+                radial-gradient(circle at 78% 20%, rgba(59,130,246,.13), transparent 32%),
+                linear-gradient(135deg, rgba(15,23,42,.74), rgba(15,23,42,.48));
+            border: 1px solid rgba(168,85,247,.32);
+            box-shadow: 0 20px 54px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.04);
+        }
+        .notes-inner-card.add {
+            border-color: rgba(96,165,250,.40);
+            background:
+                radial-gradient(circle at 14% 12%, rgba(59,130,246,.23), transparent 35%),
+                radial-gradient(circle at 90% 90%, rgba(124,58,237,.26), transparent 36%),
+                linear-gradient(135deg, rgba(15,23,42,.74), rgba(30,64,175,.36));
+        }
+        .notes-section-title {
             display:flex;
             align-items:center;
             gap:12px;
@@ -5600,42 +5670,26 @@ def render_home_notes_and_accountability():
             font-size:1.42rem;
             font-weight:900;
             letter-spacing:-.025em;
+            margin-bottom: 18px;
         }
-        .notes-mini-action-set { display:flex; gap:8px; }
-        .notes-mini-action {
-            width:38px; height:38px;
-            display:flex; align-items:center; justify-content:center;
-            border-radius:12px;
-            background:rgba(15,23,42,.46);
-            border:1px solid rgba(148,163,184,.22);
-            color:#bfdbfe;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-        }
-        .notes-panel-shell {
-            min-height: 335px;
-            padding: 24px;
-            border-radius: 24px;
-            background:
-                radial-gradient(circle at 16% 20%, rgba(124,58,237,.18), transparent 36%),
-                radial-gradient(circle at 78% 22%, rgba(59,130,246,.12), transparent 32%),
-                linear-gradient(135deg, rgba(15,23,42,.72), rgba(15,23,42,.46));
-            border: 1px solid rgba(168,85,247,.34);
-            box-shadow: 0 20px 54px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
-        }
-        .notes-panel-shell.add {
-            border-color: rgba(96,165,250,.38);
-            background:
-                radial-gradient(circle at 14% 12%, rgba(59,130,246,.22), transparent 34%),
-                radial-gradient(circle at 90% 90%, rgba(124,58,237,.24), transparent 35%),
-                linear-gradient(135deg, rgba(15,23,42,.76), rgba(30,64,175,.34));
+        .notes-section-title .round-icon {
+            width:42px;
+            height:42px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:14px;
+            background:linear-gradient(135deg, rgba(59,130,246,.32), rgba(139,92,246,.30));
+            border:1px solid rgba(147,197,253,.24);
+            box-shadow:0 12px 26px rgba(59,130,246,.14);
         }
         .notes-empty-state {
-            min-height: 230px;
+            min-height: 245px;
             border-radius: 22px;
-            border: 1px solid rgba(148,163,184,.22);
+            border: 1px solid rgba(147,197,253,.22);
             background:
-                radial-gradient(circle at 50% 38%, rgba(59,130,246,.12), transparent 30%),
-                rgba(15,23,42,.38);
+                radial-gradient(circle at 50% 38%, rgba(59,130,246,.13), transparent 30%),
+                rgba(15,23,42,.36);
             display:flex;
             flex-direction:column;
             align-items:center;
@@ -5644,34 +5698,30 @@ def render_home_notes_and_accountability():
             padding: 28px;
             color:#cbd5e1;
         }
-        .notes-empty-state .big-icon { font-size:3.35rem; margin-bottom:14px; opacity:.92; }
-        .notes-empty-state b { color:#f8fafc; font-size:1.12rem; }
+        .notes-empty-state .big-icon { font-size:3.2rem; margin-bottom:14px; opacity:.95; }
+        .notes-empty-state b { color:#f8fafc; font-size:1.14rem; }
         .notes-empty-state small { color:#bfdbfe; margin-top:10px; }
         .notes-list-card {
-            padding: 15px 16px;
+            padding: 16px 17px;
             border-radius: 17px;
             background:
-                linear-gradient(135deg, rgba(30,64,175,.20), rgba(15,23,42,.52));
-            border: 1px solid rgba(147,197,253,.20);
+                linear-gradient(135deg, rgba(30,64,175,.22), rgba(15,23,42,.54));
+            border: 1px solid rgba(147,197,253,.22);
             margin-bottom: 12px;
             box-shadow: 0 12px 28px rgba(0,0,0,.16);
         }
-        .notes-list-card b { color:#f8fafc; font-size:1.02rem; }
+        .notes-list-card b { color:#f8fafc; font-size:1.03rem; }
         .notes-list-card small { display:block; color:#93c5fd; margin-top:7px; }
-        .note-input-help {
-            color:#bfdbfe;
-            margin: 4px 0 18px 0;
-            line-height:1.55;
-        }
+        .note-input-help { color:#bfdbfe; margin: 0 0 18px 0; line-height:1.55; }
         div[data-testid="stTextArea"] textarea {
-            background: linear-gradient(135deg, rgba(30,64,175,.26), rgba(15,23,42,.50)) !important;
+            background: linear-gradient(135deg, rgba(30,64,175,.36), rgba(15,23,42,.40)) !important;
             color: #eaf2ff !important;
-            border: 1px solid rgba(147,197,253,.38) !important;
+            border: 1px solid rgba(147,197,253,.42) !important;
             border-radius: 18px !important;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 14px 32px rgba(2,6,23,.16) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 14px 32px rgba(2,6,23,.18) !important;
             font-weight: 650 !important;
         }
-        div[data-testid="stTextArea"] textarea::placeholder { color: rgba(191,219,254,.68) !important; }
+        div[data-testid="stTextArea"] textarea::placeholder { color: rgba(191,219,254,.72) !important; }
         div[data-testid="stForm"] { border: 0 !important; padding: 0 !important; background: transparent !important; }
         div[data-testid="stFormSubmitButton"] button {
             min-height: 58px;
@@ -5683,61 +5733,58 @@ def render_home_notes_and_accountability():
             box-shadow: 0 18px 36px rgba(59,130,246,.22), 0 12px 30px rgba(139,92,246,.20) !important;
         }
         @media (max-width: 1100px) {
+            .notes-oneboard-grid { grid-template-columns: 1fr; }
             .notes-hero-art { display:none; }
-            .notes-board-title h3 { font-size:1.75rem; }
+            .notes-main-title h3 { font-size:1.78rem; }
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
-    hero_title = empty_title if recent.empty else f"{note_count} {notes_title_clean.lower()}"
+    hero_title = note_ui.get("hero_empty", "No notes yet") if recent.empty else f"{note_count} {note_ui.get('hero_count', 'saved notes')}"
     hero_sub = memory_label if recent.empty else str(recent.iloc[0]["note_date"])
 
     st.markdown(
         f"""
-        <div class="notes-premium-board">
-            <span class="notes-memory-pill">🧠 {memory_label}</span>
-            <div class="notes-board-title">
-                <span class="title-icon">📝</span>
-                <h3>{notes_title_clean}</h3>
+        <div class="notes-oneboard">
+            <div class="notes-oneboard-head">
+                <span class="notes-memory-pill">🧠 {memory_label}</span>
+                <div class="notes-main-title">
+                    <span class="notes-title-icon">📝</span>
+                    <h3>{notes_title_clean}</h3>
+                </div>
+                <p class="notes-oneboard-sub">{t_local['notes_panel_subtitle']}</p>
             </div>
-            <p class="notes-board-subtitle">{t_local['notes_panel_subtitle']}</p>
-            <div class="notes-hero-strip">
+            <div class="notes-oneboard-hero">
                 <div>
                     <b>🕊️ {hero_title}</b>
                     <small>{hero_sub}</small>
                 </div>
                 <div class="notes-hero-art">📘</div>
             </div>
-        </div>
+            <div class="notes-oneboard-grid">
         """,
         unsafe_allow_html=True,
     )
 
-    notes_col, write_col = st.columns([1.08, .92], gap="large")
+    notes_col, write_col = st.columns([1.15, .85], gap="large")
 
     with notes_col:
         st.markdown(
-            """
-            <div class="notes-panel-shell">
-                <div class="notes-card-title-row">
-                    <div class="notes-card-heading">🔖 Notlarım</div>
-                    <div class="notes-mini-action-set">
-                        <span class="notes-mini-action">≡</span>
-                        <span class="notes-mini-action">▦</span>
-                    </div>
-                </div>
+            f"""
+            <div class="notes-inner-card">
+                <div class="notes-section-title"><span class="round-icon">🔖</span>{note_ui.get('list_title', 'My Notes')}</div>
             """,
             unsafe_allow_html=True,
         )
         if recent.empty:
             st.markdown(
-                """
+                f"""
                 <div class="notes-empty-state">
                     <div class="big-icon">📋</div>
-                    <b>Henüz hiç not eklemedin.</b>
-                    <small>İlk notunu eklemek için sağdaki paneli kullan.</small>
+                    <b>{note_ui.get('empty_big', 'No notes added yet.')}</b>
+                    <small>{note_ui.get('empty_small', 'Add your first note from the right panel.')}</small>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -5758,7 +5805,7 @@ def render_home_notes_and_accountability():
                     )
                 with c_delete:
                     st.write("")
-                    if st.button("🗑️", key=f"delete_note_v39_{row_id}", help="Delete note"):
+                    if st.button("🗑️", key=f"delete_note_v40_{row_id}", help=note_ui.get("delete", "Delete note")):
                         delete_daily_note(row_id)
                         st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
@@ -5766,19 +5813,17 @@ def render_home_notes_and_accountability():
     with write_col:
         st.markdown(
             f"""
-            <div class="notes-panel-shell add">
-                <div class="notes-card-title-row">
-                    <div class="notes-card-heading">➕ {save_title_clean}</div>
-                </div>
-                <p class="note-input-help">{placeholder}</p>
+            <div class="notes-inner-card add">
+                <div class="notes-section-title"><span class="round-icon">➕</span>{note_ui.get('input_title', save_title_clean)}</div>
+                <p class="note-input-help">{note_ui.get('input_help', placeholder)}</p>
             """,
             unsafe_allow_html=True,
         )
-        with st.form(key=f"home_note_form_v39_{st.session_state.language}", clear_on_submit=True):
+        with st.form(key=f"home_note_form_v40_{st.session_state.language}", clear_on_submit=True):
             new_note = st.text_area(
                 "",
                 placeholder=placeholder,
-                key=f"home_note_text_v39_{st.session_state.language}",
+                key=f"home_note_text_v40_{st.session_state.language}",
                 height=185,
             )
             submitted = st.form_submit_button(t_local["note_add"], use_container_width=True)
@@ -5789,6 +5834,8 @@ def render_home_notes_and_accountability():
                 else:
                     st.warning(placeholder)
         st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
 # Run non-destructive migration after all original tables exist.
 professional_db_migration()
