@@ -5480,9 +5480,9 @@ def get_live_accountability_items():
 
 
 def render_home_notes_and_accountability():
-    """Home notes panel only. AI Anne/Accountability block was removed on purpose."""
+    """Clean home notes panel: notes + quick add live in the same dashboard block."""
     t_local = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"])
-    recent = load_daily_notes(limit=4)
+    recent = load_daily_notes(limit=5)
 
     if recent.empty:
         notes_html = f"<div class='note-preview-card'><b>🕊️ {t_local['no_notes']}</b><small>{t_local['memory_link']}</small></div>"
@@ -5491,64 +5491,60 @@ def render_home_notes_and_accountability():
         for _, row in recent.iterrows():
             cards.append(
                 f"<div class='note-preview-card'><b>✅ {row['note_text']}</b>"
-                f"<small>{row['note_date']} · {row['note_type']} · {row['priority']}</small></div>"
+                f"<small>{row['note_date']}</small></div>"
             )
         notes_html = "".join(cards)
 
-    st.markdown(
-        f"""
-        <div class="note-management-card">
-            <span class="live-pill">🧠 {t_local['memory_link']}</span>
-            <h3>{t_local['notes_panel_title']}</h3>
-            <p>{t_local['notes_panel_subtitle']}</p>
-            <div class="notes-preview-grid">{notes_html}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    left_col, right_col = st.columns([1.25, 1])
 
-    note_col1, note_col2 = st.columns([2.2, 1])
-    with note_col1:
+    with left_col:
+        st.markdown(
+            f"""
+            <div class="note-management-card">
+                <span class="live-pill">🧠 {t_local['memory_link']}</span>
+                <h3>{t_local['notes_panel_title']}</h3>
+                <p>{t_local['notes_panel_subtitle']}</p>
+                <div class="notes-preview-grid">{notes_html}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Delete stays directly under each note area, not as a separate "Recent Notes" section.
+        if not recent.empty:
+            for _, row in recent.iterrows():
+                d1, d2 = st.columns([6, 1])
+                with d1:
+                    st.caption(f"✅ {row['note_text']} · {row['note_date']}")
+                with d2:
+                    if st.button("🗑️", key=f"delete_note_v36_{int(row['id'])}"):
+                        delete_daily_note(int(row["id"]))
+                        st.rerun()
+
+    with right_col:
+        st.markdown(
+            f"""
+            <div class="note-management-card">
+                <span class="live-pill">⚡ Quick Memory</span>
+                <h3>➕ {t_local['note_add'].replace('➕ ', '')}</h3>
+                <p>{t_local['note_placeholder']}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         new_note = st.text_area(
             "",
             placeholder=t_local["note_placeholder"],
-            key=f"home_note_text_v35_{st.session_state.language}",
-            height=88,
+            key=f"home_note_text_v36_{st.session_state.language}",
+            height=120,
         )
-    with note_col2:
-        note_type = st.selectbox(
-            t_local["note_type"],
-            [t_local["type_task"], t_local["type_study"], t_local["type_health"], t_local["type_idea"]],
-            key=f"home_note_type_v35_{st.session_state.language}",
-        )
-        priority = st.selectbox(
-            t_local["note_priority"],
-            [t_local["priority_low"], t_local["priority_medium"], t_local["priority_high"]],
-            index=1,
-            key=f"home_note_priority_v35_{st.session_state.language}",
-        )
-
-    add_col, clear_col = st.columns([1, 5])
-    with add_col:
-        if st.button(t_local["note_add"], key=f"home_note_add_v35_{st.session_state.language}"):
-            if save_daily_note(new_note, note_type, priority):
+        if st.button(t_local["note_add"], key=f"home_note_add_v36_{st.session_state.language}"):
+            # Notes are notes. No forced category/priority UI.
+            if save_daily_note(new_note, "Note", "Normal"):
                 st.success(t_local["note_added"])
                 st.rerun()
             else:
                 st.warning(t_local["note_placeholder"])
-
-    # Delete controls stay compact but visible; notes themselves are previewed above inside the note panel.
-    recent_for_delete = load_daily_notes(limit=4)
-    if not recent_for_delete.empty:
-        st.caption(t_local.get("recent_notes", "Recent Notes"))
-        for _, row in recent_for_delete.iterrows():
-            c1, c2 = st.columns([5, 1])
-            with c1:
-                st.markdown(f"✅ **{row['note_text']}**  \n<small>{row['note_date']} · {row['note_type']} · {row['priority']}</small>", unsafe_allow_html=True)
-            with c2:
-                if st.button("🗑️", key=f"delete_note_v35_{int(row['id'])}"):
-                    delete_daily_note(int(row["id"]))
-                    st.rerun()
 
 
 # Run non-destructive migration after all original tables exist.
