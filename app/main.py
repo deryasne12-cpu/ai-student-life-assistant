@@ -759,8 +759,8 @@ div[data-testid="stTabs"] div[role="tablist"] {{
     overflow-x: hidden !important;
     overflow-y: hidden !important;
 
-    padding: 0 0 12px 0 !important;
-    margin-top: -18px !important;
+    padding: 0 0 8px 0 !important;
+    margin-top: -34px !important;
 
     border-top: none !important;
     border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
@@ -903,6 +903,18 @@ section[data-testid="stSidebar"] .language-card,
 section[data-testid="stSidebar"] .side-note {{
     border-radius: 18px !important;
 }}
+
+
+/* === LOGIN PAGE LAYOUT + TABS HIGHER PATCH === */
+div[data-testid="stTabs"] {
+    margin-top: -18px !important;
+}
+div[data-testid="stTabs"] div[role="tablist"] {
+    margin-top: -36px !important;
+}
+.login-profile-wrap {
+    margin-top: -6px;
+}
 
 </style>
 """
@@ -1857,19 +1869,25 @@ def render_dashboard_tabs():
             )
 
 
-render_header()
-
-st.divider()
-render_dashboard_tabs()
-
+# Page routing
+# Login/Profile is now shown only inside the sidebar Login page.
+# The main dashboard tabs stay clean and do not repeat the student profile form.
 if st.session_state.sidebar_page == "login":
-    st.divider()
+    st.markdown('<div class="login-profile-wrap">', unsafe_allow_html=True)
     render_login_profile()
+    st.markdown('</div>', unsafe_allow_html=True)
 elif st.session_state.sidebar_page == "settings":
+    render_header()
     st.divider()
     render_settings()
 elif st.session_state.sidebar_page == "database":
+    render_header()
     st.divider()
     render_database_history()
+else:
+    render_header()
+    st.divider()
+    render_dashboard_tabs()
 
-render_student_bottom_summary()
+if st.session_state.sidebar_page != "login":
+    render_student_bottom_summary()
