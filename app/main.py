@@ -1466,6 +1466,104 @@ section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
 """, unsafe_allow_html=True)
 
 
+st.markdown("""
+<style>
+/* === V13 FINAL UI TUNE: SIDEBAR UP + WIDER TABS + CLEAN LINES === */
+section[data-testid="stSidebar"] .block-container {
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.65rem !important;
+}
+section[data-testid="stSidebar"] hr {
+    margin-top: 18px !important;
+    margin-bottom: 18px !important;
+}
+section[data-testid="stSidebar"] .side-menu-title {
+    margin-top: 4px !important;
+    margin-bottom: 14px !important;
+    font-size: 23px !important;
+    font-weight: 690 !important;
+    letter-spacing: -0.35px !important;
+}
+section[data-testid="stSidebar"] div[role="radiogroup"] {
+    gap: 10px !important;
+}
+section[data-testid="stSidebar"] div[role="radiogroup"] label {
+    height: 54px !important;
+    min-height: 54px !important;
+    border-radius: 16px !important;
+    padding: 0 16px !important;
+}
+section[data-testid="stSidebar"] div[role="radiogroup"] label p {
+    font-size: 13.5px !important;
+    font-weight: 650 !important;
+}
+section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    min-height: 54px !important;
+    border-radius: 16px !important;
+}
+section[data-testid="stSidebar"] .side-note {
+    margin-top: 10px !important;
+    padding: 18px 20px !important;
+    border-radius: 20px !important;
+}
+section[data-testid="stSidebar"] .side-note b {
+    font-size: 14px !important;
+    font-weight: 650 !important;
+    line-height: 1.35 !important;
+}
+section[data-testid="stSidebar"] .stButton > button {
+    padding: 0.75rem 1.25rem !important;
+    border-radius: 15px !important;
+}
+
+/* Wider, calmer tab buttons */
+div[data-testid="stTabs"] {
+    margin-top: 18px !important;
+    margin-bottom: 18px !important;
+}
+div[data-testid="stTabs"] div[role="tablist"] {
+    gap: 12px !important;
+    padding: 12px 0 12px 0 !important;
+    margin: 18px 0 18px 0 !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.24) !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.24) !important;
+    box-shadow: none !important;
+}
+div[data-testid="stTabs"] button[role="tab"],
+div[data-testid="stTabs"] [role="tab"] {
+    width: 172px !important;
+    min-width: 172px !important;
+    max-width: 172px !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    max-height: 50px !important;
+    padding: 0 14px !important;
+    border-radius: 16px !important;
+}
+div[data-testid="stTabs"] button[role="tab"] p,
+div[data-testid="stTabs"] [role="tab"] p,
+div[data-testid="stTabs"] button[role="tab"] div,
+div[data-testid="stTabs"] [role="tab"] div,
+div[data-testid="stTabs"] button[role="tab"] span,
+div[data-testid="stTabs"] [role="tab"] span {
+    font-size: 14.5px !important;
+    font-weight: 680 !important;
+    letter-spacing: -0.1px !important;
+}
+
+/* Remove the extra bottom separator after the tabs/welcome area */
+div[data-testid="stTabs"] + hr,
+div[data-testid="stTabs"] ~ hr:first-of-type {
+    display: none !important;
+}
+.welcome-card {
+    margin-top: 8px !important;
+    margin-bottom: 18px !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 DB_NAME = "student_tracker.db"
 
 
@@ -2072,7 +2170,6 @@ def render_dashboard_tabs():
 
     with tab1:
         render_home_booster()
-        st.divider()
         st.subheader(t["daily_title"])
 
         col1, col2 = st.columns(2)
