@@ -679,6 +679,97 @@ V9_PRODUCT_PATCH = {
 for _lang, _patch in V9_PRODUCT_PATCH.items():
     TRANSLATIONS[_lang].update(_patch)
 
+# === V16 PATCH: richer welcome card text in all languages ===
+V16_WELCOME_PATCH = {
+    "Türkçe": {
+        "welcome_focus_label": "Bugünkü öncelik",
+        "welcome_focus_value": "Derin çalışma + enerji yönetimi",
+        "welcome_next_step": "Sıradaki akıllı adım",
+        "welcome_next_step_value": "Önce 25 dakikalık tek görev seç, sonra kısa mola ver.",
+        "welcome_profile_hint": "Profiline göre kişisel öneriler güncellenir.",
+        "quick_energy": "Enerji",
+        "quick_routine": "Rutin",
+        "quick_risk": "Risk",
+        "energy_good": "Dengeli",
+        "energy_watch": "Dikkat",
+        "routine_good": "Stabil",
+        "routine_build": "Kuruluyor",
+        "risk_low": "Düşük",
+        "risk_medium": "Orta",
+        "risk_high": "Yüksek",
+    },
+    "English": {
+        "welcome_focus_label": "Today’s priority",
+        "welcome_focus_value": "Deep work + energy management",
+        "welcome_next_step": "Next smart step",
+        "welcome_next_step_value": "Pick one 25-minute task first, then take a short break.",
+        "welcome_profile_hint": "Personal recommendations update based on your profile.",
+        "quick_energy": "Energy",
+        "quick_routine": "Routine",
+        "quick_risk": "Risk",
+        "energy_good": "Balanced",
+        "energy_watch": "Watch",
+        "routine_good": "Stable",
+        "routine_build": "Building",
+        "risk_low": "Low",
+        "risk_medium": "Medium",
+        "risk_high": "High",
+    },
+    "Deutsch": {
+        "welcome_focus_label": "Heutige Priorität",
+        "welcome_focus_value": "Deep Work + Energiemanagement",
+        "welcome_next_step": "Nächster smarter Schritt",
+        "welcome_next_step_value": "Wähle zuerst eine 25-Minuten-Aufgabe, dann kurze Pause.",
+        "welcome_profile_hint": "Persönliche Empfehlungen werden anhand deines Profils aktualisiert.",
+        "quick_energy": "Energie",
+        "quick_routine": "Routine",
+        "quick_risk": "Risiko",
+        "energy_good": "Ausgeglichen",
+        "energy_watch": "Achten",
+        "routine_good": "Stabil",
+        "routine_build": "Im Aufbau",
+        "risk_low": "Niedrig",
+        "risk_medium": "Mittel",
+        "risk_high": "Hoch",
+    },
+    "Русский": {
+        "welcome_focus_label": "Приоритет дня",
+        "welcome_focus_value": "Глубокая работа + управление энергией",
+        "welcome_next_step": "Следующий умный шаг",
+        "welcome_next_step_value": "Сначала выбери задачу на 25 минут, затем короткий перерыв.",
+        "welcome_profile_hint": "Личные рекомендации обновляются на основе профиля.",
+        "quick_energy": "Энергия",
+        "quick_routine": "Рутина",
+        "quick_risk": "Риск",
+        "energy_good": "Баланс",
+        "energy_watch": "Внимание",
+        "routine_good": "Стабильно",
+        "routine_build": "Формируется",
+        "risk_low": "Низкий",
+        "risk_medium": "Средний",
+        "risk_high": "Высокий",
+    },
+    "Español": {
+        "welcome_focus_label": "Prioridad de hoy",
+        "welcome_focus_value": "Trabajo profundo + gestión de energía",
+        "welcome_next_step": "Siguiente paso inteligente",
+        "welcome_next_step_value": "Elige primero una tarea de 25 minutos y luego toma una pausa corta.",
+        "welcome_profile_hint": "Las recomendaciones personales se actualizan según tu perfil.",
+        "quick_energy": "Energía",
+        "quick_routine": "Rutina",
+        "quick_risk": "Riesgo",
+        "energy_good": "Equilibrada",
+        "energy_watch": "Atención",
+        "routine_good": "Estable",
+        "routine_build": "En progreso",
+        "risk_low": "Bajo",
+        "risk_medium": "Medio",
+        "risk_high": "Alto",
+    },
+}
+for _lang, _patch in V16_WELCOME_PATCH.items():
+    TRANSLATIONS[_lang].update(_patch)
+
 # Small UI labels used in profile/PDF/model areas
 for _lang in TRANSLATIONS:
     TRANSLATIONS[_lang].setdefault("faculty_software", "Software Engineering")
@@ -2080,6 +2171,8 @@ def render_home_booster():
     exercise_streak = _current_streak(records, "exercise_minutes", 20)
 
     quote = get_motivation_quote(avg_productivity, avg_stress, avg_sleep)
+    energy_label = t["energy_good"] if avg_sleep >= 6.5 and avg_stress <= 6 else t["energy_watch"]
+    risk_label = t["risk_high"] if avg_stress >= 7 or avg_sleep < 5.5 else t["risk_medium"] if avg_stress >= 5.5 or avg_sleep < 6.5 else t["risk_low"]
 
     st.markdown(
         f"""
@@ -2088,6 +2181,16 @@ def render_home_booster():
                 <h3>{t["welcome_title"].format(name=name)}</h3>
                 <p>{t["welcome_text"]}</p>
                 <p class="welcome-quote">“{quote}”</p>
+                <div class="welcome-detail-grid">
+                    <div class="welcome-mini-card"><span>{t["welcome_focus_label"]}</span><b>{t["welcome_focus_value"]}</b></div>
+                    <div class="welcome-mini-card"><span>{t["quick_energy"]}</span><b>{energy_label}</b></div>
+                    <div class="welcome-mini-card"><span>{t["quick_risk"]}</span><b>{risk_label}</b></div>
+                </div>
+                <div class="welcome-next-step">
+                    <b>{t["welcome_next_step"]}</b>
+                    <span>{t["welcome_next_step_value"]}</span><br>
+                    <small>{t["welcome_profile_hint"]}</small>
+                </div>
             </div>
             <div class="ai-avatar-card">
                 <div class="ai-avatar">🤖</div>
@@ -2338,6 +2441,8 @@ def render_dashboard_tabs():
             )
             st.bar_chart(today_chart)
 
+        render_student_bottom_summary()
+
     with tab2:
         x = section_extra_texts()
         st.subheader(t["nutrition"])
@@ -2504,25 +2609,6 @@ def render_dashboard_tabs():
         quote = get_motivation_quote(avg_productivity, avg_stress, avg_sleep)
         status_note = create_status_note(records, st.session_state.profile)
 
-        st.markdown(
-            f"""
-            <div class="status-card">
-            <h3>{emoji} {t["current_student_status"]}: {status_label}</h3>
-            <p>{status_note}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            f"""
-            <div class="quote-card">
-            <h3>{t["daily_motivation_quote"]}</h3>
-            <p><i>"{quote}"</i></p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
         for level, msg in get_ai_recommendations(records):
             if level == "success":
                 st.success(msg)
@@ -2537,6 +2623,8 @@ def render_dashboard_tabs():
         importance_data = pd.DataFrame({t["importance"]: model.feature_importances_}, index=features).sort_values(t["importance"], ascending=False)
         st.bar_chart(importance_data)
         st.metric(t["training_accuracy"], f"{round(accuracy * 100, 2)}%")
+
+        render_student_bottom_summary()
 
     with tab6:
         records = calculate_scores(st.session_state.records)
@@ -2731,6 +2819,42 @@ div[data-testid="stTabs"] div[data-testid="stVerticalBlock"] > div:has(hr) {
 .welcome-card {
     margin-top: 6px !important;
 }
+.welcome-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+}
+.welcome-mini-card {
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(15,23,42,0.46);
+    border: 1px solid rgba(148,163,184,0.18);
+}
+.welcome-mini-card span {
+    display: block;
+    font-size: 12px;
+    color: #cbd5e1;
+    margin-bottom: 5px;
+}
+.welcome-mini-card b {
+    font-size: 15px;
+    font-weight: 720;
+}
+.welcome-next-step {
+    margin-top: 14px;
+    padding: 13px 15px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(251,146,60,0.18), rgba(37,99,235,0.12));
+    border: 1px solid rgba(251,146,60,0.18);
+}
+.welcome-next-step b {
+    display: block;
+    margin-bottom: 4px;
+}
+@media (max-width: 900px) {
+    .welcome-detail-grid { grid-template-columns: 1fr; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -2740,7 +2864,6 @@ div[data-testid="stTabs"] div[data-testid="stVerticalBlock"] > div:has(hr) {
 # Login/Profile, Settings, and Database pages stay clean and separate.
 if st.session_state.sidebar_page == "home":
     render_header()
-    render_student_bottom_summary()
     render_dashboard_tabs()
 elif st.session_state.sidebar_page == "login":
     st.markdown('<div class="login-profile-wrap">', unsafe_allow_html=True)
