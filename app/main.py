@@ -2313,6 +2313,129 @@ def render_database_history():
         )
 
 
+
+# === V17 DEEP PRODUCT ANALYSIS HELPERS ===
+def advanced_texts():
+    lang = st.session_state.language
+    base = {
+        "advanced_analysis": "🚀 Gelişmiş Performans Analizi",
+        "nutrition_dashboard": "Beslenme Performans Paneli",
+        "exercise_dashboard": "Egzersiz Performans Paneli",
+        "coach_title": "Stratejik AI Koç Paneli",
+        "report_title": "Detaylı Haftalık Rapor",
+        "calorie_balance": "Kalori Dengesi",
+        "macro_split": "Makro Dağılımı",
+        "exercise_efficiency": "Egzersiz Verimliliği",
+        "burned_calories": "Yakılan Kalori",
+        "net_calories": "Net Kalori",
+        "protein_target": "Protein Hedefi",
+        "analysis_comment": "Analiz Yorumu",
+        "chart_commentary": "Grafik Yorumu",
+        "risk_interpretation": "Risk Yorumu",
+        "coach_strategy": "Bugünün Stratejik Planı",
+        "priority_plan": "Öncelik Planı",
+        "nutrition_strategy": "Beslenme Stratejisi",
+        "exercise_strategy": "Egzersiz Stratejisi",
+        "study_strategy": "Çalışma Stratejisi",
+        "recovery_strategy": "Toparlanma Stratejisi",
+        "executive_summary": "Yönetici Özeti",
+        "weekly_decision": "Haftalık Karar",
+        "next_actions": "Sonraki Aksiyonlar",
+        "not_enough_calories": "Kalori hedefinin altındasın. Gün sonunda protein + kompleks karbonhidrat içeren dengeli bir ek öğün mantıklı olur.",
+        "calories_high": "Kalori hedefini aşıyorsun. Eğer hedef kilo almak değilse porsiyon ve yağ kaynaklarını kontrol et.",
+        "calories_good": "Kalori dengen hedefe yakın. Bu, sürdürülebilir performans için iyi bir sinyal.",
+        "protein_low_detail": "Protein düşük görünüyor. Kas gelişimi, toparlanma ve tokluk için protein hedefini artır.",
+        "protein_good_detail": "Protein hedefin güçlü. Egzersiz ve odak performansını destekler.",
+        "exercise_low_detail": "Egzersiz süresi düşük. Bugün en az 20 dakikalık yürüyüş veya mobilite ekle.",
+        "exercise_good_detail": "Egzersiz süren iyi. Bunu haftalık seriye bağlarsan alışkanlık oluşur.",
+        "sleep_low_detail": "Uyku ortalaman düşük. Verimlilik grafiğindeki düşüşlerin ana sebebi bu olabilir.",
+        "sleep_good_detail": "Uyku ortalaman kabul edilebilir. Bunu sabit saatlerle koru.",
+        "stress_high_detail": "Stres trendi yüksek. Planı küçült, toparlanma aralığı ekle, derin çalışma bloklarını azalt.",
+        "stress_ok_detail": "Stres seviyesi yönetilebilir. Yine de yoğun günlerde kısa mola sistemi kullan.",
+        "graph_sleep": "Uyku grafiği odak ve verimlilik için temel sinyaldir. 6 saatin altındaki günler riskli kabul edilir.",
+        "graph_study": "Çalışma grafiğinde süre kadar istikrar önemlidir. Ani iniş çıkışlar planlama sorunu gösterebilir.",
+        "graph_wellness": "Sağlık skoru uyku, su, stres, beslenme ve egzersizin birleşik fotoğrafıdır.",
+        "report_intro": "Bu rapor öğrencinin akademik, fiziksel ve davranışsal performansını birlikte değerlendirir.",
+        "mission": "Bugünün net görevi: küçük ama ölçülebilir ilerleme üret.",
+    }
+    translations = {
+        "English": {
+            "advanced_analysis": "🚀 Advanced Performance Analysis", "nutrition_dashboard": "Nutrition Performance Panel", "exercise_dashboard": "Exercise Performance Panel", "coach_title": "Strategic AI Coach Panel", "report_title": "Detailed Weekly Report", "calorie_balance": "Calorie Balance", "macro_split": "Macro Split", "exercise_efficiency": "Exercise Efficiency", "burned_calories": "Burned Calories", "net_calories": "Net Calories", "protein_target": "Protein Target", "analysis_comment": "Analysis Comment", "chart_commentary": "Chart Commentary", "risk_interpretation": "Risk Interpretation", "coach_strategy": "Today’s Strategic Plan", "priority_plan": "Priority Plan", "nutrition_strategy": "Nutrition Strategy", "exercise_strategy": "Exercise Strategy", "study_strategy": "Study Strategy", "recovery_strategy": "Recovery Strategy", "executive_summary": "Executive Summary", "weekly_decision": "Weekly Decision", "next_actions": "Next Actions", "not_enough_calories": "You are below your calorie target. A balanced extra meal with protein and complex carbs makes sense.", "calories_high": "You are above your calorie target. If weight gain is not the goal, control portions and fat sources.", "calories_good": "Your calorie balance is close to target. This is a good signal for sustainable performance.", "protein_low_detail": "Protein looks low. Increase protein for muscle repair, recovery and satiety.", "protein_good_detail": "Your protein target is strong. It supports exercise and focus performance.", "exercise_low_detail": "Exercise duration is low. Add at least 20 minutes of walking or mobility today.", "exercise_good_detail": "Exercise duration is good. Connect it to a weekly streak to build the habit.", "sleep_low_detail": "Average sleep is low. It may be the main reason behind productivity drops.", "sleep_good_detail": "Average sleep is acceptable. Protect it with consistent sleep times.", "stress_high_detail": "Stress trend is high. Reduce plan size, add recovery blocks, and lower deep-work intensity.", "stress_ok_detail": "Stress is manageable. Still use short breaks on intense days.", "graph_sleep": "The sleep chart is the core signal for focus and productivity. Days below 6 hours are risky.", "graph_study": "The study chart values consistency as much as duration. Sharp swings may indicate planning problems.", "graph_wellness": "The wellness score combines sleep, water, stress, nutrition and exercise.", "report_intro": "This report evaluates academic, physical and behavioral performance together.", "mission": "Today’s clear mission: produce small but measurable progress."
+        },
+        "Deutsch": {
+            "advanced_analysis": "🚀 Erweiterte Leistungsanalyse", "nutrition_dashboard": "Ernährungs-Performance", "exercise_dashboard": "Trainings-Performance", "coach_title": "Strategisches KI-Coach-Panel", "report_title": "Detaillierter Wochenbericht", "calorie_balance": "Kalorienbilanz", "macro_split": "Makroverteilung", "exercise_efficiency": "Trainingseffizienz", "burned_calories": "Verbrannte Kalorien", "net_calories": "Netto-Kalorien", "protein_target": "Proteinziel", "analysis_comment": "Analysekommentar", "chart_commentary": "Diagrammkommentar", "risk_interpretation": "Risikobewertung", "coach_strategy": "Strategischer Plan für heute", "priority_plan": "Prioritätenplan", "nutrition_strategy": "Ernährungsstrategie", "exercise_strategy": "Trainingsstrategie", "study_strategy": "Lernstrategie", "recovery_strategy": "Erholungsstrategie", "executive_summary": "Kurzfazit", "weekly_decision": "Wöchentliche Entscheidung", "next_actions": "Nächste Aktionen", "not_enough_calories": "Du liegst unter deinem Kalorienziel. Eine zusätzliche Mahlzeit mit Protein und komplexen Kohlenhydraten wäre sinnvoll.", "calories_high": "Du liegst über deinem Kalorienziel. Wenn Gewichtszunahme nicht das Ziel ist, kontrolliere Portionen und Fettquellen.", "calories_good": "Deine Kalorienbilanz liegt nah am Ziel. Das ist ein gutes Signal für nachhaltige Leistung.", "protein_low_detail": "Protein wirkt niedrig. Erhöhe Protein für Regeneration, Muskelaufbau und Sättigung.", "protein_good_detail": "Dein Proteinziel ist stark. Es unterstützt Training und Fokus.", "exercise_low_detail": "Die Trainingsdauer ist niedrig. Ergänze heute mindestens 20 Minuten Gehen oder Mobilität.", "exercise_good_detail": "Die Trainingsdauer ist gut. Verbinde sie mit einer Wochenserie.", "sleep_low_detail": "Der Schlafdurchschnitt ist niedrig. Das kann der Hauptgrund für Produktivitätseinbrüche sein.", "sleep_good_detail": "Der Schlafdurchschnitt ist akzeptabel. Schütze ihn mit festen Schlafzeiten.", "stress_high_detail": "Der Stress-Trend ist hoch. Verkleinere den Plan, füge Erholung ein und reduziere Deep-Work-Intensität.", "stress_ok_detail": "Stress ist handhabbar. Nutze trotzdem kurze Pausen an intensiven Tagen.", "graph_sleep": "Das Schlafdiagramm ist ein Kernsignal für Fokus und Produktivität. Tage unter 6 Stunden sind riskant.", "graph_study": "Beim Lerndiagramm zählt Stabilität genauso wie Dauer. Starke Schwankungen zeigen Planungsprobleme.", "graph_wellness": "Der Wellness-Score kombiniert Schlaf, Wasser, Stress, Ernährung und Training.", "report_intro": "Dieser Bericht bewertet akademische, körperliche und verhaltensbezogene Leistung gemeinsam.", "mission": "Klare Mission für heute: kleine, messbare Fortschritte erzeugen."
+        },
+        "Español": {
+            "advanced_analysis": "🚀 Análisis avanzado de rendimiento", "nutrition_dashboard": "Panel de nutrición", "exercise_dashboard": "Panel de ejercicio", "coach_title": "Panel estratégico del Coach IA", "report_title": "Informe semanal detallado", "calorie_balance": "Balance calórico", "macro_split": "Distribución de macros", "exercise_efficiency": "Eficiencia del ejercicio", "burned_calories": "Calorías quemadas", "net_calories": "Calorías netas", "protein_target": "Objetivo de proteína", "analysis_comment": "Comentario de análisis", "chart_commentary": "Comentario del gráfico", "risk_interpretation": "Interpretación de riesgo", "coach_strategy": "Plan estratégico de hoy", "priority_plan": "Plan de prioridades", "nutrition_strategy": "Estrategia de nutrición", "exercise_strategy": "Estrategia de ejercicio", "study_strategy": "Estrategia de estudio", "recovery_strategy": "Estrategia de recuperación", "executive_summary": "Resumen ejecutivo", "weekly_decision": "Decisión semanal", "next_actions": "Próximas acciones", "not_enough_calories": "Estás por debajo del objetivo calórico. Conviene una comida extra equilibrada con proteína y carbohidratos complejos.", "calories_high": "Estás por encima del objetivo calórico. Si no buscas subir de peso, controla porciones y grasas.", "calories_good": "Tu balance calórico está cerca del objetivo. Es una buena señal para rendimiento sostenible.", "protein_low_detail": "La proteína parece baja. Auméntala para recuperación, músculo y saciedad.", "protein_good_detail": "Tu objetivo de proteína es fuerte. Apoya el ejercicio y el enfoque.", "exercise_low_detail": "La duración del ejercicio es baja. Añade al menos 20 minutos de caminata o movilidad hoy.", "exercise_good_detail": "La duración del ejercicio es buena. Conéctala con una racha semanal.", "sleep_low_detail": "El promedio de sueño es bajo. Puede ser la causa principal de caídas de productividad.", "sleep_good_detail": "El promedio de sueño es aceptable. Protégelo con horarios estables.", "stress_high_detail": "La tendencia de estrés es alta. Reduce el plan, añade recuperación y baja la intensidad.", "stress_ok_detail": "El estrés es manejable. Aun así usa pausas cortas en días intensos.", "graph_sleep": "El gráfico de sueño es señal central para enfoque y productividad. Días bajo 6 horas son riesgosos.", "graph_study": "En el gráfico de estudio importa la constancia tanto como la duración. Saltos fuertes indican problemas de planificación.", "graph_wellness": "La puntuación de bienestar combina sueño, agua, estrés, nutrición y ejercicio.", "report_intro": "Este informe evalúa rendimiento académico, físico y conductual en conjunto.", "mission": "Misión clara de hoy: producir progreso pequeño pero medible."
+        },
+        "Русский": {
+            "advanced_analysis": "🚀 Расширенный анализ продуктивности", "nutrition_dashboard": "Панель питания", "exercise_dashboard": "Панель тренировок", "coach_title": "Стратегическая панель ИИ-коуча", "report_title": "Подробный недельный отчет", "calorie_balance": "Баланс калорий", "macro_split": "Распределение макро", "exercise_efficiency": "Эффективность тренировки", "burned_calories": "Сожженные калории", "net_calories": "Чистые калории", "protein_target": "Цель по белку", "analysis_comment": "Комментарий анализа", "chart_commentary": "Комментарий к графику", "risk_interpretation": "Оценка риска", "coach_strategy": "Стратегический план на сегодня", "priority_plan": "План приоритетов", "nutrition_strategy": "Стратегия питания", "exercise_strategy": "Стратегия тренировки", "study_strategy": "Стратегия учебы", "recovery_strategy": "Стратегия восстановления", "executive_summary": "Краткий вывод", "weekly_decision": "Решение недели", "next_actions": "Следующие действия", "not_enough_calories": "Ты ниже цели по калориям. Добавь сбалансированный прием пищи с белком и сложными углеводами.", "calories_high": "Ты выше цели по калориям. Если набор веса не цель, контролируй порции и жиры.", "calories_good": "Баланс калорий близок к цели. Это хороший сигнал для устойчивой продуктивности.", "protein_low_detail": "Белка мало. Увеличь белок для восстановления, мышц и сытости.", "protein_good_detail": "Цель по белку хорошая. Это поддерживает тренировки и концентрацию.", "exercise_low_detail": "Тренировки мало. Добавь сегодня минимум 20 минут ходьбы или мобильности.", "exercise_good_detail": "Длительность тренировки хорошая. Свяжи это с недельной серией.", "sleep_low_detail": "Средний сон низкий. Это может быть основной причиной падения продуктивности.", "sleep_good_detail": "Средний сон приемлемый. Сохраняй стабильное время сна.", "stress_high_detail": "Тренд стресса высокий. Уменьши план, добавь восстановление и снизь интенсивность.", "stress_ok_detail": "Стресс управляемый. Но в тяжелые дни используй короткие паузы.", "graph_sleep": "График сна — ключевой сигнал фокуса и продуктивности. Дни ниже 6 часов рискованны.", "graph_study": "В графике учебы важна стабильность, а не только длительность. Резкие скачки показывают проблему планирования.", "graph_wellness": "Wellness Score объединяет сон, воду, стресс, питание и тренировки.", "report_intro": "Этот отчет оценивает учебную, физическую и поведенческую продуктивность вместе.", "mission": "Задача дня: создать небольшой, но измеримый прогресс."
+        }
+    }
+    if lang in translations:
+        base.update(translations[lang])
+    return base
+
+
+def current_user_inputs():
+    return {
+        "calorie_goal": st.session_state.get("nutrition_calorie_goal", 2600),
+        "calories_taken": st.session_state.get("nutrition_calories_taken", 2100),
+        "protein_g": st.session_state.get("nutrition_protein_g", 110),
+        "carb_g": st.session_state.get("nutrition_carb_g", 260),
+        "fat_g": st.session_state.get("nutrition_fat_g", 70),
+        "meal_count": st.session_state.get("nutrition_meal_count", 4),
+        "exercise_type": st.session_state.get("exercise_type_input", ""),
+        "exercise_duration": st.session_state.get("exercise_duration_input", 30),
+        "exercise_intensity": st.session_state.get("exercise_intensity_input", ""),
+        "exercise_burned": st.session_state.get("exercise_burned_input", 0),
+    }
+
+
+def render_ai_insight_card(title, body, cls="info-card"):
+    st.markdown(f"""
+    <div class="{cls}">
+        <h3>{title}</h3>
+        <p>{body}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def generate_deep_insights(records):
+    a = advanced_texts()
+    u = current_user_inputs()
+    avg_sleep = records["sleep_hours"].mean()
+    avg_stress = records["stress_level"].mean()
+    avg_productivity = records["productivity_score"].mean()
+    protein_need = max(70, int(st.session_state.profile.get("weight_kg", 70) * 1.4))
+    calorie_gap = u["calorie_goal"] - u["calories_taken"]
+    macro_cal = int(u["protein_g"] * 4 + u["carb_g"] * 4 + u["fat_g"] * 9)
+    net_cal = u["calories_taken"] - u["exercise_burned"]
+
+    nutrition_msg = a["calories_good"]
+    if calorie_gap > 350:
+        nutrition_msg = a["not_enough_calories"]
+    elif calorie_gap < -350:
+        nutrition_msg = a["calories_high"]
+    protein_msg = a["protein_good_detail"] if u["protein_g"] >= protein_need else a["protein_low_detail"]
+    exercise_msg = a["exercise_good_detail"] if u["exercise_duration"] >= 20 else a["exercise_low_detail"]
+    sleep_msg = a["sleep_good_detail"] if avg_sleep >= 6 else a["sleep_low_detail"]
+    stress_msg = a["stress_ok_detail"] if avg_stress < 7 else a["stress_high_detail"]
+
+    risk = "Low" if avg_stress < 5 and avg_sleep >= 6.5 and avg_productivity >= 50 else "Medium" if avg_stress < 7 else "High"
+    return {
+        "calorie_gap": calorie_gap,
+        "macro_cal": macro_cal,
+        "net_cal": net_cal,
+        "protein_need": protein_need,
+        "nutrition_msg": nutrition_msg,
+        "protein_msg": protein_msg,
+        "exercise_msg": exercise_msg,
+        "sleep_msg": sleep_msg,
+        "stress_msg": stress_msg,
+        "risk": risk,
+    }
+
 def render_dashboard_tabs():
     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
         [
@@ -2462,14 +2585,14 @@ def render_dashboard_tabs():
         st.markdown(f"### {x['nutrition_input_title']}")
         n1, n2, n3 = st.columns(3)
         with n1:
-            calorie_goal = st.number_input(x["calorie_goal"], min_value=1000, max_value=6000, value=2600, step=50)
-            calories_taken = st.number_input(x["calories_taken"], min_value=0, max_value=7000, value=2100, step=50)
+            calorie_goal = st.number_input(x["calorie_goal"], min_value=1000, max_value=6000, value=2600, step=50, key="nutrition_calorie_goal")
+            calories_taken = st.number_input(x["calories_taken"], min_value=0, max_value=7000, value=2100, step=50, key="nutrition_calories_taken")
         with n2:
-            protein_g = st.number_input(x["protein_g"], min_value=0, max_value=350, value=110, step=5)
-            carb_g = st.number_input(x["carb_g"], min_value=0, max_value=700, value=260, step=10)
+            protein_g = st.number_input(x["protein_g"], min_value=0, max_value=350, value=110, step=5, key="nutrition_protein_g")
+            carb_g = st.number_input(x["carb_g"], min_value=0, max_value=700, value=260, step=10, key="nutrition_carb_g")
         with n3:
-            fat_g = st.number_input(x["fat_g"], min_value=0, max_value=250, value=70, step=5)
-            meal_count = st.slider(x["meal_count"], 1, 8, 4)
+            fat_g = st.number_input(x["fat_g"], min_value=0, max_value=250, value=70, step=5, key="nutrition_fat_g")
+            meal_count = st.slider(x["meal_count"], 1, 8, 4, key="nutrition_meal_count")
 
         macro_calories = int((protein_g * 4) + (carb_g * 4) + (fat_g * 9))
         remaining = calorie_goal - calories_taken
@@ -2542,15 +2665,16 @@ def render_dashboard_tabs():
         st.markdown(f"### {x['exercise_input_title']}")
         e1, e2, e3 = st.columns(3)
         with e1:
-            exercise_type = st.selectbox(x["exercise_type"], [x["walking"], x["running"], x["strength"], x["cycling"], x["mobility"]])
-            duration = st.slider(x["duration_min"], 0, 180, 30)
+            exercise_type = st.selectbox(x["exercise_type"], [x["walking"], x["running"], x["strength"], x["cycling"], x["mobility"]], key="exercise_type_input")
+            duration = st.slider(x["duration_min"], 0, 180, 30, key="exercise_duration_input")
         with e2:
-            intensity = st.selectbox(x["intensity"], [x["low"], x["medium"], x["high"]], index=1)
+            intensity = st.selectbox(x["intensity"], [x["low"], x["medium"], x["high"]], index=1, key="exercise_intensity_input")
             body_weight = st.number_input(x["body_weight"], min_value=35, max_value=180, value=int(st.session_state.profile.get("weight_kg", 70)))
         with e3:
             base_met = {x["walking"]: 3.5, x["running"]: 8.5, x["strength"]: 5.0, x["cycling"]: 6.8, x["mobility"]: 2.5}.get(exercise_type, 4.0)
             multiplier = {x["low"]: 0.8, x["medium"]: 1.0, x["high"]: 1.25}.get(intensity, 1.0)
             burned = int(base_met * multiplier * 3.5 * body_weight / 200 * duration)
+            st.session_state.exercise_burned_input = burned
             st.metric(x["estimated_burn"], burned)
 
         if duration >= 20:
@@ -2567,48 +2691,108 @@ def render_dashboard_tabs():
         st.dataframe(exercise_log, use_container_width=True)
 
     with tab4:
+        a = advanced_texts()
         records = calculate_scores(st.session_state.records)
         records["date"] = pd.to_datetime(records["date"])
         dashboard = records.sort_values("date").set_index("date")
+        insights = generate_deep_insights(records)
+        u = current_user_inputs()
 
-        st.subheader(t["analytics"])
-        m1, m2, m3, m4, m5 = st.columns(5)
-        m1.metric(t["avg_sleep"], round(records["sleep_hours"].mean(), 2))
-        m2.metric(t["avg_study"], round(records["study_hours"].mean(), 2))
-        m3.metric(t["avg_stress"], round(records["stress_level"].mean(), 2))
-        m4.metric(t["avg_nutrition"], round(records["nutrition_quality"].mean(), 2))
-        m5.metric(t["avg_productivity"], round(records["productivity_score"].mean(), 2))
+        st.subheader(a["advanced_analysis"])
+        k1, k2, k3, k4, k5 = st.columns(5)
+        k1.metric(t["avg_productivity"], f"{round(records['productivity_score'].mean(), 1)}/100")
+        k2.metric(t["avg_wellness"], f"{round(records['wellness_score'].mean(), 1)}/100")
+        k3.metric(a["net_calories"], insights["net_cal"])
+        k4.metric(a["burned_calories"], u["exercise_burned"])
+        k5.metric(a["protein_target"], f"{u['protein_g']}/{insights['protein_need']}g")
+
+        ncol, ecol = st.columns(2)
+        with ncol:
+            render_ai_insight_card(a["nutrition_dashboard"], f"{insights['nutrition_msg']} {insights['protein_msg']}", "card-green")
+            macro_df = pd.DataFrame(
+                {a["macro_split"]: [u["protein_g"], u["carb_g"], u["fat_g"]]},
+                index=[t.get("protein", "Protein"), t.get("carbohydrate", "Carbohydrate"), t.get("healthy_fat", "Fat")],
+            )
+            st.bar_chart(macro_df)
+            st.caption(f"{a['calorie_balance']}: {insights['calorie_gap']} | {a['macro_split']}: {insights['macro_cal']} kcal")
+        with ecol:
+            render_ai_insight_card(a["exercise_dashboard"], insights["exercise_msg"], "card-orange")
+            exercise_df = pd.DataFrame(
+                {a["exercise_efficiency"]: [u["exercise_duration"], u["exercise_burned"], records["exercise_minutes"].mean()]},
+                index=[t.get("exercise_min", "Exercise Minutes"), a["burned_calories"], t.get("average_exercise", "Average Exercise")],
+            )
+            st.bar_chart(exercise_df)
+            st.caption(f"{a['exercise_efficiency']}: {u['exercise_duration']} min / {u['exercise_burned']} kcal")
+
+        st.markdown(f"### {a['chart_commentary']}")
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            render_ai_insight_card(t["sleep_trend"], a["graph_sleep"] + " " + insights["sleep_msg"], "info-card")
+        with c2:
+            render_ai_insight_card(t["study_trend"], a["graph_study"], "info-card")
+        with c3:
+            render_ai_insight_card(t["wellness_trend"], a["graph_wellness"], "info-card")
 
         col1, col2 = st.columns(2)
         with col1:
             st.subheader(t["sleep_trend"])
-            st.line_chart(dashboard["sleep_hours"])
+            st.line_chart(dashboard[["sleep_hours", "wellness_score"]])
             st.subheader(t["stress_trend"])
-            st.line_chart(dashboard["stress_level"])
-            st.subheader(t["nutrition_trend"])
-            st.line_chart(dashboard["nutrition_quality"])
+            st.line_chart(dashboard[["stress_level", "risk_score"]])
         with col2:
-            st.subheader(t["study_trend"])
-            st.line_chart(dashboard["study_hours"])
             st.subheader(t["productivity_trend"])
-            st.line_chart(dashboard["productivity_score"])
-            st.subheader(t["wellness_trend"])
-            st.line_chart(dashboard["wellness_score"])
+            st.line_chart(dashboard[["study_hours", "productivity_score", "task_completion"]])
+            st.subheader(t["nutrition_trend"])
+            st.line_chart(dashboard[["nutrition_quality", "water_liters", "exercise_minutes"]])
 
-        st.subheader(t["complete_tracking_data"])
-        st.dataframe(records, use_container_width=True)
+        st.markdown(f"### {a['risk_interpretation']}")
+        if insights["risk"] == "High":
+            st.error(insights["stress_msg"])
+        elif insights["risk"] == "Medium":
+            st.warning(insights["sleep_msg"] + " " + insights["stress_msg"])
+        else:
+            st.success(insights["sleep_msg"] + " " + insights["stress_msg"])
+
+        with st.expander(t["complete_tracking_data"]):
+            st.dataframe(records, use_container_width=True)
 
     with tab5:
+        a = advanced_texts()
         records = calculate_scores(st.session_state.records)
-        st.subheader(t["coach"])
+        insights = generate_deep_insights(records)
+        u = current_user_inputs()
+        st.subheader(a["coach_title"])
 
         avg_productivity = records["productivity_score"].mean()
         avg_stress = records["stress_level"].mean()
         avg_sleep = records["sleep_hours"].mean()
-        emoji, status_label = get_status_emoji(avg_productivity, avg_stress, avg_sleep)
-        quote = get_motivation_quote(avg_productivity, avg_stress, avg_sleep)
-        status_note = create_status_note(records, st.session_state.profile)
 
+        top1, top2, top3 = st.columns(3)
+        top1.metric(t["avg_productivity"], f"{avg_productivity:.1f}/100")
+        top2.metric(t["avg_sleep"], f"{avg_sleep:.1f}h")
+        top3.metric(t["avg_stress"], f"{avg_stress:.1f}/10")
+
+        render_ai_insight_card(a["coach_strategy"], a["mission"], "card-purple")
+
+        p1, p2 = st.columns(2)
+        with p1:
+            render_ai_insight_card(a["nutrition_strategy"], f"{insights['nutrition_msg']} {insights['protein_msg']} Net: {insights['net_cal']} kcal.", "card-green")
+            render_ai_insight_card(a["study_strategy"], get_motivation_quote(avg_productivity, avg_stress, avg_sleep), "card-blue")
+        with p2:
+            render_ai_insight_card(a["exercise_strategy"], f"{insights['exercise_msg']} {a['burned_calories']}: {u['exercise_burned']} kcal.", "card-orange")
+            render_ai_insight_card(a["recovery_strategy"], f"{insights['sleep_msg']} {insights['stress_msg']}", "info-card")
+
+        st.markdown(f"### {a['priority_plan']}")
+        plan_items = [
+            insights["nutrition_msg"],
+            insights["exercise_msg"],
+            insights["sleep_msg"],
+            insights["stress_msg"],
+        ]
+        for i, item in enumerate(plan_items, start=1):
+            st.checkbox(f"{i}. {item}", key=f"coach_plan_{i}_{st.session_state.language}")
+
+        st.markdown("### AI Signals")
         for level, msg in get_ai_recommendations(records):
             if level == "success":
                 st.success(msg)
@@ -2619,16 +2803,29 @@ def render_dashboard_tabs():
             else:
                 st.warning(msg)
 
-        st.subheader(t["model_feature_importance"])
-        importance_data = pd.DataFrame({t["importance"]: model.feature_importances_}, index=features).sort_values(t["importance"], ascending=False)
-        st.bar_chart(importance_data)
-        st.metric(t["training_accuracy"], f"{round(accuracy * 100, 2)}%")
+        with st.expander(t["model_feature_importance"]):
+            importance_data = pd.DataFrame({t["importance"]: model.feature_importances_}, index=features).sort_values(t["importance"], ascending=False)
+            st.bar_chart(importance_data)
+            st.metric(t["training_accuracy"], f"{round(accuracy * 100, 2)}%")
 
         render_student_bottom_summary()
 
     with tab6:
+        a = advanced_texts()
         records = calculate_scores(st.session_state.records)
-        st.subheader(t["report"])
+        insights = generate_deep_insights(records)
+        u = current_user_inputs()
+        st.subheader(a["report_title"])
+
+        st.markdown(
+            f"""
+            <div class="card-blue">
+            <h3>{a['executive_summary']}</h3>
+            <p>{a['report_intro']} {create_status_note(records, st.session_state.profile)}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
         weekly_summary = pd.DataFrame(
             {
@@ -2636,6 +2833,7 @@ def render_dashboard_tabs():
                     t["average_sleep"], t["average_study"], t["average_focus"], t["average_stress"],
                     t["average_exercise"], t["average_nutrition"], t["average_water"],
                     t["average_task"], t["average_productivity"], t["average_wellness"],
+                    a["calorie_balance"], a["net_calories"], a["burned_calories"], a["protein_target"],
                 ],
                 t["chart_value"]: [
                     round(records["sleep_hours"].mean(), 2),
@@ -2648,24 +2846,20 @@ def render_dashboard_tabs():
                     round(records["task_completion"].mean(), 2),
                     round(records["productivity_score"].mean(), 2),
                     round(records["wellness_score"].mean(), 2),
+                    insights["calorie_gap"], insights["net_cal"], u["exercise_burned"], f"{u['protein_g']}/{insights['protein_need']}g",
                 ],
             }
         )
-
         st.dataframe(weekly_summary, use_container_width=True)
+
+        r1, r2 = st.columns(2)
+        with r1:
+            render_ai_insight_card(a["weekly_decision"], f"{insights['nutrition_msg']} {insights['exercise_msg']}", "card-orange")
+        with r2:
+            render_ai_insight_card(a["next_actions"], f"1) {insights['protein_msg']} 2) {insights['sleep_msg']} 3) {insights['stress_msg']}", "card-green")
+
         recommendations = get_ai_recommendations(records)
         status_note = create_status_note(records, st.session_state.profile)
-
-        st.markdown(
-            f"""
-            <div class="card-blue">
-            <h3>{t["student_weekly_status_note"]}</h3>
-            <p>{status_note}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
         csv = weekly_summary.to_csv(index=False).encode("utf-8")
         st.download_button(t["download_csv"], csv, "weekly_student_report.csv", "text/csv")
 
