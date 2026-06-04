@@ -2885,9 +2885,9 @@ def render_home_booster():
             <div class="ai-avatar-card">
                 <div class="ai-avatar">🤖</div>
                 <b>{t["ai_mission_title"]}</b>
-                <ul>
-                    {''.join(f'<li>{item}</li>' for item in get_dynamic_daily_mission())}
-                </ul>
+                <div class="animated-mission-box">
+                    {''.join(f'<div class="mission-slide"><b>⚡ {item}</b><small>{t.get("welcome_profile_hint", "Personalized by your profile.")}</small></div>' for item in get_dynamic_daily_mission())}
+                </div>
             </div>
         </div>
         """,
@@ -5323,6 +5323,77 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+
+st.markdown("""
+<style>
+.animated-mission-box {
+    position: relative;
+    min-height: 170px;
+    margin-top: 18px;
+    overflow: hidden;
+}
+.mission-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(18px) scale(.98);
+    animation: missionPulse 16s infinite;
+    padding: 18px 18px 18px 20px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(168,85,247,.16), rgba(251,146,60,.10));
+    border: 1px solid rgba(148,163,184,.18);
+    box-shadow: inset 0 0 28px rgba(255,255,255,.035);
+}
+.mission-slide:nth-child(1){animation-delay:0s;}
+.mission-slide:nth-child(2){animation-delay:4s;}
+.mission-slide:nth-child(3){animation-delay:8s;}
+.mission-slide:nth-child(4){animation-delay:12s;}
+.mission-slide b {display:block;font-size:17px;margin-bottom:8px;color:#fff;}
+.mission-slide small {color:#cbd5e1;}
+@keyframes missionPulse {
+    0% {opacity:0; transform:translateY(18px) scale(.98);}
+    6% {opacity:1; transform:translateY(0) scale(1);}
+    22% {opacity:1; transform:translateY(0) scale(1);}
+    28% {opacity:0; transform:translateY(-16px) scale(.98);}
+    100% {opacity:0; transform:translateY(-16px) scale(.98);}
+}
+.note-management-card {
+    padding: 28px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, rgba(15,23,42,.98), rgba(67,56,202,.23), rgba(251,146,60,.10));
+    border: 1px solid rgba(148,163,184,.22);
+    box-shadow: 0 24px 58px rgba(0,0,0,.30);
+    margin: 22px 0;
+}
+.note-management-card h3 {margin:0 0 8px 0;font-size:28px;}
+.note-management-card p {color:#d1d5db;line-height:1.55;}
+.notes-preview-grid {
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 12px 0 18px 0;
+}
+.note-preview-card {
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(15,23,42,.56);
+    border: 1px solid rgba(148,163,184,.18);
+    transition: all .18s ease;
+    min-height:72px;
+}
+.note-preview-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(96,165,250,.42);
+    background: rgba(30,41,59,.68);
+    box-shadow: 0 18px 38px rgba(0,0,0,.22);
+}
+.note-preview-card b {color:#f8fafc;}
+.note-preview-card small {display:block;color:#93c5fd;margin-top:6px;}
+@media (max-width: 1100px) { .notes-preview-grid { grid-template-columns: 1fr; } }
+</style>
+""", unsafe_allow_html=True)
+
+
 def save_daily_note(note_text, note_type, priority):
     note_text = (note_text or "").strip()
     if not note_text:
@@ -5349,12 +5420,23 @@ def save_daily_note(note_text, note_type, priority):
     return True
 
 
+def delete_daily_note(note_id):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM daily_notes WHERE id = ? AND student_id = ?",
+        (int(note_id), st.session_state.profile.get("student_id", "0000")),
+    )
+    conn.commit()
+    conn.close()
+
+
 def load_daily_notes(limit=5):
     conn = sqlite3.connect(DB_NAME)
     try:
         df = pd.read_sql_query(
             """
-            SELECT note_date, note_text, note_type, priority, is_done
+            SELECT id, note_date, note_text, note_type, priority, is_done
             FROM daily_notes
             WHERE student_id = ?
             ORDER BY id DESC
@@ -5398,54 +5480,76 @@ def get_live_accountability_items():
 
 
 def render_home_notes_and_accountability():
+    """Home notes panel only. AI Anne/Accountability block was removed on purpose."""
     t_local = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"])
-    st.markdown(
-        f"""
-        <div class="home-live-grid">
-            <div class="home-live-card">
-                <span class="live-pill">🧠 {t_local['memory_link']}</span>
-                <h3>{t_local['notes_panel_title']}</h3>
-                <p>{t_local['notes_panel_subtitle']}</p>
-        """,
-        unsafe_allow_html=True,
-    )
-    with st.container():
-        note_col1, note_col2 = st.columns([2.2, 1])
-        with note_col1:
-            new_note = st.text_area("", placeholder=t_local["note_placeholder"], key=f"home_note_text_v34_{st.session_state.language}", height=90)
-        with note_col2:
-            note_type = st.selectbox(t_local["note_type"], [t_local["type_task"], t_local["type_study"], t_local["type_health"], t_local["type_idea"]], key=f"home_note_type_v34_{st.session_state.language}")
-            priority = st.selectbox(t_local["note_priority"], [t_local["priority_low"], t_local["priority_medium"], t_local["priority_high"]], index=1, key=f"home_note_priority_v34_{st.session_state.language}")
-        if st.button(t_local["note_add"], key=f"home_note_add_v34_{st.session_state.language}"):
-            if save_daily_note(new_note, note_type, priority):
-                st.success(t_local["note_added"])
-            else:
-                st.warning(t_local["note_placeholder"])
-        recent = load_daily_notes(limit=4)
-        st.markdown(f"**{t_local['recent_notes']}**")
-        if recent.empty:
-            st.info(t_local["no_notes"])
-        else:
-            for _, row in recent.iterrows():
-                st.markdown(
-                    f"<div class='note-row'>✅ <b>{row['note_text']}</b><br><small>{row['note_date']} · {row['note_type']} · {row['priority']}</small></div>",
-                    unsafe_allow_html=True,
-                )
-    st.markdown("</div>", unsafe_allow_html=True)
+    recent = load_daily_notes(limit=4)
 
-    items = get_live_accountability_items()
+    if recent.empty:
+        notes_html = f"<div class='note-preview-card'><b>🕊️ {t_local['no_notes']}</b><small>{t_local['memory_link']}</small></div>"
+    else:
+        cards = []
+        for _, row in recent.iterrows():
+            cards.append(
+                f"<div class='note-preview-card'><b>✅ {row['note_text']}</b>"
+                f"<small>{row['note_date']} · {row['note_type']} · {row['priority']}</small></div>"
+            )
+        notes_html = "".join(cards)
+
     st.markdown(
         f"""
-            <div class="home-live-card ai-mom-card">
-                <span class="live-pill">⚡ {t_local['live_mission']}</span>
-                <h3>{t_local['accountability_title']}</h3>
-                <p>{t_local['accountability_subtitle']}</p>
-                {''.join(f'<div class="live-task">☑️ {item}</div>' for item in items)}
-            </div>
+        <div class="note-management-card">
+            <span class="live-pill">🧠 {t_local['memory_link']}</span>
+            <h3>{t_local['notes_panel_title']}</h3>
+            <p>{t_local['notes_panel_subtitle']}</p>
+            <div class="notes-preview-grid">{notes_html}</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
+
+    note_col1, note_col2 = st.columns([2.2, 1])
+    with note_col1:
+        new_note = st.text_area(
+            "",
+            placeholder=t_local["note_placeholder"],
+            key=f"home_note_text_v35_{st.session_state.language}",
+            height=88,
+        )
+    with note_col2:
+        note_type = st.selectbox(
+            t_local["note_type"],
+            [t_local["type_task"], t_local["type_study"], t_local["type_health"], t_local["type_idea"]],
+            key=f"home_note_type_v35_{st.session_state.language}",
+        )
+        priority = st.selectbox(
+            t_local["note_priority"],
+            [t_local["priority_low"], t_local["priority_medium"], t_local["priority_high"]],
+            index=1,
+            key=f"home_note_priority_v35_{st.session_state.language}",
+        )
+
+    add_col, clear_col = st.columns([1, 5])
+    with add_col:
+        if st.button(t_local["note_add"], key=f"home_note_add_v35_{st.session_state.language}"):
+            if save_daily_note(new_note, note_type, priority):
+                st.success(t_local["note_added"])
+                st.rerun()
+            else:
+                st.warning(t_local["note_placeholder"])
+
+    # Delete controls stay compact but visible; notes themselves are previewed above inside the note panel.
+    recent_for_delete = load_daily_notes(limit=4)
+    if not recent_for_delete.empty:
+        st.caption(t_local.get("recent_notes", "Recent Notes"))
+        for _, row in recent_for_delete.iterrows():
+            c1, c2 = st.columns([5, 1])
+            with c1:
+                st.markdown(f"✅ **{row['note_text']}**  \n<small>{row['note_date']} · {row['note_type']} · {row['priority']}</small>", unsafe_allow_html=True)
+            with c2:
+                if st.button("🗑️", key=f"delete_note_v35_{int(row['id'])}"):
+                    delete_daily_note(int(row["id"]))
+                    st.rerun()
+
 
 # Run non-destructive migration after all original tables exist.
 professional_db_migration()
