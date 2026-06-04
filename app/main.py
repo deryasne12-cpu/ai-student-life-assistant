@@ -573,6 +573,18 @@ for _lang, _extra in EXTRA_TRANSLATIONS_ALL_TABS.items():
     TRANSLATIONS[_lang].update(_extra)
 
 
+
+# === V18 SAFETY LANGUAGE PATCH ===
+_AVG_WELLNESS_LABELS = {
+    "Türkçe": "Ort. Sağlık",
+    "English": "Avg Wellness",
+    "Deutsch": "Ø Wellness",
+    "Русский": "Сред. здоровье",
+    "Español": "Bienestar prom.",
+}
+for _lang, _label in _AVG_WELLNESS_LABELS.items():
+    TRANSLATIONS[_lang]["avg_wellness"] = _label
+
 # === FULL LANGUAGE PATCH V8: fix remembered inputs, exercise plans and smart integration cards ===
 FULL_LANGUAGE_PATCH_V8 = {
     "Español": {
@@ -826,6 +838,63 @@ THEMES = {
     },
 }
 
+
+
+# === V18 DAILY FORM COPY PATCH ===
+_DAILY_FORM_COPY = {
+    "Türkçe": {
+        "daily_form_intro": "Önce günün tüm verilerini gir. Analiz ve grafikler sadece butona bastığında oluşur; sayfa veri girerken zıplamaz.",
+        "daily_input_panel": "Günlük Veri Giriş Paneli",
+        "daily_mode": "Günün Modu",
+        "mode_tired": "😴 Yorgun",
+        "mode_normal": "🙂 Normal",
+        "mode_motivated": "🔥 Motive",
+        "mode_deep_work": "🚀 Derin Çalışma",
+        "daily_waiting_message": "Tüm verileri girip analiz butonuna basınca bugünün AI raporu burada oluşacak.",
+    },
+    "English": {
+        "daily_form_intro": "Enter all daily data first. Analysis and charts are generated only after you press the button; the page will not jump while you edit values.",
+        "daily_input_panel": "Daily Data Input Panel",
+        "daily_mode": "Daily Mode",
+        "mode_tired": "😴 Tired",
+        "mode_normal": "🙂 Normal",
+        "mode_motivated": "🔥 Motivated",
+        "mode_deep_work": "🚀 Deep Work",
+        "daily_waiting_message": "Fill all values and press the analysis button to generate today's AI report here.",
+    },
+    "Deutsch": {
+        "daily_form_intro": "Gib zuerst alle Tagesdaten ein. Analyse und Diagramme entstehen erst nach dem Button-Klick; die Seite springt nicht während der Eingabe.",
+        "daily_input_panel": "Tägliches Eingabepanel",
+        "daily_mode": "Tagesmodus",
+        "mode_tired": "😴 Müde",
+        "mode_normal": "🙂 Normal",
+        "mode_motivated": "🔥 Motiviert",
+        "mode_deep_work": "🚀 Deep Work",
+        "daily_waiting_message": "Gib alle Werte ein und klicke auf Analyse, dann erscheint hier der KI-Bericht des Tages.",
+    },
+    "Русский": {
+        "daily_form_intro": "Сначала введи все дневные данные. Анализ и графики появятся только после нажатия кнопки; страница не будет прыгать при вводе.",
+        "daily_input_panel": "Панель дневного ввода",
+        "daily_mode": "Режим дня",
+        "mode_tired": "😴 Устал",
+        "mode_normal": "🙂 Нормально",
+        "mode_motivated": "🔥 Мотивирован",
+        "mode_deep_work": "🚀 Глубокая работа",
+        "daily_waiting_message": "Заполни все значения и нажми кнопку анализа, чтобы создать сегодняшний AI-отчет.",
+    },
+    "Español": {
+        "daily_form_intro": "Primero introduce todos los datos del día. El análisis y los gráficos se generan solo al pulsar el botón; la página no saltará mientras editas.",
+        "daily_input_panel": "Panel de datos diarios",
+        "daily_mode": "Modo del día",
+        "mode_tired": "😴 Cansado",
+        "mode_normal": "🙂 Normal",
+        "mode_motivated": "🔥 Motivado",
+        "mode_deep_work": "🚀 Trabajo profundo",
+        "daily_waiting_message": "Completa todos los valores y pulsa el botón de análisis para generar aquí el informe IA de hoy.",
+    },
+}
+for _lang, _extra in _DAILY_FORM_COPY.items():
+    TRANSLATIONS[_lang].update(_extra)
 
 if "language" not in st.session_state:
     st.session_state.language = "Türkçe"
@@ -1411,6 +1480,31 @@ div[data-testid="stTabs"] div[role="tablist"] {{
 .login-profile-wrap {{
     margin-top: -6px;
 }}
+
+
+
+/* === V18 PREMIUM INPUT POLISH === */
+div[data-testid="stForm"] {
+    padding: 26px !important;
+    border-radius: 24px !important;
+    background: linear-gradient(135deg, rgba(15,23,42,.78), rgba(49,46,129,.25), rgba(251,146,60,.10)) !important;
+    border: 1px solid rgba(148,163,184,.22) !important;
+    box-shadow: 0 18px 46px rgba(0,0,0,.24) !important;
+}
+div[data-testid="stForm"] label p {
+    font-weight: 750 !important;
+    letter-spacing: -0.2px !important;
+}
+div[data-testid="stMetric"] {
+    padding: 14px 16px !important;
+    border-radius: 18px !important;
+    background: rgba(15,23,42,.25) !important;
+    border: 1px solid rgba(148,163,184,.10) !important;
+}
+div[data-testid="stForm"] textarea,
+div[data-testid="stForm"] input {
+    border-radius: 14px !important;
+}
 
 </style>
 """
@@ -2450,26 +2544,57 @@ def render_dashboard_tabs():
     )
 
     with tab1:
-        render_home_booster()
         st.subheader(t["daily_title"])
 
-        col1, col2 = st.columns(2)
+        st.markdown(
+            f"""
+            <div class="info-card" style="padding:26px; margin-bottom:22px;">
+                <h3 style="margin-top:0;">📝 {t['daily_title']}</h3>
+                <p style="opacity:.88; margin-bottom:0;">
+                    {t.get('daily_form_intro', 'Enter your daily data first. The AI analysis will be generated only after you press the button.')}
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        with col1:
-            entry_date = st.date_input(t["date_label"], value=date.today(), key="daily_entry_date")
-            mood_text = st.text_area(t["mood_question"], value=t["default_mood"], key=f"daily_mood_text_{st.session_state.language}")
-            sleep_hours = st.slider(t["sleep"], 0, 12, 7, key="daily_sleep_hours")
-            study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours")
-            task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion")
+        with st.form("daily_tracking_form", clear_on_submit=False):
+            st.markdown(f"### {t.get('daily_input_panel', 'Daily Input Panel')}")
+            col1, col2 = st.columns(2)
 
-        with col2:
-            focus_level = st.slider(t["focus"], 1, 10, 7, key="daily_focus_level")
-            stress_level = st.slider(t["stress"], 1, 10, 4, key="daily_stress_level")
-            exercise_minutes = st.slider(t["exercise_min"], 0, 120, 25, key="daily_exercise_minutes")
-            water_liters = st.slider(t["water"], 0.0, 4.0, 2.0, key="daily_water_liters")
-            nutrition_quality = st.slider(t["nutrition_quality"], 1, 10, 7, key="daily_nutrition_quality")
+            with col1:
+                entry_date = st.date_input(t["date_label"], value=date.today(), key="daily_entry_date_form")
+                mood_mode = st.radio(
+                    t.get("daily_mode", "Daily Mode"),
+                    [
+                        t.get("mode_tired", "😴 Tired"),
+                        t.get("mode_normal", "🙂 Normal"),
+                        t.get("mode_motivated", "🔥 Motivated"),
+                        t.get("mode_deep_work", "🚀 Deep Work"),
+                    ],
+                    horizontal=True,
+                    key=f"daily_mode_{st.session_state.language}",
+                )
+                mood_text = st.text_area(
+                    t["mood_question"],
+                    value=t["default_mood"],
+                    key=f"daily_mood_text_form_{st.session_state.language}",
+                )
+                sleep_hours = st.slider(t["sleep"], 0, 12, 7, key="daily_sleep_hours_form")
+                study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours_form")
+                task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion_form")
 
-        if st.button(t["save_day"], key="save_daily_record_button"):
+            with col2:
+                focus_level = st.slider(t["focus"], 1, 10, 7, key="daily_focus_level_form")
+                stress_level = st.slider(t["stress"], 1, 10, 4, key="daily_stress_level_form")
+                exercise_minutes = st.slider(t["exercise_min"], 0, 120, 25, key="daily_exercise_minutes_form")
+                water_liters = st.slider(t["water"], 0.0, 4.0, 2.0, key="daily_water_liters_form")
+                nutrition_quality = st.slider(t["nutrition_quality"], 1, 10, 7, key="daily_nutrition_quality_form")
+
+            st.markdown("---")
+            submitted = st.form_submit_button(t["save_day"], use_container_width=True)
+
+        if submitted:
             new_row = pd.DataFrame(
                 [
                     {
@@ -2521,50 +2646,75 @@ def render_dashboard_tabs():
             risk_level = t["high_risk"] if risk_score >= 70 else t["medium_risk"] if risk_score >= 45 else t["low_risk"]
             emoji, status_label = get_status_emoji(productivity_score, stress_level, sleep_hours)
 
-            st.divider()
-            st.subheader(t["ai_analysis"])
-
-            c1, c2, c3, c4, c5 = st.columns(5)
-            c1.metric(t["mood_metric"], mood)
-            c2.metric(t["status_metric"], f"{emoji} {status_label}")
-            c3.metric(t["productivity_score"], f"{productivity_score}/100")
-            c4.metric(t["wellness_score"], f"{wellness_score}/100")
-            c5.metric(t["risk_level"], risk_level)
-
             if productivity == "Low":
-                st.warning(t["ai_low_advice"])
+                advice = t["ai_low_advice"]
                 plan = t["plan_low"]
+                coach_style = "warning"
             elif productivity == "Medium":
-                st.info(t["ai_medium_advice"])
+                advice = t["ai_medium_advice"]
                 plan = t["plan_medium"]
+                coach_style = "info"
             else:
-                st.success(t["ai_high_advice"])
+                advice = t["ai_high_advice"]
                 plan = t["plan_high"]
+                coach_style = "success"
 
-            st.write(f"{t['suggested_daily_plan']}: {plan}")
+            st.session_state.last_daily_analysis = {
+                "mood": mood,
+                "status": f"{emoji} {status_label}",
+                "productivity_score": productivity_score,
+                "wellness_score": wellness_score,
+                "risk_level": risk_level,
+                "risk_score": risk_score,
+                "advice": advice,
+                "plan": plan,
+                "coach_style": coach_style,
+                "chart": pd.DataFrame(
+                    {
+                        t["chart_value"]: [
+                            sleep_hours,
+                            study_hours,
+                            focus_level,
+                            stress_level,
+                            exercise_minutes / 10,
+                            task_completion / 10,
+                            water_liters,
+                            nutrition_quality,
+                            sentiment * 10,
+                        ]
+                    },
+                    index=[
+                        t["chart_sleep"], t["chart_study"], t["chart_focus"], t["chart_stress"], t["chart_exercise"],
+                        t["chart_tasks"], t["chart_water"], t["chart_nutrition"], t["chart_sentiment"],
+                    ],
+                ),
+            }
 
-            today_chart = pd.DataFrame(
-                {
-                    t["chart_value"]: [
-                        sleep_hours,
-                        study_hours,
-                        focus_level,
-                        stress_level,
-                        exercise_minutes / 10,
-                        task_completion / 10,
-                        water_liters,
-                        nutrition_quality,
-                        sentiment * 10,
-                    ]
-                },
-                index=[
-                    t["chart_sleep"], t["chart_study"], t["chart_focus"], t["chart_stress"], t["chart_exercise"],
-                    t["chart_tasks"], t["chart_water"], t["chart_nutrition"], t["chart_sentiment"],
-                ],
+        if "last_daily_analysis" in st.session_state:
+            result = st.session_state.last_daily_analysis
+            st.markdown(f"### {t['ai_analysis']}")
+            c1, c2, c3, c4, c5 = st.columns(5)
+            c1.metric(t["mood_metric"], result["mood"])
+            c2.metric(t["status_metric"], result["status"])
+            c3.metric(t["productivity_score"], f"{result['productivity_score']}/100")
+            c4.metric(t["wellness_score"], f"{result['wellness_score']}/100")
+            c5.metric(t["risk_level"], result["risk_level"])
+
+            if result["coach_style"] == "warning":
+                st.warning(result["advice"])
+            elif result["coach_style"] == "success":
+                st.success(result["advice"])
+            else:
+                st.info(result["advice"])
+
+            render_ai_insight_card(
+                t.get("suggested_daily_plan", "Suggested Daily Plan"),
+                result["plan"],
+                "card-purple",
             )
-            st.bar_chart(today_chart)
-
-        render_student_bottom_summary()
+            st.bar_chart(result["chart"])
+        else:
+            st.info(t.get("daily_waiting_message", "Fill the form and press the analysis button to generate today's AI report."))
 
     with tab2:
         x = section_extra_texts()
