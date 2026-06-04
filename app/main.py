@@ -530,6 +530,69 @@ for _lang, _extra in EXTRA_TRANSLATIONS.items():
     TRANSLATIONS[_lang].update(_extra)
 
 
+EXTRA_TRANSLATIONS_ALL_TABS = {
+    "Türkçe": {
+        "date_label":"Tarih", "default_mood":"Bugün odaklanmış ve çalışmaya hazırım.", "ai_analysis":"Yapay Zeka Analizi",
+        "mood_metric":"Ruh Hali", "status_metric":"Durum", "productivity_score":"Verimlilik Skoru", "wellness_score":"Sağlık Skoru", "risk_level":"Risk Seviyesi",
+        "positive":"Pozitif", "negative":"Negatif", "neutral":"Nötr", "high_risk":"Yüksek Risk", "medium_risk":"Orta Risk", "low_risk":"Düşük Risk",
+        "ai_low_advice":"AI Koçu: İş yükünü azalt, su iç, sağlıklı bir öğün ye ve küçük bir görevi tamamla.",
+        "ai_medium_advice":"AI Koçu: Orta düzey görevlerle devam et, çoklu görevden kaçın ve sabit ritmini koru.",
+        "ai_high_advice":"AI Koçu: Verimlilik durumun güçlü. Zor görevlerle başla ve derin çalışma yap.",
+        "plan_low":"25 dk hafif çalışma -> 5 dk mola -> 20 dk tekrar", "plan_medium":"45 dk çalışma -> 10 dk mola -> 45 dk pratik", "plan_high":"60 dk derin çalışma -> 10 dk mola -> 60 dk odaklı çalışma",
+        "suggested_daily_plan":"Önerilen Günlük Plan", "chart_value":"Değer", "chart_sleep":"Uyku", "chart_study":"Çalışma", "chart_focus":"Odak", "chart_stress":"Stres", "chart_exercise":"Egzersiz / 10", "chart_tasks":"Görevler / 10", "chart_water":"Su", "chart_nutrition":"Beslenme", "chart_sentiment":"Duygu x10",
+        "bmi_status":"BMI Durumu", "goal":"Hedef", "food_category":"Kategori", "food_examples":"Örnekler", "food_purpose":"Amaç", "protein":"Protein", "carbohydrate":"Karbonhidrat", "healthy_fat":"Sağlıklı Yağ", "fruit":"Meyve", "vegetable":"Sebze", "hydration":"Hidrasyon",
+        "protein_examples":"Yumurta, tavuk, balık, yoğurt, mercimek", "carb_examples":"Pirinç, yulaf, patates, tam tahıllı ekmek", "fat_examples":"Zeytinyağı, avokado, kuruyemiş, fıstık ezmesi", "fruit_examples":"Muz, elma, orman meyveleri, portakal", "veg_examples":"Brokoli, ıspanak, salata, havuç", "hydration_examples":"Su, maden suyu, şekersiz çay",
+        "protein_purpose":"Kas onarımı ve tokluk", "carb_purpose":"Ders ve antrenman için enerji", "fat_purpose":"Hormonal sağlık ve uzun süreli enerji", "fruit_purpose":"Vitaminler ve hızlı enerji", "veg_purpose":"Mikro besinler ve sindirim", "hydration_purpose":"Odak, toparlanma ve duygu dengesi",
+        "exercise_goal":"Egzersiz Hedefi", "general_health":"Genel Sağlık", "weight_gain_muscle":"Kilo Alma / Kas", "fat_loss":"Yağ Kaybı", "stress_reduction":"Stres Azaltma", "posture_mobility":"Duruş ve Mobilite", "exercise_plan_text":"Bu egzersiz planı fiziksel sağlık, odak, toparlanma ve öğrenci verimliliğini destekler.",
+        "plan_general":["Pazartesi: 30 dk yürüyüş + 10 dk esneme", "Çarşamba: Tüm vücut ağırlık antrenmanı", "Cuma: 30 dk bisiklet veya yürüyüş", "Pazar: Hafif mobilite ve toparlanma"],
+        "plan_muscle":["Pazartesi: Push antrenmanı", "Salı: Pull antrenmanı", "Perşembe: Bacak", "Cumartesi: Tüm vücut güç antrenmanı"],
+        "plan_fat":["Pazartesi: 40 dk tempolu yürüyüş", "Çarşamba: Tüm vücut circuit", "Cuma: Interval kardiyo", "Pazar: Uzun yürüyüş"],
+        "plan_stress":["Pazartesi: 20 dk yürüyüş + nefes", "Çarşamba: Mobilite seansı", "Cuma: Hafif kardiyo", "Pazar: Esneme ve toparlanma"],
+        "plan_posture":["Her gün: 5 dk boyun mobilitesi", "Her gün: 5 dk omuz mobilitesi", "Haftada 3x: Core stabilite", "Haftada 3x: Sırt güçlendirme"],
+        "avg_sleep":"Ort. Uyku", "avg_study":"Ort. Çalışma", "avg_stress":"Ort. Stres", "avg_nutrition":"Ort. Beslenme", "avg_productivity":"Ort. Verimlilik", "sleep_trend":"Uyku Trendi", "stress_trend":"Stres Trendi", "nutrition_trend":"Beslenme Kalitesi Trendi", "study_trend":"Çalışma Trendi", "productivity_trend":"Verimlilik Trendi", "wellness_trend":"Sağlık Trendi", "complete_tracking_data":"Tam Takip Verisi", "training_accuracy":"Eğitim Doğruluğu",
+        "metric":"Metrik", "value":"Değer", "average_sleep":"Ortalama Uyku", "average_study":"Ortalama Çalışma", "average_focus":"Ortalama Odak", "average_stress":"Ortalama Stres", "average_exercise":"Ortalama Egzersiz", "average_nutrition":"Ortalama Beslenme", "average_water":"Ortalama Su Tüketimi", "average_task":"Ortalama Görev Tamamlama", "average_productivity":"Ortalama Verimlilik", "average_wellness":"Ortalama Sağlık", "student_weekly_status_note":"Öğrenci Haftalık Durum Notu", "download_csv":"Haftalık Raporu CSV Olarak İndir", "download_pdf":"Haftalık Raporu PDF Olarak İndir", "pdf_not_active":"PDF dışa aktarma aktif değil. requirements.txt dosyasına reportlab ekleyip kur.",
+        "smart_intro":"Bu bölüm sistemin manuel girişten otomatik öğrenci takibine nasıl evrilebileceğini gösterir.", "smartwatch_sleep_tracking":"Akıllı Saat Uyku Takibi", "smart_sleep_text":"Gelecek sürümler Apple Watch, Fitbit, Garmin veya uyku takip uygulamalarından gerçek uyku döngüsü verisi toplayabilir.", "deep_sleep_duration":"Derin uyku süresi", "rem_sleep":"REM uykusu", "sleep_quality_score":"Uyku kalite skoru", "recovery_score":"Toparlanma skoru", "exercise_tracking":"Egzersiz Takibi", "exercise_tracking_text":"Sistem egzersiz ve aktivite verilerini verimlilik analiziyle bağlayabilir.", "step_count":"Adım sayısı", "training_duration":"Antrenman süresi", "activity_intensity":"Aktivite yoğunluğu", "energy_score":"Enerji skoru", "weekly_reports":"Haftalık Raporlar", "weekly_reports_text":"Sistem otomatik akademik, sağlık, beslenme ve egzersiz raporları üretebilir.", "long_term_behavior_analysis":"Uzun Vadeli Davranış Analizi", "long_term_behavior_text":"Sistem uyku-verimlilik ilişkisi, stres etkisi ve çalışma istikrarı gibi örüntüleri tespit edebilir.",
+        "sleep_quality":"Uyku Kalitesi", "deep_sleep":"Derin Uyku", "recovery":"Toparlanma", "exercise_minutes_label":"Egzersiz Dakikaları", "steps_1000":"Adım / 1000", "mon":"Pzt", "tue":"Sal", "wed":"Çar", "thu":"Per", "fri":"Cum", "sat":"Cmt", "sun":"Paz",
+        "underweight":"Zayıf", "normal":"Normal", "overweight":"Fazla Kilolu", "high_range":"Yüksek Aralık", "bmi_under_advice":"Sağlıklı kalori, protein alımı ve güç antrenmanını artır.", "bmi_normal_advice":"Dengeli beslenme ve düzenli egzersizi koru.", "bmi_over_advice":"Kalori kontrolü, yürüyüş ve düzenli antrenmana odaklan.", "bmi_high_advice":"Yapılandırılmış plan ve profesyonel destek önerilir."
+    },
+    "English": {
+        "date_label":"Date", "default_mood":"I feel focused and ready to study.", "ai_analysis":"AI Analysis", "mood_metric":"Mood", "status_metric":"Status", "productivity_score":"Productivity Score", "wellness_score":"Wellness Score", "risk_level":"Risk Level", "positive":"Positive", "negative":"Negative", "neutral":"Neutral", "high_risk":"High Risk", "medium_risk":"Medium Risk", "low_risk":"Low Risk", "ai_low_advice":"AI Coach: Reduce workload, drink water, eat a healthy meal, and complete one small task.", "ai_medium_advice":"AI Coach: Continue with moderate tasks, avoid multitasking, and keep a stable rhythm.", "ai_high_advice":"AI Coach: Strong productivity state. Start with difficult tasks and use deep work.", "plan_low":"25 min light study -> 5 min break -> 20 min review", "plan_medium":"45 min study -> 10 min break -> 45 min practice", "plan_high":"60 min deep work -> 10 min break -> 60 min focused study", "suggested_daily_plan":"Suggested Daily Plan", "chart_value":"Value", "chart_sleep":"Sleep", "chart_study":"Study", "chart_focus":"Focus", "chart_stress":"Stress", "chart_exercise":"Exercise / 10", "chart_tasks":"Tasks / 10", "chart_water":"Water", "chart_nutrition":"Nutrition", "chart_sentiment":"Sentiment x10", "bmi_status":"BMI Status", "goal":"Goal", "food_category":"Category", "food_examples":"Examples", "food_purpose":"Purpose", "protein":"Protein", "carbohydrate":"Carbohydrate", "healthy_fat":"Healthy Fat", "fruit":"Fruit", "vegetable":"Vegetable", "hydration":"Hydration", "protein_examples":"Eggs, chicken, fish, yogurt, lentils", "carb_examples":"Rice, oats, potatoes, whole grain bread", "fat_examples":"Olive oil, avocado, nuts, peanut butter", "fruit_examples":"Banana, apple, berries, orange", "veg_examples":"Broccoli, spinach, salad, carrots", "hydration_examples":"Water, mineral water, unsweetened tea", "protein_purpose":"Muscle repair and satiety", "carb_purpose":"Energy for studying and training", "fat_purpose":"Hormonal health and long-term energy", "fruit_purpose":"Vitamins and quick energy", "veg_purpose":"Micronutrients and digestion", "hydration_purpose":"Focus, recovery, and mood stability", "exercise_goal":"Exercise Goal", "general_health":"General Health", "weight_gain_muscle":"Weight Gain / Muscle", "fat_loss":"Fat Loss", "stress_reduction":"Stress Reduction", "posture_mobility":"Posture & Mobility", "exercise_plan_text":"This exercise plan supports physical health, focus, recovery and student productivity.", "plan_general":["Monday: 30 min walking + 10 min stretching", "Wednesday: Full body bodyweight training", "Friday: 30 min cycling or walking", "Sunday: Light mobility and recovery"], "plan_muscle":["Monday: Push training", "Tuesday: Pull training", "Thursday: Legs", "Saturday: Full body strength training"], "plan_fat":["Monday: 40 min brisk walking", "Wednesday: Full body circuit", "Friday: Interval cardio", "Sunday: Long walk"], "plan_stress":["Monday: 20 min walk + breathing", "Wednesday: Mobility session", "Friday: Light cardio", "Sunday: Stretching and recovery"], "plan_posture":["Daily: 5 min neck mobility", "Daily: 5 min shoulder mobility", "3x/week: Core stability", "3x/week: Back strengthening"], "avg_sleep":"Avg Sleep", "avg_study":"Avg Study", "avg_stress":"Avg Stress", "avg_nutrition":"Avg Nutrition", "avg_productivity":"Avg Productivity", "sleep_trend":"Sleep Trend", "stress_trend":"Stress Trend", "nutrition_trend":"Nutrition Quality Trend", "study_trend":"Study Trend", "productivity_trend":"Productivity Trend", "wellness_trend":"Wellness Trend", "complete_tracking_data":"Complete Tracking Data", "training_accuracy":"Training Accuracy", "metric":"Metric", "value":"Value", "average_sleep":"Average Sleep", "average_study":"Average Study", "average_focus":"Average Focus", "average_stress":"Average Stress", "average_exercise":"Average Exercise", "average_nutrition":"Average Nutrition", "average_water":"Average Water Intake", "average_task":"Average Task Completion", "average_productivity":"Average Productivity", "average_wellness":"Average Wellness", "student_weekly_status_note":"Student Weekly Status Note", "download_csv":"Download Weekly Report as CSV", "download_pdf":"Download Weekly Report as PDF", "pdf_not_active":"PDF export is not active. Add reportlab to requirements.txt and install it.", "smart_intro":"This section shows how the system can evolve from manual input into automated student tracking.", "smartwatch_sleep_tracking":"Smartwatch Sleep Tracking", "smart_sleep_text":"Future versions can collect real sleep cycle data from Apple Watch, Fitbit, Garmin, or sleep tracking apps.", "deep_sleep_duration":"Deep sleep duration", "rem_sleep":"REM sleep", "sleep_quality_score":"Sleep quality score", "recovery_score":"Recovery score", "exercise_tracking":"Exercise Tracking", "exercise_tracking_text":"The system can connect exercise and activity data with productivity analysis.", "step_count":"Step count", "training_duration":"Training duration", "activity_intensity":"Activity intensity", "energy_score":"Energy score", "weekly_reports":"Weekly Reports", "weekly_reports_text":"The system can automatically generate weekly academic, wellness, nutrition and exercise reports.", "long_term_behavior_analysis":"Long-Term Behavior Analysis", "long_term_behavior_text":"The system can detect patterns such as sleep-productivity relationship, stress impact, and study consistency.", "sleep_quality":"Sleep Quality", "deep_sleep":"Deep Sleep", "recovery":"Recovery", "exercise_minutes_label":"Exercise Minutes", "steps_1000":"Steps / 1000", "mon":"Mon", "tue":"Tue", "wed":"Wed", "thu":"Thu", "fri":"Fri", "sat":"Sat", "sun":"Sun", "underweight":"Underweight", "normal":"Normal", "overweight":"Overweight", "high_range":"High Range", "bmi_under_advice":"Increase healthy calories, protein intake, and strength training.", "bmi_normal_advice":"Maintain balanced nutrition and consistent exercise.", "bmi_over_advice":"Focus on calorie control, walking, and regular training.", "bmi_high_advice":"A structured plan and professional guidance are recommended."
+    },
+    "Deutsch": {
+        "date_label":"Datum", "default_mood":"Ich fühle mich fokussiert und bereit zu lernen.", "ai_analysis":"KI-Analyse", "mood_metric":"Stimmung", "status_metric":"Status", "productivity_score":"Produktivitätswert", "wellness_score":"Wellness-Wert", "risk_level":"Risikostufe", "positive":"Positiv", "negative":"Negativ", "neutral":"Neutral", "high_risk":"Hohes Risiko", "medium_risk":"Mittleres Risiko", "low_risk":"Niedriges Risiko", "ai_low_advice":"KI-Coach: Reduziere die Arbeitslast, trinke Wasser, iss eine gesunde Mahlzeit und erledige eine kleine Aufgabe.", "ai_medium_advice":"KI-Coach: Mach mit mittleren Aufgaben weiter, vermeide Multitasking und halte einen stabilen Rhythmus.", "ai_high_advice":"KI-Coach: Starker Produktivitätszustand. Beginne mit schwierigen Aufgaben und nutze Deep Work.", "plan_low":"25 Min. leichtes Lernen -> 5 Min. Pause -> 20 Min. Wiederholung", "plan_medium":"45 Min. Lernen -> 10 Min. Pause -> 45 Min. Übung", "plan_high":"60 Min. Deep Work -> 10 Min. Pause -> 60 Min. fokussiertes Lernen", "suggested_daily_plan":"Empfohlener Tagesplan", "chart_value":"Wert", "chart_sleep":"Schlaf", "chart_study":"Lernen", "chart_focus":"Fokus", "chart_stress":"Stress", "chart_exercise":"Training / 10", "chart_tasks":"Aufgaben / 10", "chart_water":"Wasser", "chart_nutrition":"Ernährung", "chart_sentiment":"Stimmung x10", "bmi_status":"BMI-Status", "goal":"Ziel", "food_category":"Kategorie", "food_examples":"Beispiele", "food_purpose":"Zweck", "protein":"Protein", "carbohydrate":"Kohlenhydrate", "healthy_fat":"Gesunde Fette", "fruit":"Obst", "vegetable":"Gemüse", "hydration":"Hydration", "protein_examples":"Eier, Hähnchen, Fisch, Joghurt, Linsen", "carb_examples":"Reis, Hafer, Kartoffeln, Vollkornbrot", "fat_examples":"Olivenöl, Avocado, Nüsse, Erdnussbutter", "fruit_examples":"Banane, Apfel, Beeren, Orange", "veg_examples":"Brokkoli, Spinat, Salat, Karotten", "hydration_examples":"Wasser, Mineralwasser, ungesüßter Tee", "protein_purpose":"Muskelreparatur und Sättigung", "carb_purpose":"Energie fürs Lernen und Training", "fat_purpose":"Hormonelle Gesundheit und langfristige Energie", "fruit_purpose":"Vitamine und schnelle Energie", "veg_purpose":"Mikronährstoffe und Verdauung", "hydration_purpose":"Fokus, Erholung und Stimmungsstabilität", "exercise_goal":"Trainingsziel", "general_health":"Allgemeine Gesundheit", "weight_gain_muscle":"Gewichtszunahme / Muskelaufbau", "fat_loss":"Fettverlust", "stress_reduction":"Stressreduktion", "posture_mobility":"Haltung & Mobilität", "exercise_plan_text":"Dieser Trainingsplan unterstützt körperliche Gesundheit, Fokus, Erholung und studentische Produktivität.", "plan_general":["Montag: 30 Min. Gehen + 10 Min. Dehnen", "Mittwoch: Ganzkörpertraining mit Körpergewicht", "Freitag: 30 Min. Radfahren oder Gehen", "Sonntag: Leichte Mobilität und Erholung"], "plan_muscle":["Montag: Push-Training", "Dienstag: Pull-Training", "Donnerstag: Beine", "Samstag: Ganzkörper-Krafttraining"], "plan_fat":["Montag: 40 Min. zügiges Gehen", "Mittwoch: Ganzkörper-Zirkel", "Freitag: Intervall-Cardio", "Sonntag: Langer Spaziergang"], "plan_stress":["Montag: 20 Min. Gehen + Atmung", "Mittwoch: Mobilitätseinheit", "Freitag: Leichtes Cardio", "Sonntag: Dehnen und Erholung"], "plan_posture":["Täglich: 5 Min. Nackenmobilität", "Täglich: 5 Min. Schultermobilität", "3x/Woche: Core-Stabilität", "3x/Woche: Rückenkräftigung"], "avg_sleep":"Ø Schlaf", "avg_study":"Ø Lernen", "avg_stress":"Ø Stress", "avg_nutrition":"Ø Ernährung", "avg_productivity":"Ø Produktivität", "sleep_trend":"Schlaftrend", "stress_trend":"Stresstrend", "nutrition_trend":"Trend der Ernährungsqualität", "study_trend":"Lerntrend", "productivity_trend":"Produktivitätstrend", "wellness_trend":"Wellness-Trend", "complete_tracking_data":"Vollständige Tracking-Daten", "training_accuracy":"Trainingsgenauigkeit", "metric":"Metrik", "value":"Wert", "average_sleep":"Durchschnittlicher Schlaf", "average_study":"Durchschnittliches Lernen", "average_focus":"Durchschnittlicher Fokus", "average_stress":"Durchschnittlicher Stress", "average_exercise":"Durchschnittliches Training", "average_nutrition":"Durchschnittliche Ernährung", "average_water":"Durchschnittliche Wasseraufnahme", "average_task":"Durchschnittliche Aufgabenerfüllung", "average_productivity":"Durchschnittliche Produktivität", "average_wellness":"Durchschnittliches Wellness", "student_weekly_status_note":"Wöchentliche Statusnotiz des Studenten", "download_csv":"Wochenbericht als CSV herunterladen", "download_pdf":"Wochenbericht als PDF herunterladen", "pdf_not_active":"PDF-Export ist nicht aktiv. Füge reportlab zu requirements.txt hinzu und installiere es.", "smart_intro":"Dieser Abschnitt zeigt, wie sich das System von manueller Eingabe zu automatischem Studententracking entwickeln kann.", "smartwatch_sleep_tracking":"Smartwatch-Schlaftracking", "smart_sleep_text":"Zukünftige Versionen können echte Schlafzyklusdaten von Apple Watch, Fitbit, Garmin oder Schlaftracking-Apps sammeln.", "deep_sleep_duration":"Tiefschlafdauer", "rem_sleep":"REM-Schlaf", "sleep_quality_score":"Schlafqualitätswert", "recovery_score":"Erholungswert", "exercise_tracking":"Trainingstracking", "exercise_tracking_text":"Das System kann Trainings- und Aktivitätsdaten mit Produktivitätsanalyse verbinden.", "step_count":"Schrittzahl", "training_duration":"Trainingsdauer", "activity_intensity":"Aktivitätsintensität", "energy_score":"Energiewert", "weekly_reports":"Wochenberichte", "weekly_reports_text":"Das System kann automatisch akademische, Wellness-, Ernährungs- und Trainingsberichte erstellen.", "long_term_behavior_analysis":"Langfristige Verhaltensanalyse", "long_term_behavior_text":"Das System kann Muster wie Schlaf-Produktivitäts-Beziehung, Stresseffekt und Lernkonsistenz erkennen.", "sleep_quality":"Schlafqualität", "deep_sleep":"Tiefschlaf", "recovery":"Erholung", "exercise_minutes_label":"Trainingsminuten", "steps_1000":"Schritte / 1000", "mon":"Mo", "tue":"Di", "wed":"Mi", "thu":"Do", "fri":"Fr", "sat":"Sa", "sun":"So", "underweight":"Untergewicht", "normal":"Normal", "overweight":"Übergewicht", "high_range":"Hoher Bereich", "bmi_under_advice":"Erhöhe gesunde Kalorien, Proteinzufuhr und Krafttraining.", "bmi_normal_advice":"Behalte ausgewogene Ernährung und regelmäßiges Training bei.", "bmi_over_advice":"Konzentriere dich auf Kalorienkontrolle, Gehen und regelmäßiges Training.", "bmi_high_advice":"Ein strukturierter Plan und professionelle Beratung werden empfohlen."
+    },
+    "Русский": {},
+    "Español": {}
+}
+# Fill remaining languages with English fallback for missing keys, then override key visible labels minimally.
+EXTRA_TRANSLATIONS_ALL_TABS["Русский"].update(EXTRA_TRANSLATIONS_ALL_TABS["English"])
+EXTRA_TRANSLATIONS_ALL_TABS["Русский"].update({"date_label":"Дата", "ai_analysis":"ИИ-анализ", "mood_metric":"Настроение", "status_metric":"Статус", "risk_level":"Уровень риска", "exercise_goal":"Цель упражнения", "avg_sleep":"Сред. сон", "avg_study":"Сред. учеба", "avg_stress":"Сред. стресс", "avg_nutrition":"Сред. питание", "avg_productivity":"Сред. продуктивность", "smart_intro":"Этот раздел показывает, как система может перейти от ручного ввода к автоматическому отслеживанию студента."})
+EXTRA_TRANSLATIONS_ALL_TABS["Español"].update(EXTRA_TRANSLATIONS_ALL_TABS["English"])
+EXTRA_TRANSLATIONS_ALL_TABS["Español"].update({"date_label":"Fecha", "ai_analysis":"Análisis IA", "mood_metric":"Estado de ánimo", "status_metric":"Estado", "risk_level":"Nivel de riesgo", "exercise_goal":"Objetivo de ejercicio", "avg_sleep":"Sueño prom.", "avg_study":"Estudio prom.", "avg_stress":"Estrés prom.", "avg_nutrition":"Nutrición prom.", "avg_productivity":"Productividad prom.", "smart_intro":"Esta sección muestra cómo el sistema puede evolucionar desde entrada manual hacia seguimiento automático del estudiante."})
+for _lang, _extra in EXTRA_TRANSLATIONS_ALL_TABS.items():
+    TRANSLATIONS[_lang].update(_extra)
+
+# Small UI labels used in profile/PDF/model areas
+for _lang in TRANSLATIONS:
+    TRANSLATIONS[_lang].setdefault("faculty_software", "Software Engineering")
+    TRANSLATIONS[_lang].setdefault("goal_improve_productivity", "Improve Productivity")
+    TRANSLATIONS[_lang].setdefault("goal_gain_weight", "Gain Weight")
+    TRANSLATIONS[_lang].setdefault("goal_lose_fat", "Lose Fat")
+    TRANSLATIONS[_lang].setdefault("goal_reduce_stress", "Reduce Stress")
+    TRANSLATIONS[_lang].setdefault("goal_improve_sleep", "Improve Sleep")
+    TRANSLATIONS[_lang].setdefault("goal_build_discipline", "Build Discipline")
+    TRANSLATIONS[_lang].setdefault("importance", "Importance")
+    TRANSLATIONS[_lang].setdefault("pdf_title", "AI Student Weekly Performance Report")
+    TRANSLATIONS[_lang].setdefault("student_label", "Student")
+    TRANSLATIONS[_lang].setdefault("student_status_summary", "Student Status Summary")
+    TRANSLATIONS[_lang].setdefault("weekly_metrics", "Weekly Metrics")
+    TRANSLATIONS[_lang].setdefault("ai_coach_recommendations", "AI Coach Recommendations")
+TRANSLATIONS["Türkçe"].update({"faculty_software":"Yazılım Mühendisliği", "goal_improve_productivity":"Verimliliği Artır", "goal_gain_weight":"Kilo Al", "goal_lose_fat":"Yağ Kaybet", "goal_reduce_stress":"Stresi Azalt", "goal_improve_sleep":"Uykuyu İyileştir", "goal_build_discipline":"Disiplin Kur", "importance":"Önem", "pdf_title":"AI Öğrenci Haftalık Performans Raporu", "student_label":"Öğrenci", "student_status_summary":"Öğrenci Durum Özeti", "weekly_metrics":"Haftalık Metrikler", "ai_coach_recommendations":"AI Koç Önerileri"})
+TRANSLATIONS["Deutsch"].update({"faculty_software":"Softwaretechnik", "goal_improve_productivity":"Produktivität steigern", "goal_gain_weight":"Gewicht zunehmen", "goal_lose_fat":"Fett verlieren", "goal_reduce_stress":"Stress reduzieren", "goal_improve_sleep":"Schlaf verbessern", "goal_build_discipline":"Disziplin aufbauen", "importance":"Wichtigkeit", "pdf_title":"KI-Wochenbericht zur Studentenleistung", "student_label":"Student", "student_status_summary":"Statuszusammenfassung", "weekly_metrics":"Wöchentliche Metriken", "ai_coach_recommendations":"KI-Coach-Empfehlungen"})
+TRANSLATIONS["Русский"].update({"faculty_software":"Программная инженерия", "goal_improve_productivity":"Повысить продуктивность", "goal_gain_weight":"Набрать вес", "goal_lose_fat":"Снизить жир", "goal_reduce_stress":"Снизить стресс", "goal_improve_sleep":"Улучшить сон", "goal_build_discipline":"Развить дисциплину", "importance":"Важность", "pdf_title":"Еженедельный отчет ИИ о результатах студента", "student_label":"Студент", "student_status_summary":"Сводка статуса студента", "weekly_metrics":"Недельные метрики", "ai_coach_recommendations":"Рекомендации ИИ-коуча"})
+TRANSLATIONS["Español"].update({"faculty_software":"Ingeniería de software", "goal_improve_productivity":"Aumentar productividad", "goal_gain_weight":"Ganar peso", "goal_lose_fat":"Perder grasa", "goal_reduce_stress":"Reducir estrés", "goal_improve_sleep":"Mejorar sueño", "goal_build_discipline":"Crear disciplina", "importance":"Importancia", "pdf_title":"Informe semanal de rendimiento estudiantil con IA", "student_label":"Estudiante", "student_status_summary":"Resumen del estado del estudiante", "weekly_metrics":"Métricas semanales", "ai_coach_recommendations":"Recomendaciones del coach IA"})
+
+
 THEMES = {
     "Neon Blue": {
         "primary": "#38bdf8",
@@ -1346,12 +1409,12 @@ def save_daily_record_to_db(row):
 
 def get_bmi_status(bmi):
     if bmi < 18.5:
-        return "Underweight", "Increase healthy calories, protein intake, and strength training."
+        return t["underweight"], t["bmi_under_advice"]
     if bmi < 25:
-        return "Normal", "Maintain balanced nutrition and consistent exercise."
+        return t["normal"], t["bmi_normal_advice"]
     if bmi < 30:
-        return "Overweight", "Focus on calorie control, walking, and regular training."
-    return "High Range", "A structured plan and professional guidance are recommended."
+        return t["overweight"], t["bmi_over_advice"]
+    return t["high_range"], t["bmi_high_advice"]
 
 
 def get_status_emoji(avg_productivity, avg_stress, avg_sleep):
@@ -1438,23 +1501,23 @@ def create_pdf_report(profile, weekly_summary, recommendations, status_note):
     y = height - 50
 
     pdf.setFont("Helvetica-Bold", 18)
-    pdf.drawString(50, y, "AI Student Weekly Performance Report")
+    pdf.drawString(50, y, t["pdf_title"])
     y -= 35
     pdf.setFont("Helvetica", 11)
 
     for line in [
-        f"Student: {profile.get('name', 'Student')}",
+        f"{t['student_label']}: {profile.get('name', 'Student')}",
         f"Student ID: {profile.get('student_id', '0000')}",
-        f"Faculty: {profile.get('faculty', 'Software Engineering')}",
-        f"Semester: {profile.get('semester', 2)}",
-        f"Goal: {profile.get('goal', 'Improve Productivity')}",
+        f"{t['faculty']}: {profile.get('faculty', t['faculty_software'])}",
+        f"{t['semester']}: {profile.get('semester', 2)}",
+        f"{t['goal']}: {profile.get('goal', t['goal_improve_productivity'])}",
     ]:
         pdf.drawString(50, y, line)
         y -= 18
 
     y -= 20
     pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(50, y, "Student Status Summary")
+    pdf.drawString(50, y, t["student_status_summary"])
     y -= 22
     pdf.setFont("Helvetica", 10)
 
@@ -1464,17 +1527,17 @@ def create_pdf_report(profile, weekly_summary, recommendations, status_note):
 
     y -= 15
     pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(50, y, "Weekly Metrics")
+    pdf.drawString(50, y, t["weekly_metrics"])
     y -= 25
     pdf.setFont("Helvetica", 11)
 
     for _, row in weekly_summary.iterrows():
-        pdf.drawString(60, y, f"{row['Metric']}: {row['Value']}")
+        pdf.drawString(60, y, f"{row[t['metric']]}: {row[t['value']]}")
         y -= 18
 
     y -= 20
     pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(50, y, "AI Coach Recommendations")
+    pdf.drawString(50, y, t["ai_coach_recommendations"])
     y -= 25
     pdf.setFont("Helvetica", 10)
 
@@ -1551,7 +1614,7 @@ def render_login_profile():
     with col2:
         faculty = st.selectbox(
             t["faculty"],
-            ["Yazılım Mühendisliği", "Computer Science", "AI Engineering", "Business", "Design"],
+            [t["faculty_software"], "Computer Science", "AI Engineering", "Business", "Design"],
             index=0,
         )
         semester = st.slider(t["semester"], 1, 8, st.session_state.profile["semester"])
@@ -1560,7 +1623,7 @@ def render_login_profile():
         age = st.number_input(t["age"], min_value=10, max_value=80, value=st.session_state.profile["age"])
         goal = st.selectbox(
             t["main_goal"],
-            ["Verimliliği Artır", "Kilo Al", "Yağ Kaybet", "Stresi Azalt", "Uykuyu İyileştir", "Disiplin Kur"],
+            [t["goal_improve_productivity"], t["goal_gain_weight"], t["goal_lose_fat"], t["goal_reduce_stress"], t["goal_improve_sleep"], t["goal_build_discipline"]],
             index=0,
         )
 
@@ -1593,7 +1656,7 @@ def render_login_profile():
 
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("BMI", bmi)
-    m2.metric("BMI Status", bmi_status)
+    m2.metric(t["bmi_status"], bmi_status)
     m3.metric(t["semester"], semester)
     m4.metric(t["main_goal"], goal)
 
@@ -1714,8 +1777,8 @@ def render_dashboard_tabs():
         col1, col2 = st.columns(2)
 
         with col1:
-            entry_date = st.date_input("Date", value=date.today(), key="daily_entry_date")
-            mood_text = st.text_area(t["mood_question"], value="I feel focused and ready to study.", key="daily_mood_text")
+            entry_date = st.date_input(t["date_label"], value=date.today(), key="daily_entry_date")
+            mood_text = st.text_area(t["mood_question"], value=t["default_mood"], key="daily_mood_text")
             sleep_hours = st.slider(t["sleep"], 0, 12, 7, key="daily_sleep_hours")
             study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours")
             task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion")
@@ -1775,35 +1838,35 @@ def render_dashboard_tabs():
             productivity_score = temp["productivity_score"].iloc[0]
             wellness_score = temp["wellness_score"].iloc[0]
             risk_score = temp["risk_score"].iloc[0]
-            mood = "Positive" if sentiment >= 0.05 else "Negative" if sentiment <= -0.05 else "Neutral"
-            risk_level = "High Risk" if risk_score >= 70 else "Medium Risk" if risk_score >= 45 else "Low Risk"
+            mood = t["positive"] if sentiment >= 0.05 else t["negative"] if sentiment <= -0.05 else t["neutral"]
+            risk_level = t["high_risk"] if risk_score >= 70 else t["medium_risk"] if risk_score >= 45 else t["low_risk"]
             emoji, status_label = get_status_emoji(productivity_score, stress_level, sleep_hours)
 
             st.divider()
-            st.subheader("AI Analysis")
+            st.subheader(t["ai_analysis"])
 
             c1, c2, c3, c4, c5 = st.columns(5)
-            c1.metric("Mood", mood)
-            c2.metric("Status", f"{emoji} {status_label}")
-            c3.metric("Productivity Score", f"{productivity_score}/100")
-            c4.metric("Wellness Score", f"{wellness_score}/100")
-            c5.metric("Risk Level", risk_level)
+            c1.metric(t["mood_metric"], mood)
+            c2.metric(t["status_metric"], f"{emoji} {status_label}")
+            c3.metric(t["productivity_score"], f"{productivity_score}/100")
+            c4.metric(t["wellness_score"], f"{wellness_score}/100")
+            c5.metric(t["risk_level"], risk_level)
 
             if productivity == "Low":
-                st.warning("AI Coach: Reduce workload, drink water, eat a healthy meal, and complete one small task.")
-                plan = "25 min light study -> 5 min break -> 20 min review"
+                st.warning(t["ai_low_advice"])
+                plan = t["plan_low"]
             elif productivity == "Medium":
-                st.info("AI Coach: Continue with moderate tasks, avoid multitasking, and keep a stable rhythm.")
-                plan = "45 min study -> 10 min break -> 45 min practice"
+                st.info(t["ai_medium_advice"])
+                plan = t["plan_medium"]
             else:
-                st.success("AI Coach: Strong productivity state. Start with difficult tasks and use deep work.")
-                plan = "60 min deep work -> 10 min break -> 60 min focused study"
+                st.success(t["ai_high_advice"])
+                plan = t["plan_high"]
 
-            st.write(f"Suggested Daily Plan: {plan}")
+            st.write(f"{t['suggested_daily_plan']}: {plan}")
 
             today_chart = pd.DataFrame(
                 {
-                    "Value": [
+                    t["chart_value"]: [
                         sleep_hours,
                         study_hours,
                         focus_level,
@@ -1816,8 +1879,8 @@ def render_dashboard_tabs():
                     ]
                 },
                 index=[
-                    "Sleep", "Study", "Focus", "Stress", "Exercise / 10",
-                    "Tasks / 10", "Water", "Nutrition", "Sentiment x10",
+                    t["chart_sleep"], t["chart_study"], t["chart_focus"], t["chart_stress"], t["chart_exercise"],
+                    t["chart_tasks"], t["chart_water"], t["chart_nutrition"], t["chart_sentiment"],
                 ],
             )
             st.bar_chart(today_chart)
@@ -1833,28 +1896,28 @@ def render_dashboard_tabs():
 
         col1, col2, col3 = st.columns(3)
         col1.metric("BMI", bmi)
-        col2.metric("Status", bmi_status)
-        col3.metric("Goal", goal)
+        col2.metric(t["bmi_status"], bmi_status)
+        col3.metric(t["goal"], goal)
         st.info(bmi_advice)
 
         food_data = pd.DataFrame(
             {
-                "Category": ["Protein", "Carbohydrate", "Healthy Fat", "Fruit", "Vegetable", "Hydration"],
-                "Examples": [
-                    "Eggs, chicken, fish, yogurt, lentils",
-                    "Rice, oats, potatoes, whole grain bread",
-                    "Olive oil, avocado, nuts, peanut butter",
-                    "Banana, apple, berries, orange",
-                    "Broccoli, spinach, salad, carrots",
-                    "Water, mineral water, unsweetened tea",
+                t["food_category"]: [t["protein"], t["carbohydrate"], t["healthy_fat"], t["fruit"], t["vegetable"], t["hydration"]],
+                t["food_examples"]: [
+                    t["protein_examples"],
+                    t["carb_examples"],
+                    t["fat_examples"],
+                    t["fruit_examples"],
+                    t["veg_examples"],
+                    t["hydration_examples"],
                 ],
-                "Purpose": [
-                    "Muscle repair and satiety",
-                    "Energy for studying and training",
-                    "Hormonal health and long-term energy",
-                    "Vitamins and quick energy",
-                    "Micronutrients and digestion",
-                    "Focus, recovery, and mood stability",
+                t["food_purpose"]: [
+                    t["protein_purpose"],
+                    t["carb_purpose"],
+                    t["fat_purpose"],
+                    t["fruit_purpose"],
+                    t["veg_purpose"],
+                    t["hydration_purpose"],
                 ],
             }
         )
@@ -1863,46 +1926,21 @@ def render_dashboard_tabs():
     with tab3:
         st.subheader(t["exercise"])
         fitness_goal = st.selectbox(
-            "Exercise Goal",
-            ["General Health", "Weight Gain / Muscle", "Fat Loss", "Stress Reduction", "Posture & Mobility"],
+            t["exercise_goal"],
+            [t["general_health"], t["weight_gain_muscle"], t["fat_loss"], t["stress_reduction"], t["posture_mobility"]],
         )
         plans = {
-            "General Health": [
-                "Monday: 30 min walking + 10 min stretching",
-                "Wednesday: Full body bodyweight training",
-                "Friday: 30 min cycling or walking",
-                "Sunday: Light mobility and recovery",
-            ],
-            "Weight Gain / Muscle": [
-                "Monday: Push training",
-                "Tuesday: Pull training",
-                "Thursday: Legs",
-                "Saturday: Full body strength training",
-            ],
-            "Fat Loss": [
-                "Monday: 40 min brisk walking",
-                "Wednesday: Full body circuit",
-                "Friday: Interval cardio",
-                "Sunday: Long walk",
-            ],
-            "Stress Reduction": [
-                "Monday: 20 min walk + breathing",
-                "Wednesday: Mobility session",
-                "Friday: Light cardio",
-                "Sunday: Stretching and recovery",
-            ],
-            "Posture & Mobility": [
-                "Daily: 5 min neck mobility",
-                "Daily: 5 min shoulder mobility",
-                "3x/week: Core stability",
-                "3x/week: Back strengthening",
-            ],
+            t["general_health"]: t["plan_general"],
+            t["weight_gain_muscle"]: t["plan_muscle"],
+            t["fat_loss"]: t["plan_fat"],
+            t["stress_reduction"]: t["plan_stress"],
+            t["posture_mobility"]: t["plan_posture"],
         }
         st.markdown(
             f"""
             <div class="card-green">
             <h3>{fitness_goal}</h3>
-            <p>This exercise plan supports physical health, focus, recovery and student productivity.</p>
+            <p>{t["exercise_plan_text"]}</p>
             </div>
             """,
             unsafe_allow_html=True,
@@ -1917,29 +1955,29 @@ def render_dashboard_tabs():
 
         st.subheader(t["analytics"])
         m1, m2, m3, m4, m5 = st.columns(5)
-        m1.metric("Avg Sleep", round(records["sleep_hours"].mean(), 2))
-        m2.metric("Avg Study", round(records["study_hours"].mean(), 2))
-        m3.metric("Avg Stress", round(records["stress_level"].mean(), 2))
-        m4.metric("Avg Nutrition", round(records["nutrition_quality"].mean(), 2))
-        m5.metric("Avg Productivity", round(records["productivity_score"].mean(), 2))
+        m1.metric(t["avg_sleep"], round(records["sleep_hours"].mean(), 2))
+        m2.metric(t["avg_study"], round(records["study_hours"].mean(), 2))
+        m3.metric(t["avg_stress"], round(records["stress_level"].mean(), 2))
+        m4.metric(t["avg_nutrition"], round(records["nutrition_quality"].mean(), 2))
+        m5.metric(t["avg_productivity"], round(records["productivity_score"].mean(), 2))
 
         col1, col2 = st.columns(2)
         with col1:
-            st.subheader("Sleep Trend")
+            st.subheader(t["sleep_trend"])
             st.line_chart(dashboard["sleep_hours"])
-            st.subheader("Stress Trend")
+            st.subheader(t["stress_trend"])
             st.line_chart(dashboard["stress_level"])
-            st.subheader("Nutrition Quality Trend")
+            st.subheader(t["nutrition_trend"])
             st.line_chart(dashboard["nutrition_quality"])
         with col2:
-            st.subheader("Study Trend")
+            st.subheader(t["study_trend"])
             st.line_chart(dashboard["study_hours"])
-            st.subheader("Productivity Trend")
+            st.subheader(t["productivity_trend"])
             st.line_chart(dashboard["productivity_score"])
-            st.subheader("Wellness Trend")
+            st.subheader(t["wellness_trend"])
             st.line_chart(dashboard["wellness_score"])
 
-        st.subheader("Complete Tracking Data")
+        st.subheader(t["complete_tracking_data"])
         st.dataframe(records, use_container_width=True)
 
     with tab5:
@@ -1983,9 +2021,9 @@ def render_dashboard_tabs():
                 st.warning(msg)
 
         st.subheader(t["model_feature_importance"])
-        importance_data = pd.DataFrame({"Importance": model.feature_importances_}, index=features).sort_values("Importance", ascending=False)
+        importance_data = pd.DataFrame({t["importance"]: model.feature_importances_}, index=features).sort_values(t["importance"], ascending=False)
         st.bar_chart(importance_data)
-        st.metric("Training Accuracy", f"{round(accuracy * 100, 2)}%")
+        st.metric(t["training_accuracy"], f"{round(accuracy * 100, 2)}%")
 
     with tab6:
         records = calculate_scores(st.session_state.records)
@@ -1993,12 +2031,12 @@ def render_dashboard_tabs():
 
         weekly_summary = pd.DataFrame(
             {
-                "Metric": [
-                    "Average Sleep", "Average Study", "Average Focus", "Average Stress",
-                    "Average Exercise", "Average Nutrition", "Average Water Intake",
-                    "Average Task Completion", "Average Productivity", "Average Wellness",
+                t["metric"]: [
+                    t["average_sleep"], t["average_study"], t["average_focus"], t["average_stress"],
+                    t["average_exercise"], t["average_nutrition"], t["average_water"],
+                    t["average_task"], t["average_productivity"], t["average_wellness"],
                 ],
-                "Value": [
+                t["chart_value"]: [
                     round(records["sleep_hours"].mean(), 2),
                     round(records["study_hours"].mean(), 2),
                     round(records["focus_level"].mean(), 2),
@@ -2020,7 +2058,7 @@ def render_dashboard_tabs():
         st.markdown(
             f"""
             <div class="card-blue">
-            <h3>Student Weekly Status Note</h3>
+            <h3>{t["student_weekly_status_note"]}</h3>
             <p>{status_note}</p>
             </div>
             """,
@@ -2028,30 +2066,30 @@ def render_dashboard_tabs():
         )
 
         csv = weekly_summary.to_csv(index=False).encode("utf-8")
-        st.download_button("Download Weekly Report as CSV", csv, "weekly_student_report.csv", "text/csv")
+        st.download_button(t["download_csv"], csv, "weekly_student_report.csv", "text/csv")
 
         if PDF_AVAILABLE:
             pdf_file = create_pdf_report(st.session_state.profile, weekly_summary, recommendations, status_note)
-            st.download_button("Download Weekly Report as PDF", pdf_file, "weekly_student_report.pdf", "application/pdf")
+            st.download_button(t["download_pdf"], pdf_file, "weekly_student_report.pdf", "application/pdf")
         else:
-            st.warning("PDF export is not active. Add reportlab to requirements.txt and install it.")
+            st.warning(t["pdf_not_active"])
 
     with tab7:
         st.subheader(t["smart"])
-        st.write("This section shows how the system can evolve from manual input into automated student tracking.")
+        st.write(t["smart_intro"])
 
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(
                 """
                 <div class="card-blue">
-                <h3>Smartwatch Sleep Tracking</h3>
-                <p>Future versions can collect real sleep cycle data from Apple Watch, Fitbit, Garmin, or sleep tracking apps.</p>
+                <h3>{t["smartwatch_sleep_tracking"]}</h3>
+                <p>{t["smart_sleep_text"]}</p>
                 <ul>
-                    <li>Deep sleep duration</li>
-                    <li>REM sleep</li>
-                    <li>Sleep quality score</li>
-                    <li>Recovery score</li>
+                    <li>{t["deep_sleep_duration"]}</li>
+                    <li>{t["rem_sleep"]}</li>
+                    <li>{t["sleep_quality_score"]}</li>
+                    <li>{t["recovery_score"]}</li>
                 </ul>
                 </div>
                 """,
@@ -2059,11 +2097,11 @@ def render_dashboard_tabs():
             )
             sleep_data = pd.DataFrame(
                 {
-                    "Sleep Quality": [62, 68, 55, 74, 70, 82, 78],
-                    "Deep Sleep": [1.2, 1.5, 1.0, 1.8, 1.6, 2.1, 1.9],
-                    "Recovery": [50, 58, 45, 70, 68, 85, 80],
+                    t["sleep_quality"]: [62, 68, 55, 74, 70, 82, 78],
+                    t["deep_sleep"]: [1.2, 1.5, 1.0, 1.8, 1.6, 2.1, 1.9],
+                    t["recovery"]: [50, 58, 45, 70, 68, 85, 80],
                 },
-                index=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                index=[t["mon"], t["tue"], t["wed"], t["thu"], t["fri"], t["sat"], t["sun"]],
             )
             st.line_chart(sleep_data)
 
@@ -2071,13 +2109,13 @@ def render_dashboard_tabs():
             st.markdown(
                 """
                 <div class="card-green">
-                <h3>Exercise Tracking</h3>
-                <p>The system can connect exercise and activity data with productivity analysis.</p>
+                <h3>{t["exercise_tracking"]}</h3>
+                <p>{t["exercise_tracking_text"]}</p>
                 <ul>
-                    <li>Step count</li>
-                    <li>Training duration</li>
-                    <li>Activity intensity</li>
-                    <li>Energy score</li>
+                    <li>{t["step_count"]}</li>
+                    <li>{t["training_duration"]}</li>
+                    <li>{t["activity_intensity"]}</li>
+                    <li>{t["energy_score"]}</li>
                 </ul>
                 </div>
                 """,
@@ -2085,11 +2123,11 @@ def render_dashboard_tabs():
             )
             exercise_data = pd.DataFrame(
                 {
-                    "Exercise Minutes": [0, 15, 10, 25, 20, 40, 35],
-                    "Energy Score": [45, 58, 55, 70, 68, 85, 80],
-                    "Steps / 1000": [2, 4, 3, 6, 7, 10, 9],
+                    t["exercise_minutes_label"]: [0, 15, 10, 25, 20, 40, 35],
+                    t["energy_score"]: [45, 58, 55, 70, 68, 85, 80],
+                    t["steps_1000"]: [2, 4, 3, 6, 7, 10, 9],
                 },
-                index=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                index=[t["mon"], t["tue"], t["wed"], t["thu"], t["fri"], t["sat"], t["sun"]],
             )
             st.bar_chart(exercise_data)
 
@@ -2098,8 +2136,8 @@ def render_dashboard_tabs():
             st.markdown(
                 """
                 <div class="card-purple">
-                <h3>Weekly Reports</h3>
-                <p>The system can automatically generate weekly academic, wellness, nutrition and exercise reports.</p>
+                <h3>{t["weekly_reports"]}</h3>
+                <p>{t["weekly_reports_text"]}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -2108,8 +2146,8 @@ def render_dashboard_tabs():
             st.markdown(
                 """
                 <div class="card-orange">
-                <h3>Long-Term Behavior Analysis</h3>
-                <p>The system can detect patterns such as sleep-productivity relationship, stress impact, and study consistency.</p>
+                <h3>{t["long_term_behavior_analysis"]}</h3>
+                <p>{t["long_term_behavior_text"]}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
