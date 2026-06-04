@@ -2695,6 +2695,11 @@ def render_dashboard_tabs():
     with tab1:
         st.subheader(t["daily_title"])
 
+        # Ana sayfa özet kartları artık sadece Günlük sekmesinde görünür.
+        # Beslenme / Egzersiz / Analiz / AI Koç / Rapor / Akıllı sekmelerine geçince
+        # ana sayfa kartları ekranda kalmaz.
+        render_home_booster()
+
         st.markdown(
             f"""
             <div class="info-card" style="padding:26px; margin-bottom:22px;">
@@ -3443,12 +3448,39 @@ div[data-testid="stFormSubmitButton"] button {
 """, unsafe_allow_html=True)
 
 
+st.markdown("""
+<style>
+/* === V21: cleaner tab placement + professional daily section === */
+div[data-testid="stTabs"] div[role="tablist"] {
+    margin-top: 6px !important;
+    margin-bottom: 22px !important;
+    border-top: 1px solid rgba(148,163,184,.18) !important;
+    border-bottom: 1px solid rgba(148,163,184,.18) !important;
+    padding: 14px 8px !important;
+}
+div[data-testid="stTabs"] + div,
+div[data-testid="stTabs"] div[role="tabpanel"] {
+    padding-top: 8px !important;
+}
+.info-card {
+    box-shadow: 0 16px 38px rgba(0,0,0,.22) !important;
+}
+.welcome-card {
+    margin-top: 18px !important;
+    margin-bottom: 24px !important;
+}
+section[data-testid="stSidebar"] .block-container {
+    padding-top: .8rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # Page routing
 # Header + concept card appear only on the main dashboard page.
 # Login/Profile, Settings, and Database pages stay clean and separate.
 if st.session_state.sidebar_page == "home":
     render_header()
-    render_home_booster()
     render_dashboard_tabs()
 elif st.session_state.sidebar_page == "login":
     st.markdown('<div class="login-profile-wrap">', unsafe_allow_html=True)
