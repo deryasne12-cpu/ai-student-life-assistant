@@ -308,6 +308,228 @@ TRANSLATIONS = {
 }
 
 
+EXTRA_TRANSLATIONS = {
+    "Türkçe": {
+        "home": "🏠 Ana Sayfa",
+        "current_student_status": "Mevcut Öğrenci Durumu",
+        "daily_motivation_quote": "✨ Günlük Motivasyon Sözü",
+        "excellent": "Mükemmel",
+        "stable": "Dengeli",
+        "needs_attention": "Dikkat Gerekiyor",
+        "improving": "Gelişiyor",
+        "no_tracking_data": "Henüz takip verisi yok. Lütfen önce günlük kayıt kaydet.",
+        "productivity_strong": "verimlilik seviyen güçlü",
+        "productivity_moderate": "verimlilik seviyen orta düzeyde",
+        "productivity_needs": "verimlilik seviyen geliştirme gerektiriyor",
+        "stress_high": "stres seviyen yüksek, bu yüzden toparlanma süresi artırılmalı",
+        "stress_watch": "stres seviyen yönetilebilir ama yine de takip edilmeli",
+        "stress_under_control": "stres seviyen şu anda kontrol altında",
+        "sleep_low_note": "uyku süren düşük ve odaklanmanı azaltabilir",
+        "sleep_ok_note": "uyku süren kabul edilebilir görünüyor",
+        "exercise_low_note": "egzersiz aktiviten düşük, hafif yürüyüş veya mobilite çalışması önerilir",
+        "exercise_ok_note": "egzersiz aktiviten sağlığını destekliyor",
+        "water_low_note": "su tüketimin düşük, gün içinde daha fazla su iç",
+        "water_ok_note": "su tüketimin kabul edilebilir görünüyor",
+        "status_note_template": "{name}, kaydedilen takip verilerine göre {productivity_text}. Ortalama uyku süren {avg_sleep:.1f} saat, ortalama çalışma süren {avg_study:.1f} saat ve ortalama sağlık skorun {avg_wellness:.1f}/100. Şu anda {sleep_text}; {stress_text}; {exercise_text}; ve {water_text}. Önerim: düzenli bir günlük rutin kur, aşırı yüklenmeden kaçın ve gelişimini istikrarlı şekilde takip et.",
+        "quote_productive": "Disiplin, iyi günleri ilerlemeye; kötü günleri derse çevirir.",
+        "quote_stress": "Yavaşla, toparlan ve devam et. Sürdürülebilir ilerleme tükenmişlikten daha değerlidir.",
+        "quote_sleep": "Daha iyi uyku boşa geçen zaman değildir; daha iyi performansın yakıtıdır.",
+        "quote_default": "Küçük ama istikrarlı adımlar güçlü uzun vadeli sonuçlar üretir.",
+        "sleep_low": "Uyku düşük. En az 1 saat artırmaya çalış.",
+        "sleep_ok": "Uyku süresi kabul edilebilir.",
+        "stress_high_msg": "Stres trendi yüksek. Toparlanma süresi ekle ve iş yükü yoğunluğunu azalt.",
+        "stress_ok": "Stres seviyesi yönetilebilir.",
+        "nutrition_low": "Beslenme kalitesi düşük. Protein, meyve, sebze ve düzenli öğün ekle.",
+        "nutrition_ok": "Beslenme kalitesi kabul edilebilir.",
+        "exercise_low": "Egzersiz aktivitesi düşük. Yürüyüş veya mobilite seansları ekle.",
+        "exercise_ok": "Egzersiz sağlık ve odağı destekliyor.",
+        "water_low": "Su tüketimi düşük. Daha iyi odak için hidrasyonu artır.",
+        "water_ok": "Hidrasyon seviyesi kabul edilebilir.",
+        "productivity_strong_msg": "Verimlilik trendi güçlü. Derin çalışma seansları artırılabilir.",
+        "productivity_moderate_msg": "Verimlilik trendi orta düzeyde. Daha yapılandırılmış haftalık plan kullan.",
+        "productivity_low_msg": "Verimlilik geliştirilmeli. Daha küçük görevler ve kısa çalışma bloklarıyla başla.",
+        "model_feature_importance": "Model Özellik Önemi",
+        "current_student_status_short": "Mevcut Öğrenci Durumu",
+        "records_loaded": "{count} kayıt SQLite veritabanından yüklendi.",
+    },
+    "English": {
+        "home": "🏠 Home",
+        "current_student_status": "Current Student Status",
+        "daily_motivation_quote": "✨ Daily Motivation Quote",
+        "excellent": "Excellent",
+        "stable": "Stable",
+        "needs_attention": "Needs Attention",
+        "improving": "Improving",
+        "no_tracking_data": "No tracking data is available yet. Please save daily records first.",
+        "productivity_strong": "your productivity level is strong",
+        "productivity_moderate": "your productivity level is moderate",
+        "productivity_needs": "your productivity level needs improvement",
+        "stress_high": "your stress level is high, so recovery time should be increased",
+        "stress_watch": "your stress level is manageable but should still be watched",
+        "stress_under_control": "your stress level is currently under control",
+        "sleep_low_note": "your sleep duration is low and may reduce focus",
+        "sleep_ok_note": "your sleep duration looks acceptable",
+        "exercise_low_note": "your exercise activity is low, so light walking or mobility work is recommended",
+        "exercise_ok_note": "your exercise activity supports your wellness",
+        "water_low_note": "your hydration is low, so drink more water during the day",
+        "water_ok_note": "your hydration looks acceptable",
+        "status_note_template": "{name}, based on your saved tracking data, {productivity_text}. Your average sleep is {avg_sleep:.1f} hours, your average study time is {avg_study:.1f} hours, and your average wellness score is {avg_wellness:.1f}/100. Currently, {sleep_text}; {stress_text}; {exercise_text}; and {water_text}. My recommendation is to keep a stable daily routine, avoid overload, and track your progress consistently.",
+        "quote_productive": "Discipline turns good days into progress and bad days into lessons.",
+        "quote_stress": "Slow down, reset, and continue. Sustainable progress beats burnout.",
+        "quote_sleep": "Better sleep is not wasted time; it is fuel for better performance.",
+        "quote_default": "Small consistent steps create strong long-term results.",
+        "sleep_low": "Sleep is low. Try to increase sleep by at least 1 hour.",
+        "sleep_ok": "Sleep duration is acceptable.",
+        "stress_high_msg": "Stress trend is high. Add recovery time and reduce workload intensity.",
+        "stress_ok": "Stress level is manageable.",
+        "nutrition_low": "Nutrition quality is low. Add protein, fruit, vegetables and stable meals.",
+        "nutrition_ok": "Nutrition quality is acceptable.",
+        "exercise_low": "Exercise activity is low. Add walking or mobility sessions.",
+        "exercise_ok": "Exercise supports wellness and focus.",
+        "water_low": "Water intake is low. Increase hydration for better focus.",
+        "water_ok": "Hydration level is acceptable.",
+        "productivity_strong_msg": "Productivity trend is strong. Deep work sessions can be increased.",
+        "productivity_moderate_msg": "Productivity trend is moderate. Use a more structured weekly plan.",
+        "productivity_low_msg": "Productivity needs improvement. Start with smaller tasks and shorter study blocks.",
+        "model_feature_importance": "Model Feature Importance",
+        "current_student_status_short": "Current Student Status",
+        "records_loaded": "{count} records loaded from SQLite database.",
+    },
+    "Deutsch": {
+        "home": "🏠 Startseite",
+        "current_student_status": "Aktueller Studentenstatus",
+        "daily_motivation_quote": "✨ Tägliches Motivationszitat",
+        "excellent": "Ausgezeichnet",
+        "stable": "Stabil",
+        "needs_attention": "Braucht Aufmerksamkeit",
+        "improving": "Verbessert sich",
+        "no_tracking_data": "Noch keine Tracking-Daten verfügbar. Bitte zuerst einen Tagesdatensatz speichern.",
+        "productivity_strong": "dein Produktivitätsniveau ist stark",
+        "productivity_moderate": "dein Produktivitätsniveau ist mittelmäßig",
+        "productivity_needs": "dein Produktivitätsniveau muss verbessert werden",
+        "stress_high": "dein Stressniveau ist hoch, daher sollte die Erholungszeit erhöht werden",
+        "stress_watch": "dein Stressniveau ist kontrollierbar, sollte aber weiter beobachtet werden",
+        "stress_under_control": "dein Stressniveau ist derzeit unter Kontrolle",
+        "sleep_low_note": "deine Schlafdauer ist niedrig und kann den Fokus verringern",
+        "sleep_ok_note": "deine Schlafdauer sieht akzeptabel aus",
+        "exercise_low_note": "deine Trainingsaktivität ist niedrig, leichtes Gehen oder Mobilitätsarbeit wird empfohlen",
+        "exercise_ok_note": "deine Trainingsaktivität unterstützt dein Wohlbefinden",
+        "water_low_note": "deine Wasseraufnahme ist niedrig, trinke tagsüber mehr Wasser",
+        "water_ok_note": "deine Wasseraufnahme sieht akzeptabel aus",
+        "status_note_template": "{name}, basierend auf deinen gespeicherten Tracking-Daten: {productivity_text}. Deine durchschnittliche Schlafdauer beträgt {avg_sleep:.1f} Stunden, deine durchschnittliche Lernzeit {avg_study:.1f} Stunden und dein durchschnittlicher Wellness-Score {avg_wellness:.1f}/100. Aktuell gilt: {sleep_text}; {stress_text}; {exercise_text}; und {water_text}. Meine Empfehlung: Halte eine stabile Tagesroutine ein, vermeide Überlastung und verfolge deinen Fortschritt konsequent.",
+        "quote_productive": "Disziplin verwandelt gute Tage in Fortschritt und schlechte Tage in Lektionen.",
+        "quote_stress": "Verlangsame, setze zurück und mach weiter. Nachhaltiger Fortschritt ist besser als Burnout.",
+        "quote_sleep": "Besserer Schlaf ist keine verlorene Zeit; er ist Treibstoff für bessere Leistung.",
+        "quote_default": "Kleine konsequente Schritte schaffen starke langfristige Ergebnisse.",
+        "sleep_low": "Der Schlaf ist niedrig. Versuche, ihn um mindestens 1 Stunde zu erhöhen.",
+        "sleep_ok": "Die Schlafdauer ist akzeptabel.",
+        "stress_high_msg": "Der Stresstrend ist hoch. Füge Erholungszeit hinzu und reduziere die Arbeitsintensität.",
+        "stress_ok": "Das Stressniveau ist kontrollierbar.",
+        "nutrition_low": "Die Ernährungsqualität ist niedrig. Ergänze Protein, Obst, Gemüse und regelmäßige Mahlzeiten.",
+        "nutrition_ok": "Die Ernährungsqualität ist akzeptabel.",
+        "exercise_low": "Die Trainingsaktivität ist niedrig. Füge Geh- oder Mobilitätseinheiten hinzu.",
+        "exercise_ok": "Training unterstützt Wohlbefinden und Fokus.",
+        "water_low": "Die Wasseraufnahme ist niedrig. Erhöhe die Hydration für besseren Fokus.",
+        "water_ok": "Die Hydration ist akzeptabel.",
+        "productivity_strong_msg": "Der Produktivitätstrend ist stark. Deep-Work-Einheiten können erhöht werden.",
+        "productivity_moderate_msg": "Der Produktivitätstrend ist mittelmäßig. Nutze einen strukturierteren Wochenplan.",
+        "productivity_low_msg": "Die Produktivität muss verbessert werden. Beginne mit kleineren Aufgaben und kürzeren Lernblöcken.",
+        "model_feature_importance": "Modell-Merkmalswichtigkeit",
+        "current_student_status_short": "Aktueller Studentenstatus",
+        "records_loaded": "{count} Datensätze aus der SQLite-Datenbank geladen.",
+    },
+    "Русский": {
+        "home": "🏠 Главная",
+        "current_student_status": "Текущий статус студента",
+        "daily_motivation_quote": "✨ Ежедневная мотивационная цитата",
+        "excellent": "Отлично",
+        "stable": "Стабильно",
+        "needs_attention": "Требует внимания",
+        "improving": "Улучшается",
+        "no_tracking_data": "Данных отслеживания пока нет. Сначала сохраните дневную запись.",
+        "productivity_strong": "уровень продуктивности высокий",
+        "productivity_moderate": "уровень продуктивности средний",
+        "productivity_needs": "уровень продуктивности требует улучшения",
+        "stress_high": "уровень стресса высокий, нужно увеличить время восстановления",
+        "stress_watch": "уровень стресса управляемый, но его нужно отслеживать",
+        "stress_under_control": "уровень стресса сейчас под контролем",
+        "sleep_low_note": "сон недостаточный и может снижать концентрацию",
+        "sleep_ok_note": "длительность сна выглядит приемлемой",
+        "exercise_low_note": "физическая активность низкая, рекомендуется легкая ходьба или мобильность",
+        "exercise_ok_note": "физическая активность поддерживает самочувствие",
+        "water_low_note": "гидратация низкая, пейте больше воды в течение дня",
+        "water_ok_note": "гидратация выглядит приемлемой",
+        "status_note_template": "{name}, по сохраненным данным отслеживания {productivity_text}. Средний сон: {avg_sleep:.1f} ч, среднее время учебы: {avg_study:.1f} ч, средний wellness-score: {avg_wellness:.1f}/100. Сейчас: {sleep_text}; {stress_text}; {exercise_text}; и {water_text}. Моя рекомендация: держать стабильный режим, избегать перегрузки и регулярно отслеживать прогресс.",
+        "quote_productive": "Дисциплина превращает хорошие дни в прогресс, а плохие — в уроки.",
+        "quote_stress": "Замедлись, восстановись и продолжай. Устойчивый прогресс лучше выгорания.",
+        "quote_sleep": "Хороший сон — не потерянное время; это топливо для лучшей работы.",
+        "quote_default": "Маленькие последовательные шаги создают сильные долгосрочные результаты.",
+        "sleep_low": "Сна мало. Постарайтесь увеличить сон хотя бы на 1 час.",
+        "sleep_ok": "Длительность сна приемлемая.",
+        "stress_high_msg": "Тренд стресса высокий. Добавьте время восстановления и снизьте нагрузку.",
+        "stress_ok": "Уровень стресса управляемый.",
+        "nutrition_low": "Качество питания низкое. Добавьте белок, фрукты, овощи и стабильные приемы пищи.",
+        "nutrition_ok": "Качество питания приемлемое.",
+        "exercise_low": "Физическая активность низкая. Добавьте прогулки или мобильность.",
+        "exercise_ok": "Упражнения поддерживают самочувствие и фокус.",
+        "water_low": "Потребление воды низкое. Увеличьте гидратацию для лучшей концентрации.",
+        "water_ok": "Уровень гидратации приемлемый.",
+        "productivity_strong_msg": "Тренд продуктивности сильный. Можно увеличить сессии глубокой работы.",
+        "productivity_moderate_msg": "Тренд продуктивности средний. Используйте более структурированный недельный план.",
+        "productivity_low_msg": "Продуктивность нужно улучшить. Начните с маленьких задач и коротких учебных блоков.",
+        "model_feature_importance": "Важность признаков модели",
+        "current_student_status_short": "Текущий статус студента",
+        "records_loaded": "{count} записей загружено из базы SQLite.",
+    },
+    "Español": {
+        "home": "🏠 Inicio",
+        "current_student_status": "Estado actual del estudiante",
+        "daily_motivation_quote": "✨ Frase de motivación diaria",
+        "excellent": "Excelente",
+        "stable": "Estable",
+        "needs_attention": "Necesita atención",
+        "improving": "Mejorando",
+        "no_tracking_data": "Todavía no hay datos de seguimiento. Guarda primero un registro diario.",
+        "productivity_strong": "tu nivel de productividad es fuerte",
+        "productivity_moderate": "tu nivel de productividad es moderado",
+        "productivity_needs": "tu nivel de productividad necesita mejorar",
+        "stress_high": "tu nivel de estrés es alto, por eso debe aumentarse el tiempo de recuperación",
+        "stress_watch": "tu nivel de estrés es manejable, pero debe seguir vigilándose",
+        "stress_under_control": "tu nivel de estrés está actualmente bajo control",
+        "sleep_low_note": "tu duración de sueño es baja y puede reducir el enfoque",
+        "sleep_ok_note": "tu duración de sueño parece aceptable",
+        "exercise_low_note": "tu actividad física es baja, se recomienda caminar suave o movilidad",
+        "exercise_ok_note": "tu actividad física apoya tu bienestar",
+        "water_low_note": "tu hidratación es baja, bebe más agua durante el día",
+        "water_ok_note": "tu hidratación parece aceptable",
+        "status_note_template": "{name}, según tus datos guardados, {productivity_text}. Tu sueño promedio es {avg_sleep:.1f} horas, tu tiempo promedio de estudio es {avg_study:.1f} horas y tu puntuación promedio de bienestar es {avg_wellness:.1f}/100. Actualmente: {sleep_text}; {stress_text}; {exercise_text}; y {water_text}. Mi recomendación es mantener una rutina diaria estable, evitar la sobrecarga y seguir tu progreso de forma constante.",
+        "quote_productive": "La disciplina convierte los buenos días en progreso y los malos en lecciones.",
+        "quote_stress": "Baja el ritmo, reinicia y continúa. El progreso sostenible supera al agotamiento.",
+        "quote_sleep": "Dormir mejor no es tiempo perdido; es combustible para rendir mejor.",
+        "quote_default": "Pequeños pasos constantes crean grandes resultados a largo plazo.",
+        "sleep_low": "El sueño es bajo. Intenta aumentarlo al menos 1 hora.",
+        "sleep_ok": "La duración del sueño es aceptable.",
+        "stress_high_msg": "La tendencia de estrés es alta. Añade recuperación y reduce la intensidad de trabajo.",
+        "stress_ok": "El nivel de estrés es manejable.",
+        "nutrition_low": "La calidad nutricional es baja. Añade proteína, fruta, verduras y comidas estables.",
+        "nutrition_ok": "La calidad nutricional es aceptable.",
+        "exercise_low": "La actividad física es baja. Añade caminatas o sesiones de movilidad.",
+        "exercise_ok": "El ejercicio apoya el bienestar y el enfoque.",
+        "water_low": "La ingesta de agua es baja. Aumenta la hidratación para mejorar el enfoque.",
+        "water_ok": "El nivel de hidratación es aceptable.",
+        "productivity_strong_msg": "La tendencia de productividad es fuerte. Se pueden aumentar las sesiones de trabajo profundo.",
+        "productivity_moderate_msg": "La tendencia de productividad es moderada. Usa un plan semanal más estructurado.",
+        "productivity_low_msg": "La productividad necesita mejorar. Empieza con tareas pequeñas y bloques cortos.",
+        "model_feature_importance": "Importancia de características del modelo",
+        "current_student_status_short": "Estado actual del estudiante",
+        "records_loaded": "{count} registros cargados desde la base de datos SQLite.",
+    },
+}
+
+for _lang, _extra in EXTRA_TRANSLATIONS.items():
+    TRANSLATIONS[_lang].update(_extra)
+
+
 THEMES = {
     "Neon Blue": {
         "primary": "#38bdf8",
@@ -1134,27 +1356,27 @@ def get_bmi_status(bmi):
 
 def get_status_emoji(avg_productivity, avg_stress, avg_sleep):
     if avg_productivity >= 70 and avg_stress <= 5 and avg_sleep >= 7:
-        return "🚀", "Excellent"
+        return "🚀", t["excellent"]
     if avg_productivity >= 55 and avg_stress <= 6:
-        return "🙂", "Stable"
+        return "🙂", t["stable"]
     if avg_stress >= 7 or avg_sleep < 6:
-        return "⚠️", "Needs Attention"
-    return "🌱", "Improving"
+        return "⚠️", t["needs_attention"]
+    return "🌱", t["improving"]
 
 
 def get_motivation_quote(avg_productivity, avg_stress, avg_sleep):
     if avg_productivity >= 70:
-        return "Discipline turns good days into progress and bad days into lessons."
+        return t["quote_productive"]
     if avg_stress >= 7:
-        return "Slow down, reset, and continue. Sustainable progress beats burnout."
+        return t["quote_stress"]
     if avg_sleep < 6:
-        return "Better sleep is not wasted time; it is fuel for better performance."
-    return "Small consistent steps create strong long-term results."
+        return t["quote_sleep"]
+    return t["quote_default"]
 
 
 def create_status_note(records, profile):
     if records.empty:
-        return "No tracking data is available yet. Please save daily records first."
+        return t["no_tracking_data"]
 
     avg_sleep = records["sleep_hours"].mean()
     avg_study = records["study_hours"].mean()
@@ -1165,18 +1387,22 @@ def create_status_note(records, profile):
     avg_water = records["water_liters"].mean()
     student_name = profile.get("name", "Student") or "Student"
 
-    productivity_text = "your productivity level is strong" if avg_productivity >= 70 else "your productivity level is moderate" if avg_productivity >= 50 else "your productivity level needs improvement"
-    stress_text = "your stress level is high, so recovery time should be increased" if avg_stress >= 7 else "your stress level is manageable but should still be watched" if avg_stress >= 5 else "your stress level is currently under control"
-    sleep_text = "your sleep duration is low and may reduce focus" if avg_sleep < 6 else "your sleep duration looks acceptable"
-    exercise_text = "your exercise activity is low, so light walking or mobility work is recommended" if avg_exercise < 20 else "your exercise activity supports your wellness"
-    water_text = "your hydration is low, so drink more water during the day" if avg_water < 1.8 else "your hydration looks acceptable"
+    productivity_text = t["productivity_strong"] if avg_productivity >= 70 else t["productivity_moderate"] if avg_productivity >= 50 else t["productivity_needs"]
+    stress_text = t["stress_high"] if avg_stress >= 7 else t["stress_watch"] if avg_stress >= 5 else t["stress_under_control"]
+    sleep_text = t["sleep_low_note"] if avg_sleep < 6 else t["sleep_ok_note"]
+    exercise_text = t["exercise_low_note"] if avg_exercise < 20 else t["exercise_ok_note"]
+    water_text = t["water_low_note"] if avg_water < 1.8 else t["water_ok_note"]
 
-    return (
-        f"{student_name}, based on your saved tracking data, {productivity_text}. "
-        f"Your average sleep is {avg_sleep:.1f} hours, your average study time is {avg_study:.1f} hours, "
-        f"and your average wellness score is {avg_wellness:.1f}/100. "
-        f"Currently, {sleep_text}; {stress_text}; {exercise_text}; and {water_text}. "
-        f"My recommendation is to keep a stable daily routine, avoid overload, and track your progress consistently."
+    return t["status_note_template"].format(
+        name=student_name,
+        productivity_text=productivity_text,
+        avg_sleep=avg_sleep,
+        avg_study=avg_study,
+        avg_wellness=avg_wellness,
+        sleep_text=sleep_text,
+        stress_text=stress_text,
+        exercise_text=exercise_text,
+        water_text=water_text,
     )
 
 
@@ -1189,18 +1415,18 @@ def get_ai_recommendations(records):
     avg_water = records["water_liters"].mean()
 
     messages = []
-    messages.append(("warning", "Sleep is low. Try to increase sleep by at least 1 hour.") if avg_sleep < 6 else ("success", "Sleep duration is acceptable."))
-    messages.append(("error", "Stress trend is high. Add recovery time and reduce workload intensity.") if avg_stress > 6 else ("success", "Stress level is manageable."))
-    messages.append(("warning", "Nutrition quality is low. Add protein, fruit, vegetables and stable meals.") if avg_nutrition < 6 else ("success", "Nutrition quality is acceptable."))
-    messages.append(("warning", "Exercise activity is low. Add walking or mobility sessions.") if avg_exercise < 20 else ("success", "Exercise supports wellness and focus."))
-    messages.append(("warning", "Water intake is low. Increase hydration for better focus.") if avg_water < 1.8 else ("success", "Hydration level is acceptable."))
+    messages.append(("warning", t["sleep_low"]) if avg_sleep < 6 else ("success", t["sleep_ok"]))
+    messages.append(("error", t["stress_high_msg"]) if avg_stress > 6 else ("success", t["stress_ok"]))
+    messages.append(("warning", t["nutrition_low"]) if avg_nutrition < 6 else ("success", t["nutrition_ok"]))
+    messages.append(("warning", t["exercise_low"]) if avg_exercise < 20 else ("success", t["exercise_ok"]))
+    messages.append(("warning", t["water_low"]) if avg_water < 1.8 else ("success", t["water_ok"]))
 
     if avg_productivity >= 70:
-        messages.append(("success", "Productivity trend is strong. Deep work sessions can be increased."))
+        messages.append(("success", t["productivity_strong_msg"]))
     elif avg_productivity >= 50:
-        messages.append(("info", "Productivity trend is moderate. Use a more structured weekly plan."))
+        messages.append(("info", t["productivity_moderate_msg"]))
     else:
-        messages.append(("warning", "Productivity needs improvement. Start with smaller tasks and shorter study blocks."))
+        messages.append(("warning", t["productivity_low_msg"]))
 
     return messages
 
@@ -1449,7 +1675,7 @@ def render_database_history():
     if db_records.empty:
         st.info(t["no_records"])
     else:
-        st.success(f"{len(db_records)} records loaded from SQLite database.")
+        st.success(t["records_loaded"].format(count=len(db_records)))
         st.dataframe(db_records, use_container_width=True)
         db_records["record_date"] = pd.to_datetime(db_records["record_date"])
         chart_data = db_records.set_index("record_date")[
@@ -1461,7 +1687,7 @@ def render_database_history():
         st.markdown(
             f"""
             <div class="card-green">
-            <h3>Current Student Status</h3>
+            <h3>{t["current_student_status_short"]}</h3>
             <p>{status_note}</p>
             </div>
             """,
@@ -1730,7 +1956,7 @@ def render_dashboard_tabs():
         st.markdown(
             f"""
             <div class="status-card">
-            <h3>{emoji} Current Student Status: {status_label}</h3>
+            <h3>{emoji} {t["current_student_status"]}: {status_label}</h3>
             <p>{status_note}</p>
             </div>
             """,
@@ -1739,7 +1965,7 @@ def render_dashboard_tabs():
         st.markdown(
             f"""
             <div class="quote-card">
-            <h3>✨ Daily Motivation Quote</h3>
+            <h3>{t["daily_motivation_quote"]}</h3>
             <p><i>"{quote}"</i></p>
             </div>
             """,
@@ -1756,7 +1982,7 @@ def render_dashboard_tabs():
             else:
                 st.warning(msg)
 
-        st.subheader("Model Feature Importance")
+        st.subheader(t["model_feature_importance"])
         importance_data = pd.DataFrame({"Importance": model.feature_importances_}, index=features).sort_values("Importance", ascending=False)
         st.bar_chart(importance_data)
         st.metric("Training Accuracy", f"{round(accuracy * 100, 2)}%")
