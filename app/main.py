@@ -978,6 +978,102 @@ _DAILY_FORM_COPY = {
 for _lang, _extra in _DAILY_FORM_COPY.items():
     TRANSLATIONS[_lang].update(_extra)
 
+# === V29 CATEGORICAL DAILY INPUT PATCH ===
+_CATEGORICAL_DAILY_INPUTS = {
+    "Türkçe": {
+        "focus_state": "🎯 Odak Durumu",
+        "focus_scattered": "😴 Dağınık",
+        "focus_normal": "🙂 Normal",
+        "focus_focused": "🔥 Odaklı",
+        "focus_deep": "🚀 Deep Work",
+        "stress_state": "🧠 Stres Durumu",
+        "stress_relaxed": "😌 Rahat",
+        "stress_normal": "😐 Normal",
+        "stress_tense": "😟 Gergin",
+        "stress_high": "😫 Çok Stresli",
+        "mood_state": "😊 Duygu Durumu",
+        "mood_bad": "😔 Kötü",
+        "mood_ok": "😐 Normal",
+        "mood_good": "🙂 İyi",
+        "mood_great": "😁 Harika",
+        "daily_profile": "Bugünkü Profil",
+    },
+    "English": {
+        "focus_state": "🎯 Focus State",
+        "focus_scattered": "😴 Scattered",
+        "focus_normal": "🙂 Normal",
+        "focus_focused": "🔥 Focused",
+        "focus_deep": "🚀 Deep Work",
+        "stress_state": "🧠 Stress State",
+        "stress_relaxed": "😌 Relaxed",
+        "stress_normal": "😐 Normal",
+        "stress_tense": "😟 Tense",
+        "stress_high": "😫 Very Stressed",
+        "mood_state": "😊 Mood State",
+        "mood_bad": "😔 Low",
+        "mood_ok": "😐 Neutral",
+        "mood_good": "🙂 Good",
+        "mood_great": "😁 Great",
+        "daily_profile": "Today's Profile",
+    },
+    "Deutsch": {
+        "focus_state": "🎯 Fokuszustand",
+        "focus_scattered": "😴 Zerstreut",
+        "focus_normal": "🙂 Normal",
+        "focus_focused": "🔥 Fokussiert",
+        "focus_deep": "🚀 Deep Work",
+        "stress_state": "🧠 Stresszustand",
+        "stress_relaxed": "😌 Entspannt",
+        "stress_normal": "😐 Normal",
+        "stress_tense": "😟 Angespannt",
+        "stress_high": "😫 Sehr gestresst",
+        "mood_state": "😊 Stimmung",
+        "mood_bad": "😔 Niedrig",
+        "mood_ok": "😐 Neutral",
+        "mood_good": "🙂 Gut",
+        "mood_great": "😁 Sehr gut",
+        "daily_profile": "Heutiges Profil",
+    },
+    "Русский": {
+        "focus_state": "🎯 Состояние фокуса",
+        "focus_scattered": "😴 Рассеянный",
+        "focus_normal": "🙂 Нормально",
+        "focus_focused": "🔥 Сфокусирован",
+        "focus_deep": "🚀 Глубокая работа",
+        "stress_state": "🧠 Состояние стресса",
+        "stress_relaxed": "😌 Расслаблен",
+        "stress_normal": "😐 Нормально",
+        "stress_tense": "😟 Напряжён",
+        "stress_high": "😫 Сильный стресс",
+        "mood_state": "😊 Настроение",
+        "mood_bad": "😔 Плохо",
+        "mood_ok": "😐 Нейтрально",
+        "mood_good": "🙂 Хорошо",
+        "mood_great": "😁 Отлично",
+        "daily_profile": "Профиль дня",
+    },
+    "Español": {
+        "focus_state": "🎯 Estado de enfoque",
+        "focus_scattered": "😴 Disperso",
+        "focus_normal": "🙂 Normal",
+        "focus_focused": "🔥 Enfocado",
+        "focus_deep": "🚀 Trabajo profundo",
+        "stress_state": "🧠 Estado de estrés",
+        "stress_relaxed": "😌 Relajado",
+        "stress_normal": "😐 Normal",
+        "stress_tense": "😟 Tenso",
+        "stress_high": "😫 Muy estresado",
+        "mood_state": "😊 Estado de ánimo",
+        "mood_bad": "😔 Bajo",
+        "mood_ok": "😐 Neutral",
+        "mood_good": "🙂 Bueno",
+        "mood_great": "😁 Excelente",
+        "daily_profile": "Perfil de hoy",
+    },
+}
+for _lang, _extra in _CATEGORICAL_DAILY_INPUTS.items():
+    TRANSLATIONS[_lang].update(_extra)
+
 if "language" not in st.session_state:
     st.session_state.language = "Türkçe"
 if "theme_name" not in st.session_state:
@@ -2993,11 +3089,66 @@ def render_dashboard_tabs():
                 study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours_v22")
                 task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion_v22")
             with col2:
-                focus_level = st.slider(t["focus"], 1, 10, 7, key="daily_focus_level_v22")
-                stress_level = st.slider(t["stress"], 1, 10, 4, key="daily_stress_level_v22")
+                focus_options = [
+                    t.get("focus_scattered", "😴 Scattered"),
+                    t.get("focus_normal", "🙂 Normal"),
+                    t.get("focus_focused", "🔥 Focused"),
+                    t.get("focus_deep", "🚀 Deep Work"),
+                ]
+                focus_values = [3, 6, 8, 10]
+                focus_state = st.selectbox(
+                    t.get("focus_state", "🎯 Focus State"),
+                    focus_options,
+                    index=2,
+                    key=f"daily_focus_state_v29_{st.session_state.language}",
+                )
+                focus_level = focus_values[focus_options.index(focus_state)]
+
+                stress_options = [
+                    t.get("stress_relaxed", "😌 Relaxed"),
+                    t.get("stress_normal", "😐 Normal"),
+                    t.get("stress_tense", "😟 Tense"),
+                    t.get("stress_high", "😫 Very Stressed"),
+                ]
+                stress_values = [2, 5, 8, 10]
+                stress_state = st.selectbox(
+                    t.get("stress_state", "🧠 Stress State"),
+                    stress_options,
+                    index=1,
+                    key=f"daily_stress_state_v29_{st.session_state.language}",
+                )
+                stress_level = stress_values[stress_options.index(stress_state)]
+
+                mood_options = [
+                    t.get("mood_bad", "😔 Low"),
+                    t.get("mood_ok", "😐 Neutral"),
+                    t.get("mood_good", "🙂 Good"),
+                    t.get("mood_great", "😁 Great"),
+                ]
+                mood_sentiment_values = [-0.6, 0.0, 0.45, 0.8]
+                mood_state = st.selectbox(
+                    t.get("mood_state", "😊 Mood State"),
+                    mood_options,
+                    index=2,
+                    key=f"daily_mood_state_v29_{st.session_state.language}",
+                )
+                mood_sentiment_score = mood_sentiment_values[mood_options.index(mood_state)]
+
                 exercise_minutes = st.slider(t["exercise_min"], 0, 120, 25, key="daily_exercise_minutes_v22")
                 water_liters = st.slider(t["water"], 0.0, 4.0, 2.0, key="daily_water_liters_v22")
                 nutrition_quality = st.slider(t["nutrition_quality"], 1, 10, 7, key="daily_nutrition_quality_v22")
+
+            st.markdown(
+                f"""
+                <div class="info-card">
+                    <h4>{t.get('daily_profile', "Today's Profile")}</h4>
+                    <p><b>{t.get('focus_state', 'Focus')}:</b> {focus_state} &nbsp; | &nbsp;
+                    <b>{t.get('stress_state', 'Stress')}:</b> {stress_state} &nbsp; | &nbsp;
+                    <b>{t.get('mood_state', 'Mood')}:</b> {mood_state}</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
             learned_note = st.text_area(px["end_note"], value=px["learned"], key=f"learned_note_v22_{st.session_state.language}", height=90)
 
@@ -3028,7 +3179,7 @@ def render_dashboard_tabs():
             )
             save_daily_record_to_db(new_row)
 
-            sentiment = analyzer.polarity_scores(mood_text)["compound"]
+            sentiment = mood_sentiment_score  # categorical mood converted to numeric sentiment
             input_data = pd.DataFrame(
                 [
                     {
@@ -3051,7 +3202,7 @@ def render_dashboard_tabs():
             productivity_score = temp["productivity_score"].iloc[0]
             wellness_score = temp["wellness_score"].iloc[0]
             risk_score = temp["risk_score"].iloc[0]
-            mood = t["positive"] if sentiment >= 0.05 else t["negative"] if sentiment <= -0.05 else t["neutral"]
+            mood = mood_state
             risk_level = t["high_risk"] if risk_score >= 70 else t["medium_risk"] if risk_score >= 45 else t["low_risk"]
             emoji, status_label = get_status_emoji(productivity_score, stress_level, sleep_hours)
 
