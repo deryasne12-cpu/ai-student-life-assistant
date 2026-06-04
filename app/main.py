@@ -54,11 +54,11 @@ TRANSLATIONS = {
         "daily_motivation": "✨ Günlük Motivasyon",
         "daily_tracking": "📅 Günlük",
         "nutrition": "🥗 Beslenme",
-        "exercise": "🎯 Tatbikat",
-        "analytics": "📊 Analitik",
-        "coach": "🤖 AI Koçu",
+        "exercise": "🎯 Egzersiz",
+        "analytics": "📊 Analiz",
+        "coach": "🤖 AI Koç",
         "report": "📄 Rapor",
-        "smart": "⌚ Entegrasyon",
+        "smart": "⌚ Akıllı",
         "theme": "Dashboard Temasını Seç",
         "background": "Arka Plan Modu",
         "background_soft": "Yumuşak Çoklu Renk",
@@ -111,7 +111,7 @@ TRANSLATIONS = {
         "daily_tracking": "📅 Daily",
         "nutrition": "🥗 Nutrition",
         "exercise": "🎯 Exercise",
-        "analytics": "📊 Analytics",
+        "analytics": "📊 Insights",
         "coach": "🤖 AI Coach",
         "report": "📄 Report",
         "smart": "⌚ Smart",
@@ -164,13 +164,13 @@ TRANSLATIONS = {
         "profile_saved": "Profil erfolgreich gespeichert.",
         "student_status": "Studentenstatus",
         "daily_motivation": "✨ Tägliche Motivation",
-        "daily_tracking": "📅 Tagestracking",
-        "nutrition": "🥗 Ernährung & Gesundheit",
-        "exercise": "🎯 Trainingsplan",
-        "analytics": "📊 Analysen",
+        "daily_tracking": "📅 Alltag",
+        "nutrition": "🥗 Ernährung",
+        "exercise": "🎯 Training",
+        "analytics": "📊 Analyse",
         "coach": "🤖 KI-Coach",
-        "report": "📄 Wochenbericht",
-        "smart": "⌚ Smart-Integr.",
+        "report": "📄 Bericht",
+        "smart": "⌚ Smart",
         "theme": "Dashboard-Thema wählen",
         "background": "Hintergrundmodus",
         "background_soft": "Sanfte Mehrfarben",
@@ -220,13 +220,13 @@ TRANSLATIONS = {
         "profile_saved": "Профиль успешно сохранен.",
         "student_status": "Статус студента",
         "daily_motivation": "✨ Мотивация дня",
-        "daily_tracking": "📅 Ежедневный трекинг",
-        "nutrition": "🥗 Питание и здоровье",
-        "exercise": "🎯 План тренировок",
-        "analytics": "📊 Аналитика",
+        "daily_tracking": "📅 День",
+        "nutrition": "🥗 Питание",
+        "exercise": "🎯 Тренировка",
+        "analytics": "📊 Анализ",
         "coach": "🤖 ИИ-коуч",
-        "report": "📄 Еженедельный отчет",
-        "smart": "⌚ Smart-интегр.",
+        "report": "📄 Отчет",
+        "smart": "⌚ Smart",
         "theme": "Выберите тему панели",
         "background": "Режим фона",
         "background_soft": "Мягкие цвета",
@@ -276,13 +276,13 @@ TRANSLATIONS = {
         "profile_saved": "Perfil guardado correctamente.",
         "student_status": "Estado del estudiante",
         "daily_motivation": "✨ Motivación diaria",
-        "daily_tracking": "📅 Seguimiento diario",
-        "nutrition": "🥗 Nutrición y salud",
-        "exercise": "🎯 Plan de ejercicio",
-        "analytics": "📊 Analíticas",
+        "daily_tracking": "📅 Diario",
+        "nutrition": "🥗 Nutrición",
+        "exercise": "🎯 Ejercicio",
+        "analytics": "📊 Análisis",
         "coach": "🤖 Coach IA",
-        "report": "📄 Informe semanal",
-        "smart": "⌚ Integr. inteligentes",
+        "report": "📄 Informe",
+        "smart": "⌚ Smart",
         "theme": "Elegir tema del dashboard",
         "background": "Modo de fondo",
         "background_soft": "Colores suaves",
@@ -1163,10 +1163,10 @@ div[data-testid="stTabs"] div[role="tablist"] {{
     overflow-x: hidden !important;
     overflow-y: hidden !important;
 
-    padding: 0 0 8px 0 !important;
-    margin-top: -34px !important;
+    padding: 14px 0 12px 0 !important;
+    margin-top: 12px !important;
 
-    border-top: none !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.22) !important;
     border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
 }}
 
@@ -1309,12 +1309,13 @@ section[data-testid="stSidebar"] .side-note {{
 }}
 
 
-/* === LOGIN PAGE LAYOUT + TABS HIGHER PATCH === */
+/* === LOGIN PAGE LAYOUT + CLEAN TAB POSITION PATCH === */
 div[data-testid="stTabs"] {{
-    margin-top: -30px !important;
+    margin-top: 10px !important;
+    margin-bottom: 24px !important;
 }}
 div[data-testid="stTabs"] div[role="tablist"] {{
-    margin-top: -36px !important;
+    margin-top: 0 !important;
 }}
 .login-profile-wrap {{
     margin-top: -6px;
@@ -1330,6 +1331,57 @@ apply_css(theme, st.session_state.background_mode)
 
 st.markdown("""
 <style>
+
+/* === V12 CLEAN TAB POSITION + ELEGANT LABELS === */
+div[data-testid="stTabs"] {
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
+}
+div[data-testid="stTabs"] div[role="tablist"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+    padding: 14px 0 14px 0 !important;
+    margin: 24px 0 26px 0 !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.24) !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.24) !important;
+    overflow: visible !important;
+}
+div[data-testid="stTabs"] button[role="tab"],
+div[data-testid="stTabs"] [role="tab"] {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 0 12px !important;
+    border-radius: 15px !important;
+    opacity: 0.96 !important;
+}
+div[data-testid="stTabs"] button[role="tab"] p,
+div[data-testid="stTabs"] [role="tab"] p,
+div[data-testid="stTabs"] button[role="tab"] div,
+div[data-testid="stTabs"] [role="tab"] div,
+div[data-testid="stTabs"] button[role="tab"] span,
+div[data-testid="stTabs"] [role="tab"] span {
+    font-size: 14px !important;
+    font-weight: 720 !important;
+    letter-spacing: -0.15px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+div[data-testid="stTabs"] button[role="tab"]:hover,
+div[data-testid="stTabs"] [role="tab"]:hover {
+    transform: translateY(-1px) !important;
+}
+.hero-card {
+    margin-bottom: 0 !important;
+}
+
 /* === V9 SIDEBAR POLISH + PRODUCT CARDS === */
 section[data-testid="stSidebar"] {
     background: linear-gradient(180deg, rgba(31,35,48,0.98), rgba(24,28,39,0.98)) !important;
