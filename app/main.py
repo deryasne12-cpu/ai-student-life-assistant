@@ -572,6 +572,72 @@ EXTRA_TRANSLATIONS_ALL_TABS["Español"].update({"date_label":"Fecha", "ai_analys
 for _lang, _extra in EXTRA_TRANSLATIONS_ALL_TABS.items():
     TRANSLATIONS[_lang].update(_extra)
 
+
+# === FULL LANGUAGE PATCH V8: fix remembered inputs, exercise plans and smart integration cards ===
+FULL_LANGUAGE_PATCH_V8 = {
+    "Español": {
+        "default_mood": "Me siento concentrado y listo para estudiar.",
+        "general_health": "Salud general",
+        "weight_gain_muscle": "Aumento de peso / músculo",
+        "fat_loss": "Pérdida de grasa",
+        "stress_reduction": "Reducción del estrés",
+        "posture_mobility": "Postura y movilidad",
+        "exercise_plan_text": "Este plan de ejercicio apoya la salud física, la concentración, la recuperación y la productividad del estudiante.",
+        "plan_general": ["Lunes: 30 min caminata + 10 min estiramientos", "Miércoles: entrenamiento de cuerpo completo con peso corporal", "Viernes: 30 min bicicleta o caminata", "Domingo: movilidad ligera y recuperación"],
+        "plan_muscle": ["Lunes: entrenamiento de empuje", "Martes: entrenamiento de tirón", "Jueves: piernas", "Sábado: entrenamiento de fuerza de cuerpo completo"],
+        "plan_fat": ["Lunes: 40 min caminata rápida", "Miércoles: circuito de cuerpo completo", "Viernes: cardio por intervalos", "Domingo: caminata larga"],
+        "plan_stress": ["Lunes: 20 min caminata + respiración", "Miércoles: sesión de movilidad", "Viernes: cardio ligero", "Domingo: estiramiento y recuperación"],
+        "plan_posture": ["Diario: 5 min movilidad de cuello", "Diario: 5 min movilidad de hombros", "3 veces/semana: estabilidad del core", "3 veces/semana: fortalecimiento de espalda"],
+        "smartwatch_sleep_tracking": "Seguimiento del sueño con smartwatch",
+        "smart_sleep_text": "Las próximas versiones pueden recoger datos reales del ciclo de sueño desde Apple Watch, Fitbit, Garmin o apps de sueño.",
+        "deep_sleep_duration": "Duración del sueño profundo",
+        "rem_sleep": "Sueño REM",
+        "sleep_quality_score": "Puntuación de calidad del sueño",
+        "recovery_score": "Puntuación de recuperación",
+        "exercise_tracking": "Seguimiento de ejercicio",
+        "exercise_tracking_text": "El sistema puede conectar datos de ejercicio y actividad con el análisis de productividad.",
+        "step_count": "Número de pasos",
+        "training_duration": "Duración del entrenamiento",
+        "activity_intensity": "Intensidad de actividad",
+        "energy_score": "Puntuación de energía",
+        "weekly_reports": "Informes semanales",
+        "weekly_reports_text": "El sistema puede generar automáticamente informes académicos, de bienestar, nutrición y ejercicio.",
+        "long_term_behavior_analysis": "Análisis de comportamiento a largo plazo",
+        "long_term_behavior_text": "El sistema puede detectar patrones como relación sueño-productividad, efecto del estrés y constancia de estudio.",
+        "sleep_quality": "Calidad del sueño", "deep_sleep": "Sueño profundo", "recovery": "Recuperación",
+        "exercise_minutes_label": "Minutos de ejercicio", "steps_1000": "Pasos / 1000",
+        "mon": "Lun", "tue": "Mar", "wed": "Mié", "thu": "Jue", "fri": "Vie", "sat": "Sáb", "sun": "Dom",
+        "suggested_daily_plan": "Plan diario sugerido",
+        "chart_sleep":"Sueño", "chart_study":"Estudio", "chart_focus":"Enfoque", "chart_stress":"Estrés", "chart_exercise":"Ejercicio / 10", "chart_tasks":"Tareas / 10", "chart_water":"Agua", "chart_nutrition":"Nutrición", "chart_sentiment":"Sentimiento x10",
+    },
+    "Русский": {
+        "default_mood": "Я чувствую себя сосредоточенным и готовым учиться.",
+        "general_health": "Общее здоровье",
+        "weight_gain_muscle": "Набор веса / мышцы",
+        "fat_loss": "Снижение жира",
+        "stress_reduction": "Снижение стресса",
+        "posture_mobility": "Осанка и мобильность",
+        "exercise_plan_text": "Этот план тренировок поддерживает физическое здоровье, фокус, восстановление и продуктивность студента.",
+        "plan_general": ["Понедельник: 30 мин ходьбы + 10 мин растяжки", "Среда: тренировка всего тела с собственным весом", "Пятница: 30 мин велосипед или ходьба", "Воскресенье: лёгкая мобильность и восстановление"],
+        "plan_muscle": ["Понедельник: push-тренировка", "Вторник: pull-тренировка", "Четверг: ноги", "Суббота: силовая тренировка всего тела"],
+        "plan_fat": ["Понедельник: 40 мин быстрой ходьбы", "Среда: круговая тренировка всего тела", "Пятница: интервальное кардио", "Воскресенье: длинная прогулка"],
+        "plan_stress": ["Понедельник: 20 мин ходьбы + дыхание", "Среда: сессия мобильности", "Пятница: лёгкое кардио", "Воскресенье: растяжка и восстановление"],
+        "plan_posture": ["Ежедневно: 5 мин мобильности шеи", "Ежедневно: 5 мин мобильности плеч", "3 раза/неделю: стабильность кора", "3 раза/неделю: укрепление спины"],
+        "smartwatch_sleep_tracking": "Отслеживание сна через smartwatch",
+        "smart_sleep_text": "Будущие версии смогут собирать реальные данные циклов сна с Apple Watch, Fitbit, Garmin или приложений сна.",
+        "deep_sleep_duration": "Длительность глубокого сна", "rem_sleep": "REM-сон", "sleep_quality_score": "Оценка качества сна", "recovery_score": "Оценка восстановления",
+        "exercise_tracking": "Отслеживание тренировок", "exercise_tracking_text": "Система может связывать данные тренировок и активности с анализом продуктивности.",
+        "step_count": "Количество шагов", "training_duration": "Длительность тренировки", "activity_intensity": "Интенсивность активности", "energy_score": "Оценка энергии",
+        "weekly_reports": "Еженедельные отчёты", "weekly_reports_text": "Система может автоматически создавать учебные, wellness, nutrition и exercise отчёты.",
+        "long_term_behavior_analysis": "Долгосрочный анализ поведения", "long_term_behavior_text": "Система может обнаруживать паттерны: связь сна и продуктивности, влияние стресса и стабильность учёбы.",
+        "sleep_quality": "Качество сна", "deep_sleep": "Глубокий сон", "recovery": "Восстановление", "exercise_minutes_label": "Минуты тренировки", "steps_1000": "Шаги / 1000",
+        "mon": "Пн", "tue": "Вт", "wed": "Ср", "thu": "Чт", "fri": "Пт", "sat": "Сб", "sun": "Вс",
+        "suggested_daily_plan": "Рекомендуемый план дня",
+    },
+}
+for _lang, _patch in FULL_LANGUAGE_PATCH_V8.items():
+    TRANSLATIONS[_lang].update(_patch)
+
 # Small UI labels used in profile/PDF/model areas
 for _lang in TRANSLATIONS:
     TRANSLATIONS[_lang].setdefault("faculty_software", "Software Engineering")
@@ -1778,7 +1844,7 @@ def render_dashboard_tabs():
 
         with col1:
             entry_date = st.date_input(t["date_label"], value=date.today(), key="daily_entry_date")
-            mood_text = st.text_area(t["mood_question"], value=t["default_mood"], key="daily_mood_text")
+            mood_text = st.text_area(t["mood_question"], value=t["default_mood"], key=f"daily_mood_text_{st.session_state.language}")
             sleep_hours = st.slider(t["sleep"], 0, 12, 7, key="daily_sleep_hours")
             study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours")
             task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion")
@@ -1928,6 +1994,7 @@ def render_dashboard_tabs():
         fitness_goal = st.selectbox(
             t["exercise_goal"],
             [t["general_health"], t["weight_gain_muscle"], t["fat_loss"], t["stress_reduction"], t["posture_mobility"]],
+            key=f"exercise_goal_{st.session_state.language}",
         )
         plans = {
             t["general_health"]: t["plan_general"],
@@ -2081,7 +2148,7 @@ def render_dashboard_tabs():
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(
-                """
+                f"""
                 <div class="card-blue">
                 <h3>{t["smartwatch_sleep_tracking"]}</h3>
                 <p>{t["smart_sleep_text"]}</p>
@@ -2107,7 +2174,7 @@ def render_dashboard_tabs():
 
         with col2:
             st.markdown(
-                """
+                f"""
                 <div class="card-green">
                 <h3>{t["exercise_tracking"]}</h3>
                 <p>{t["exercise_tracking_text"]}</p>
@@ -2134,7 +2201,7 @@ def render_dashboard_tabs():
         col3, col4 = st.columns(2)
         with col3:
             st.markdown(
-                """
+                f"""
                 <div class="card-purple">
                 <h3>{t["weekly_reports"]}</h3>
                 <p>{t["weekly_reports_text"]}</p>
@@ -2144,7 +2211,7 @@ def render_dashboard_tabs():
             )
         with col4:
             st.markdown(
-                """
+                f"""
                 <div class="card-orange">
                 <h3>{t["long_term_behavior_analysis"]}</h3>
                 <p>{t["long_term_behavior_text"]}</p>
