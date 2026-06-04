@@ -5480,240 +5480,252 @@ def get_live_accountability_items():
 
 
 def render_home_notes_and_accountability():
-    """Premium unified notes board.
-
-    One wide dashboard block: visual note memory on top, notes list on the left,
-    and a clean blue glass note input on the right.
-    """
+    """Premium notes board matching the compact blue glass mockup."""
     t_local = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"])
     recent = load_daily_notes(limit=8)
+    note_count = 0 if recent.empty else len(recent)
+
+    notes_title_clean = t_local["notes_panel_title"].replace("📝 ", "")
+    save_title_clean = t_local["note_add"].replace("➕ ", "")
+    empty_title = t_local["no_notes"]
+    memory_label = t_local["memory_link"]
+    placeholder = t_local["note_placeholder"]
 
     st.markdown(
         """
         <style>
-        .premium-notes-shell {
+        .notes-premium-board {
             position: relative;
-            margin: 24px 0 30px 0;
-            padding: 30px;
-            border-radius: 30px;
+            margin: 24px 0 32px 0;
+            padding: 28px 30px 30px 30px;
+            border-radius: 28px;
             background:
-                radial-gradient(circle at 12% 8%, rgba(59,130,246,.20), transparent 34%),
-                radial-gradient(circle at 85% 16%, rgba(249,115,22,.16), transparent 32%),
-                linear-gradient(135deg, rgba(15,23,42,.84), rgba(17,24,39,.76));
-            border: 1px solid rgba(96,165,250,.24);
-            box-shadow: 0 32px 90px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.04);
+                radial-gradient(circle at 12% 6%, rgba(59,130,246,.24), transparent 32%),
+                radial-gradient(circle at 88% 8%, rgba(249,115,22,.14), transparent 30%),
+                linear-gradient(135deg, rgba(8,20,38,.94), rgba(12,26,50,.88) 48%, rgba(20,24,42,.84));
+            border: 1px solid rgba(96,165,250,.32);
+            box-shadow: 0 34px 90px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.05);
             overflow: hidden;
         }
-        .premium-notes-shell::before {
-            content:"";
-            position:absolute;
-            inset:0;
-            pointer-events:none;
-            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.035) 44%, transparent 70%);
+        .notes-premium-board::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(115deg, transparent 0%, rgba(255,255,255,.035) 48%, transparent 72%),
+                radial-gradient(circle at 72% 44%, rgba(96,165,250,.10), transparent 28%);
         }
-        .premium-memory-pill {
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            padding:10px 16px;
-            border-radius:999px;
-            background:linear-gradient(135deg, rgba(59,130,246,.25), rgba(124,58,237,.18));
-            border:1px solid rgba(147,197,253,.28);
-            color:#bfdbfe;
-            font-weight:800;
-            box-shadow: 0 12px 28px rgba(37,99,235,.16);
+        .notes-memory-pill {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(59,130,246,.26), rgba(124,58,237,.22));
+            border: 1px solid rgba(147,197,253,.28);
+            color: #dbeafe;
+            font-weight: 850;
+            box-shadow: 0 12px 26px rgba(37,99,235,.16);
         }
-        .premium-notes-title {
-            margin-top:24px;
-            display:flex;
-            align-items:center;
-            gap:14px;
+        .notes-board-title {
+            position: relative;
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
-        .premium-notes-title h3 {
-            margin:0;
-            font-size:2.15rem;
-            letter-spacing:-.04em;
-            color:#f8fafc;
+        .notes-board-title .title-icon {
+            width: 50px;
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(59,130,246,.22), rgba(168,85,247,.16));
+            border: 1px solid rgba(147,197,253,.20);
+            font-size: 2rem;
         }
-        .premium-notes-subtitle {
-            margin: 18px 0 24px 0;
-            max-width: 980px;
-            color:#dbeafe;
-            line-height:1.65;
-            font-size:1.04rem;
+        .notes-board-title h3 {
+            margin: 0;
+            color: #f8fafc;
+            font-size: 2.15rem;
+            letter-spacing: -.045em;
         }
-        .premium-top-note {
-            min-height: 116px;
+        .notes-board-subtitle {
+            position: relative;
+            margin: 16px 0 22px 0;
+            max-width: 960px;
+            color: #dbeafe;
+            font-size: 1.02rem;
+            line-height: 1.65;
+        }
+        .notes-hero-strip {
+            position: relative;
+            min-height: 112px;
             padding: 24px 28px;
-            border-radius: 24px;
+            border-radius: 22px;
             background:
-                radial-gradient(circle at 88% 45%, rgba(96,165,250,.20), transparent 28%),
-                linear-gradient(135deg, rgba(30,64,175,.20), rgba(15,23,42,.60));
-            border:1px solid rgba(96,165,250,.30);
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:22px;
-            margin-bottom:24px;
+                radial-gradient(circle at 86% 45%, rgba(56,189,248,.22), transparent 24%),
+                linear-gradient(135deg, rgba(30,64,175,.24), rgba(15,23,42,.58));
+            border: 1px solid rgba(96,165,250,.35);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+            margin-bottom: 22px;
         }
-        .premium-top-note b {color:#f8fafc;font-size:1.12rem;}
-        .premium-top-note small {display:block;color:#93c5fd;margin-top:10px;font-size:.95rem;}
-        .premium-note-illustration {
-            font-size:4.8rem;
-            filter: drop-shadow(0 18px 26px rgba(96,165,250,.22));
-            opacity:.95;
-            padding-right:28px;
+        .notes-hero-strip b { color:#f8fafc; font-size:1.13rem; }
+        .notes-hero-strip small { display:block; color:#93c5fd; margin-top:9px; font-size:.94rem; }
+        .notes-hero-art {
+            min-width: 120px;
+            text-align: center;
+            font-size: 4.4rem;
+            filter: drop-shadow(0 18px 28px rgba(59,130,246,.28));
+            opacity: .95;
         }
-        .premium-note-grid {
-            display:grid;
-            grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr);
-            gap:24px;
-            align-items:stretch;
-        }
-        .premium-note-panel {
-            min-height: 330px;
-            padding: 26px;
-            border-radius: 26px;
-            background:
-                radial-gradient(circle at 18% 18%, rgba(124,58,237,.18), transparent 38%),
-                linear-gradient(135deg, rgba(15,23,42,.72), rgba(30,41,59,.48));
-            border:1px solid rgba(148,163,184,.22);
-            box-shadow: 0 22px 60px rgba(0,0,0,.25);
-        }
-        .premium-note-panel.left {
-            border-color: rgba(168,85,247,.32);
-        }
-        .premium-note-panel.right {
-            border-color: rgba(96,165,250,.40);
-            background:
-                radial-gradient(circle at 15% 12%, rgba(59,130,246,.24), transparent 36%),
-                radial-gradient(circle at 86% 82%, rgba(168,85,247,.18), transparent 34%),
-                linear-gradient(135deg, rgba(15,23,42,.76), rgba(30,58,138,.42));
-        }
-        .premium-panel-head {
+        .notes-card-title-row {
             display:flex;
             align-items:center;
             justify-content:space-between;
             gap:12px;
-            margin-bottom:20px;
+            margin-bottom: 18px;
         }
-        .premium-panel-head h4 {
-            margin:0;
-            color:#f8fafc;
-            font-size:1.55rem;
-            letter-spacing:-.02em;
-        }
-        .premium-mini-tools {
-            display:flex;
-            gap:8px;
-            opacity:.85;
-        }
-        .premium-mini-tool {
-            width:38px;
-            height:38px;
+        .notes-card-heading {
             display:flex;
             align-items:center;
-            justify-content:center;
-            border-radius:12px;
-            background:rgba(15,23,42,.48);
-            border:1px solid rgba(148,163,184,.20);
-            color:#bfdbfe;
+            gap:12px;
+            color:#f8fafc;
+            font-size:1.42rem;
+            font-weight:900;
+            letter-spacing:-.025em;
         }
-        .premium-empty-note {
-            min-height: 205px;
-            border-radius:22px;
-            border:1px solid rgba(148,163,184,.18);
-            background:rgba(15,23,42,.38);
+        .notes-mini-action-set { display:flex; gap:8px; }
+        .notes-mini-action {
+            width:38px; height:38px;
+            display:flex; align-items:center; justify-content:center;
+            border-radius:12px;
+            background:rgba(15,23,42,.46);
+            border:1px solid rgba(148,163,184,.22);
+            color:#bfdbfe;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+        }
+        .notes-panel-shell {
+            min-height: 335px;
+            padding: 24px;
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at 16% 20%, rgba(124,58,237,.18), transparent 36%),
+                radial-gradient(circle at 78% 22%, rgba(59,130,246,.12), transparent 32%),
+                linear-gradient(135deg, rgba(15,23,42,.72), rgba(15,23,42,.46));
+            border: 1px solid rgba(168,85,247,.34);
+            box-shadow: 0 20px 54px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+        }
+        .notes-panel-shell.add {
+            border-color: rgba(96,165,250,.38);
+            background:
+                radial-gradient(circle at 14% 12%, rgba(59,130,246,.22), transparent 34%),
+                radial-gradient(circle at 90% 90%, rgba(124,58,237,.24), transparent 35%),
+                linear-gradient(135deg, rgba(15,23,42,.76), rgba(30,64,175,.34));
+        }
+        .notes-empty-state {
+            min-height: 230px;
+            border-radius: 22px;
+            border: 1px solid rgba(148,163,184,.22);
+            background:
+                radial-gradient(circle at 50% 38%, rgba(59,130,246,.12), transparent 30%),
+                rgba(15,23,42,.38);
             display:flex;
             flex-direction:column;
             align-items:center;
             justify-content:center;
             text-align:center;
-            padding:28px;
+            padding: 28px;
             color:#cbd5e1;
         }
-        .premium-empty-note .empty-icon {font-size:3rem;margin-bottom:14px;opacity:.9;}
-        .premium-empty-note b {font-size:1.15rem;color:#f8fafc;}
-        .premium-empty-note small {margin-top:10px;color:#bfdbfe;}
-        .premium-note-item {
-            padding:16px 18px;
-            border-radius:18px;
-            background:linear-gradient(135deg, rgba(15,23,42,.66), rgba(30,41,59,.42));
-            border:1px solid rgba(148,163,184,.20);
-            margin-bottom:12px;
-            box-shadow: 0 16px 32px rgba(0,0,0,.14);
-        }
-        .premium-note-item b {color:#f8fafc;font-size:1.04rem;}
-        .premium-note-item small {display:block;color:#93c5fd;margin-top:7px;}
-        .premium-add-caption {
-            margin:0 0 20px 0;
-            color:#bfdbfe;
-            line-height:1.6;
-        }
-        .premium-notes-shell textarea {
-            background: linear-gradient(135deg, rgba(30,64,175,.28), rgba(15,23,42,.52)) !important;
-            border: 1px solid rgba(147,197,253,.34) !important;
-            color: #eaf2ff !important;
-            border-radius: 18px !important;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 14px 30px rgba(2,6,23,.18) !important;
-        }
-        .premium-notes-shell textarea::placeholder {
-            color: rgba(191,219,254,.72) !important;
-        }
-        .premium-notes-shell div[data-testid="stForm"] {
-            border: 0 !important;
-            padding: 0 !important;
-            background: transparent !important;
-        }
-        .premium-notes-shell div[data-testid="stFormSubmitButton"] button {
-            min-height: 58px;
+        .notes-empty-state .big-icon { font-size:3.35rem; margin-bottom:14px; opacity:.92; }
+        .notes-empty-state b { color:#f8fafc; font-size:1.12rem; }
+        .notes-empty-state small { color:#bfdbfe; margin-top:10px; }
+        .notes-list-card {
+            padding: 15px 16px;
             border-radius: 17px;
-            font-weight: 900;
-            font-size: 1.02rem;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #f97316) !important;
-            box-shadow: 0 16px 34px rgba(59,130,246,.22), 0 12px 34px rgba(249,115,22,.16) !important;
+            background:
+                linear-gradient(135deg, rgba(30,64,175,.20), rgba(15,23,42,.52));
+            border: 1px solid rgba(147,197,253,.20);
+            margin-bottom: 12px;
+            box-shadow: 0 12px 28px rgba(0,0,0,.16);
+        }
+        .notes-list-card b { color:#f8fafc; font-size:1.02rem; }
+        .notes-list-card small { display:block; color:#93c5fd; margin-top:7px; }
+        .note-input-help {
+            color:#bfdbfe;
+            margin: 4px 0 18px 0;
+            line-height:1.55;
+        }
+        div[data-testid="stTextArea"] textarea {
+            background: linear-gradient(135deg, rgba(30,64,175,.26), rgba(15,23,42,.50)) !important;
+            color: #eaf2ff !important;
+            border: 1px solid rgba(147,197,253,.38) !important;
+            border-radius: 18px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 14px 32px rgba(2,6,23,.16) !important;
+            font-weight: 650 !important;
+        }
+        div[data-testid="stTextArea"] textarea::placeholder { color: rgba(191,219,254,.68) !important; }
+        div[data-testid="stForm"] { border: 0 !important; padding: 0 !important; background: transparent !important; }
+        div[data-testid="stFormSubmitButton"] button {
+            min-height: 58px;
+            border-radius: 17px !important;
+            font-weight: 900 !important;
+            font-size: 1.02rem !important;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
             border: 1px solid rgba(255,255,255,.16) !important;
+            box-shadow: 0 18px 36px rgba(59,130,246,.22), 0 12px 30px rgba(139,92,246,.20) !important;
         }
         @media (max-width: 1100px) {
-            .premium-note-grid { grid-template-columns: 1fr; }
-            .premium-note-illustration { display:none; }
+            .notes-hero-art { display:none; }
+            .notes-board-title h3 { font-size:1.75rem; }
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
-    st.markdown('<div class="premium-notes-shell">', unsafe_allow_html=True)
+    hero_title = empty_title if recent.empty else f"{note_count} {notes_title_clean.lower()}"
+    hero_sub = memory_label if recent.empty else str(recent.iloc[0]["note_date"])
+
     st.markdown(
         f"""
-        <span class="premium-memory-pill">🧠 {t_local['memory_link']}</span>
-        <div class="premium-notes-title">
-            <span style="font-size:2.3rem;">📝</span>
-            <h3>{t_local['notes_panel_title'].replace('📝 ', '')}</h3>
-        </div>
-        <p class="premium-notes-subtitle">{t_local['notes_panel_subtitle']}</p>
-        <div class="premium-top-note">
-            <div>
-                <b>🕊️ {t_local['no_notes'] if recent.empty else recent.iloc[0]['note_text']}</b>
-                <small>{t_local['memory_link'] if recent.empty else str(recent.iloc[0]['note_date'])}</small>
+        <div class="notes-premium-board">
+            <span class="notes-memory-pill">🧠 {memory_label}</span>
+            <div class="notes-board-title">
+                <span class="title-icon">📝</span>
+                <h3>{notes_title_clean}</h3>
             </div>
-            <div class="premium-note-illustration">📘</div>
+            <p class="notes-board-subtitle">{t_local['notes_panel_subtitle']}</p>
+            <div class="notes-hero-strip">
+                <div>
+                    <b>🕊️ {hero_title}</b>
+                    <small>{hero_sub}</small>
+                </div>
+                <div class="notes-hero-art">📘</div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    notes_col, write_col = st.columns([1.2, .92], gap="large")
+    notes_col, write_col = st.columns([1.08, .92], gap="large")
 
     with notes_col:
         st.markdown(
             """
-            <div class="premium-note-panel left">
-                <div class="premium-panel-head">
-                    <h4>🔖 Notlarım</h4>
-                    <div class="premium-mini-tools">
-                        <span class="premium-mini-tool">≡</span>
-                        <span class="premium-mini-tool">▦</span>
+            <div class="notes-panel-shell">
+                <div class="notes-card-title-row">
+                    <div class="notes-card-heading">🔖 Notlarım</div>
+                    <div class="notes-mini-action-set">
+                        <span class="notes-mini-action">≡</span>
+                        <span class="notes-mini-action">▦</span>
                     </div>
                 </div>
             """,
@@ -5722,8 +5734,8 @@ def render_home_notes_and_accountability():
         if recent.empty:
             st.markdown(
                 """
-                <div class="premium-empty-note">
-                    <div class="empty-icon">📋</div>
+                <div class="notes-empty-state">
+                    <div class="big-icon">📋</div>
                     <b>Henüz hiç not eklemedin.</b>
                     <small>İlk notunu eklemek için sağdaki paneli kullan.</small>
                 </div>
@@ -5733,11 +5745,11 @@ def render_home_notes_and_accountability():
         else:
             for _, row in recent.iterrows():
                 row_id = int(row["id"])
-                c_text, c_delete = st.columns([8, 1])
+                c_text, c_delete = st.columns([9, 1])
                 with c_text:
                     st.markdown(
                         f"""
-                        <div class="premium-note-item">
+                        <div class="notes-list-card">
                             <b>✅ {row['note_text']}</b>
                             <small>{row['note_date']}</small>
                         </div>
@@ -5746,7 +5758,7 @@ def render_home_notes_and_accountability():
                     )
                 with c_delete:
                     st.write("")
-                    if st.button("🗑️", key=f"delete_note_v38_{row_id}", help="Delete note"):
+                    if st.button("🗑️", key=f"delete_note_v39_{row_id}", help="Delete note"):
                         delete_daily_note(row_id)
                         st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
@@ -5754,20 +5766,20 @@ def render_home_notes_and_accountability():
     with write_col:
         st.markdown(
             f"""
-            <div class="premium-note-panel right">
-                <div class="premium-panel-head">
-                    <h4>➕ {t_local['note_add'].replace('➕ ', '')}</h4>
+            <div class="notes-panel-shell add">
+                <div class="notes-card-title-row">
+                    <div class="notes-card-heading">➕ {save_title_clean}</div>
                 </div>
-                <p class="premium-add-caption">{t_local['note_placeholder']}</p>
+                <p class="note-input-help">{placeholder}</p>
             """,
             unsafe_allow_html=True,
         )
-        with st.form(key=f"home_note_form_v38_{st.session_state.language}", clear_on_submit=True):
+        with st.form(key=f"home_note_form_v39_{st.session_state.language}", clear_on_submit=True):
             new_note = st.text_area(
                 "",
-                placeholder=t_local["note_placeholder"],
-                key=f"home_note_text_v38_{st.session_state.language}",
-                height=190,
+                placeholder=placeholder,
+                key=f"home_note_text_v39_{st.session_state.language}",
+                height=185,
             )
             submitted = st.form_submit_button(t_local["note_add"], use_container_width=True)
             if submitted:
@@ -5775,11 +5787,8 @@ def render_home_notes_and_accountability():
                     st.success(t_local["note_added"])
                     st.rerun()
                 else:
-                    st.warning(t_local["note_placeholder"])
+                    st.warning(placeholder)
         st.markdown("</div>", unsafe_allow_html=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
 
 # Run non-destructive migration after all original tables exist.
 professional_db_migration()
