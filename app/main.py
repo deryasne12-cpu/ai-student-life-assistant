@@ -2846,6 +2846,50 @@ def coach_assessment_text(records):
     p1, p2, rec, gain = data.get(lang, data["English"])
     return px, p1, p2, rec, gain
 
+def _compact_home_notes_html():
+    """Build a compact right-side notes panel for the home welcome card."""
+    lang = st.session_state.language
+    ui = {
+        "Türkçe": {"title":"📝 Notlarım", "empty":"Henüz not yok. İlk notunu ekle.", "date":"Bugün", "add":"Yeni not eklemek için aşağıdaki küçük paneli kullan.", "saved":"kayıtlı not"},
+        "English": {"title":"📝 My Notes", "empty":"No notes yet. Add your first note.", "date":"Today", "add":"Use the small panel below to add a new note.", "saved":"saved notes"},
+        "Deutsch": {"title":"📝 Meine Notizen", "empty":"Noch keine Notizen. Füge die erste hinzu.", "date":"Heute", "add":"Nutze das kleine Panel unten, um eine neue Notiz hinzuzufügen.", "saved":"gespeicherte Notizen"},
+        "Español": {"title":"📝 Mis notas", "empty":"Aún no hay notas. Añade la primera.", "date":"Hoy", "add":"Usa el panel pequeño de abajo para añadir una nota.", "saved":"notas guardadas"},
+        "Русский": {"title":"📝 Мои заметки", "empty":"Заметок пока нет. Добавь первую.", "date":"Сегодня", "add":"Используй небольшую панель ниже, чтобы добавить заметку.", "saved":"сохранённых заметок"},
+    }.get(lang, {})
+    try:
+        notes = load_daily_notes(limit=4)
+    except Exception:
+        notes = pd.DataFrame()
+    if notes.empty:
+        notes_html = f"""
+        <div class="home-note-empty">
+            <span class="home-note-empty-icon">📋</span>
+            <b>{ui.get('empty', 'No notes yet.')}</b>
+            <small>{ui.get('add', 'Add a new note below.')}</small>
+        </div>"""
+        count_text = "0"
+    else:
+        count_text = str(len(notes))
+        items = []
+        for _, row in notes.iterrows():
+            txt = str(row.get("note_text", ""))[:72]
+            dt = str(row.get("note_date", ui.get("date", "Today")))
+            items.append(f"""
+            <div class="home-note-item">
+                <div><b>✅ {txt}</b><small>{dt}</small></div>
+            </div>""")
+        notes_html = "".join(items)
+    return f"""
+    <div class="home-notes-card">
+        <div class="home-notes-top">
+            <span class="home-notes-icon">🧠</span>
+            <div><b>{ui.get('title', 'My Notes')}</b><small>{count_text} {ui.get('saved', 'saved notes')}</small></div>
+        </div>
+        <div class="home-notes-list">{notes_html}</div>
+    </div>
+    """
+
+
 def render_home_booster():
     records = calculate_scores(st.session_state.records)
     profile = st.session_state.profile
@@ -2863,9 +2907,36 @@ def render_home_booster():
     quote = get_motivation_quote(avg_productivity, avg_stress, avg_sleep)
     energy_label = t["energy_good"] if avg_sleep >= 6.5 and avg_stress <= 6 else t["energy_watch"]
     risk_label = t["risk_high"] if avg_stress >= 7 or avg_sleep < 5.5 else t["risk_medium"] if avg_stress >= 5.5 or avg_sleep < 6.5 else t["risk_low"]
+    notes_html = _compact_home_notes_html()
 
     st.markdown(
         f"""
+        <style>
+        .home-notes-card {{
+            height: 100%;
+            min-height: 365px;
+            padding: 28px;
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(96,165,250,.22), transparent 34%),
+                radial-gradient(circle at 96% 92%, rgba(124,58,237,.20), transparent 38%),
+                linear-gradient(135deg, rgba(15,23,42,.68), rgba(30,41,79,.48));
+            border: 1px solid rgba(96,165,250,.28);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 18px 45px rgba(0,0,0,.25);
+        }}
+        .home-notes-top {{display:flex;align-items:center;gap:14px;margin-bottom:18px;}}
+        .home-notes-icon {{display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg, rgba(59,130,246,.42), rgba(139,92,246,.36));font-size:24px;}}
+        .home-notes-top b {{display:block;font-size:24px;color:#f8fafc;}}
+        .home-notes-top small {{display:block;color:#93c5fd;margin-top:4px;font-weight:700;}}
+        .home-notes-list {{display:flex;flex-direction:column;gap:12px;}}
+        .home-note-item {{padding:14px 16px;border-radius:18px;background:rgba(15,23,42,.56);border:1px solid rgba(148,163,184,.18);}}
+        .home-note-item b {{display:block;color:#fff;font-size:16px;}}
+        .home-note-item small {{display:block;color:#93c5fd;margin-top:6px;font-weight:700;}}
+        .home-note-empty {{height:235px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:22px;background:rgba(15,23,42,.35);border:1px solid rgba(148,163,184,.16);}}
+        .home-note-empty-icon {{font-size:44px;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(96,165,250,.35));}}
+        .home-note-empty b {{font-size:20px;color:#f8fafc;}}
+        .home-note-empty small {{margin-top:10px;color:#bfdbfe;font-weight:700;}}
+        </style>
         <div class="welcome-card">
             <div>
                 <h3>{t["welcome_title"].format(name=name)}</h3>
@@ -2882,17 +2953,27 @@ def render_home_booster():
                     <small>{t["welcome_profile_hint"]}</small>
                 </div>
             </div>
-            <div class="ai-avatar-card">
-                <div class="ai-avatar">🤖</div>
-                <b>{t["ai_mission_title"]}</b>
-                <div class="animated-mission-box">
-                    {''.join(f'<div class="mission-slide"><b>⚡ {item}</b><small>{t.get("welcome_profile_hint", "Personalized by your profile.")}</small></div>' for item in get_dynamic_daily_mission())}
-                </div>
-            </div>
+            {notes_html}
         </div>
         """,
         unsafe_allow_html=True,
     )
+
+    note_label = {
+        "Türkçe": "➕ Hızlı not ekle", "English": "➕ Add quick note", "Deutsch": "➕ Schnellnotiz hinzufügen",
+        "Español": "➕ Añadir nota rápida", "Русский": "➕ Добавить быструю заметку"
+    }.get(st.session_state.language, "➕ Add quick note")
+    placeholder = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"]).get("note_placeholder", "Write a note...")
+    with st.expander(note_label, expanded=False):
+        with st.form(key=f"home_compact_note_form_{st.session_state.language}", clear_on_submit=True):
+            new_note = st.text_area("", placeholder=placeholder, height=100)
+            submitted = st.form_submit_button(note_label, use_container_width=True)
+            if submitted:
+                if save_daily_note(new_note, "Note", "Normal"):
+                    st.success(TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"]).get("note_added", "Note saved."))
+                    st.rerun()
+                else:
+                    st.warning(placeholder)
 
     k1, k2, k3, k4 = st.columns(4)
     k1.metric(t["productivity_kpi"], f"{avg_productivity:.0f}/100")
@@ -2904,7 +2985,6 @@ def render_home_booster():
     s1.metric(f"🔥 {t['study_streak']}", f"{study_streak} {t['day_unit']}")
     s2.metric(f"💧 {t['water_streak']}", f"{water_streak} {t['day_unit']}")
     s3.metric(f"🏃 {t['exercise_streak']}", f"{exercise_streak} {t['day_unit']}")
-
 
 def render_student_bottom_summary():
     records = calculate_scores(st.session_state.records)
@@ -3267,8 +3347,6 @@ def render_dashboard_tabs():
     with tab1:
         # Daily page keeps the product overview, but other tabs stay clean.
         render_home_booster()
-        render_home_notes_and_accountability()
-
         px = premium_texts()
 
         with st.form("daily_tracking_form_v22", clear_on_submit=False):
