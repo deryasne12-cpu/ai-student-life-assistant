@@ -2553,6 +2553,74 @@ def render_dashboard_tabs():
             )
 
 
+
+
+# === V14: Clean one-row tabs + remove extra separator ===
+st.markdown("""
+<style>
+/* Keep all section icons in one clean row */
+div[data-testid="stTabs"] {
+    margin-top: 14px !important;
+    margin-bottom: 12px !important;
+}
+
+div[data-testid="stTabs"] div[role="tablist"] {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    padding: 14px 6px 14px 6px !important;
+    margin: 18px 0 12px 0 !important;
+    overflow: hidden !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.24) !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.24) !important;
+}
+
+div[data-testid="stTabs"] button[role="tab"],
+div[data-testid="stTabs"] [role="tab"] {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 210px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    padding: 0 10px !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+}
+
+div[data-testid="stTabs"] button[role="tab"] p,
+div[data-testid="stTabs"] [role="tab"] p,
+div[data-testid="stTabs"] button[role="tab"] div,
+div[data-testid="stTabs"] [role="tab"] div,
+div[data-testid="stTabs"] button[role="tab"] span,
+div[data-testid="stTabs"] [role="tab"] span {
+    font-size: 14px !important;
+    font-weight: 620 !important;
+    letter-spacing: -0.15px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Delete the second unnecessary line below the tab bar */
+div[data-testid="stTabs"] hr,
+div[data-testid="stTabs"] div[data-testid="stMarkdownContainer"] hr,
+div[data-testid="stTabs"] div[data-testid="stVerticalBlock"] > div:has(hr) {
+    display: none !important;
+}
+
+/* Pull the first tab content slightly closer to the tab bar */
+.welcome-card {
+    margin-top: 6px !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # Page routing
 # Header + concept card appear only on the main dashboard page.
 # Login/Profile, Settings, and Database pages stay clean and separate.
