@@ -3950,6 +3950,155 @@ def v26_exercise_goal_profiles():
     }
 
 
+
+# === V28: goal-based detailed exercise programming ===
+def v28_training_pack():
+    packs = {
+        "Türkçe": {
+            "weekly_program":"Haftalık Program", "session_blueprint":"Seans Akışı", "progression_model":"İlerleme Modeli", "nutrition_link":"Beslenme Bağlantısı", "recovery_rule":"Toparlanma Kuralı", "coach_note":"Koç Yorumu",
+            "mon":"Pazartesi", "tue":"Salı", "wed":"Çarşamba", "thu":"Perşembe", "fri":"Cuma", "sat":"Cumartesi", "sun":"Pazar",
+            "warmup":"Isınma", "main_work":"Ana çalışma", "cooldown":"Soğuma", "core":"Core", "mobility_block":"Mobilite", "walk":"Yürüyüş", "rest":"Aktif dinlenme",
+            "muscle_title":"Kas/Kilo Artışı Programı", "fat_title":"Yağ Kaybı Programı", "general_title":"Genel Sağlık Programı", "stress_title":"Stres Azaltma Programı", "posture_title":"Duruş ve Mobilite Programı",
+            "muscle_note":"Hedef kas kütlesi ise sistem ağırlık/kuvvet, progresif yükleme, yeterli kalori ve protein disiplinini beraber takip eder.",
+            "fat_note":"Hedef yağ kaybı ise plan; adım sayısı, orta yoğunluk, kalori kontrolü ve toparlanmayı aynı anda yönetir.",
+            "general_note":"Genel sağlıkta amaç sürdürülebilir ritim: düzenli hareket, düşük sakatlık riski ve iyi enerji seviyesi.",
+            "stress_note":"Stres azaltmada amaç sinir sistemini yormadan hareket etmek: yürüyüş, nefes, düşük tempo ve uyku kalitesi.",
+            "posture_note":"Duruş/mobilitede amaç core stabilite, sırt güçlendirme, kalça/omuz açıklığı ve günlük kısa tekrarlar.",
+            "muscle_progression":"Her hafta ana hareketlerde ya +1 tekrar ya +2.5 kg ya da +1 set. Aynı anda hepsini artırma.",
+            "fat_progression":"Önce günlük adımı sabitle, sonra haftalık kardiyo süresini %10 artır. Aşırı açlık varsa düşür.",
+            "general_progression":"Haftalık toplam hareket süresini küçük küçük artır. Hedef sürdürülebilirlik, kahramanlık değil.",
+            "stress_progression":"Yoğunluk değil süreklilik kazanır. Stres yüksekse RPE 4-6 aralığında kal.",
+            "posture_progression":"Her gün 8-12 dakika mobilite; haftada 3 gün core/sırt kuvveti. Ağrı artarsa hacmi düşür.",
+            "muscle_nutrition":"Protein 1.6–2.0 g/kg, kaloride küçük fazlalık, antrenman sonrası protein + karbonhidrat.",
+            "fat_nutrition":"Kaloride kontrollü açık, yüksek protein, lif ve su. Antrenman performansı sert düşerse açık fazla olabilir.",
+            "general_nutrition":"Dengeli tabak: protein + kompleks karbonhidrat + sağlıklı yağ + su. Enerji dalgalanmasını azaltır.",
+            "stress_nutrition":"Kafeini abartma; akşam ağır öğün ve şekerli atıştırma uykuyu bozabilir.",
+            "posture_nutrition":"Kolajen mucize değil; asıl mesele protein, D vitamini durumu, su ve düzenli kuvvet çalışması.",
+            "recovery_default":"Kas ağrısı 7/10 üstündeyse ağır seans yapma. Uyku düşükse hacmi %30 azalt.",
+        },
+        "English": {
+            "weekly_program":"Weekly Program", "session_blueprint":"Session Blueprint", "progression_model":"Progression Model", "nutrition_link":"Nutrition Link", "recovery_rule":"Recovery Rule", "coach_note":"Coach Note",
+            "mon":"Monday", "tue":"Tuesday", "wed":"Wednesday", "thu":"Thursday", "fri":"Friday", "sat":"Saturday", "sun":"Sunday",
+            "warmup":"Warm-up", "main_work":"Main work", "cooldown":"Cooldown", "core":"Core", "mobility_block":"Mobility", "walk":"Walk", "rest":"Active recovery",
+            "muscle_title":"Muscle / Weight Gain Program", "fat_title":"Fat Loss Program", "general_title":"General Health Program", "stress_title":"Stress Reduction Program", "posture_title":"Posture & Mobility Program",
+            "muscle_note":"For muscle gain, the system tracks strength work, progressive overload, calories and protein together.",
+            "fat_note":"For fat loss, the plan manages steps, moderate intensity, calorie control and recovery together.",
+            "general_note":"For general health, the goal is sustainable rhythm: movement, low injury risk and stable energy.",
+            "stress_note":"For stress reduction, move without overloading the nervous system: walking, breathing, low tempo and sleep quality.",
+            "posture_note":"For posture/mobility, focus on core stability, back strength, hip/shoulder mobility and short daily repeats.",
+            "muscle_progression":"Each week add either +1 rep, +2.5 kg or +1 set on main lifts. Do not increase everything at once.",
+            "fat_progression":"Lock daily steps first, then increase weekly cardio by 10%. If hunger is extreme, reduce the deficit.",
+            "general_progression":"Increase weekly movement gradually. The target is sustainability, not hero mode.",
+            "stress_progression":"Consistency beats intensity. If stress is high, stay around RPE 4–6.",
+            "posture_progression":"8–12 min mobility daily; 3x/week core/back strength. If pain increases, reduce volume.",
+            "muscle_nutrition":"Protein 1.6–2.0 g/kg, small calorie surplus, protein + carbs after training.",
+            "fat_nutrition":"Controlled calorie deficit, high protein, fiber and water. If performance crashes, deficit may be too high.",
+            "general_nutrition":"Balanced plate: protein + complex carbs + healthy fat + water. It reduces energy crashes.",
+            "stress_nutrition":"Do not overdo caffeine; heavy late meals and sugar snacks can damage sleep.",
+            "posture_nutrition":"Collagen is not magic; protein, vitamin D status, water and strength work matter more.",
+            "recovery_default":"If soreness is above 7/10, skip heavy sessions. If sleep is low, cut volume by 30%.",
+        }
+    }
+    # For missing languages, keep English rather than showing mixed Turkish.
+    return packs.get(st.session_state.language, packs["English"])
+
+
+def v28_goal_program(goal, tr, base_t):
+    g = str(goal).lower()
+    if any(x in g for x in ["kilo", "kas", "muscle", "weight", "gewicht", "músculo"]):
+        title, note, prog, nutr = tr["muscle_title"], tr["muscle_note"], tr["muscle_progression"], tr["muscle_nutrition"]
+        days = [
+            (tr["mon"], "Push: chest + shoulder + triceps, 3–4 exercises, 3 sets"),
+            (tr["tue"], "Pull: back + biceps, 3–4 exercises, 3 sets"),
+            (tr["wed"], tr["rest"] + ": 25 min walk + mobility"),
+            (tr["thu"], "Legs: squat/leg press + hinge + calves, 3 sets"),
+            (tr["fri"], "Upper/Full body: weak points + core"),
+            (tr["sat"], "Optional pump + 20 min light cardio"),
+            (tr["sun"], tr["rest"]),
+        ]
+        focus = "progressive overload + protein + recovery"
+    elif any(x in g for x in ["yağ", "fat", "loss", "perder", "grasa"]):
+        title, note, prog, nutr = tr["fat_title"], tr["fat_note"], tr["fat_progression"], tr["fat_nutrition"]
+        days = [
+            (tr["mon"], "Full body strength + 20 min incline walk"),
+            (tr["tue"], "8–10k steps + Zone 2 cardio"),
+            (tr["wed"], "Lower body + core"),
+            (tr["thu"], "45 min brisk walk or cycling"),
+            (tr["fri"], "Upper body + intervals 8x30 sec"),
+            (tr["sat"], "Long walk 60 min"),
+            (tr["sun"], tr["rest"] + " + mobility"),
+        ]
+        focus = "calorie deficit + steps + strength retention"
+    elif any(x in g for x in ["stres", "stress"]):
+        title, note, prog, nutr = tr["stress_title"], tr["stress_note"], tr["stress_progression"], tr["stress_nutrition"]
+        days = [
+            (tr["mon"], "30 min easy walk + 5 min breathing"),
+            (tr["tue"], "Mobility flow 20 min"),
+            (tr["wed"], "Light full body, RPE 5"),
+            (tr["thu"], "Walk + breathing reset"),
+            (tr["fri"], "Cycling/walk 30 min easy"),
+            (tr["sat"], "Outdoor walk 45–60 min"),
+            (tr["sun"], "Stretching + sleep preparation"),
+        ]
+        focus = "nervous system recovery + consistency"
+    elif any(x in g for x in ["duruş", "mobil", "posture", "haltung"]):
+        title, note, prog, nutr = tr["posture_title"], tr["posture_note"], tr["posture_progression"], tr["posture_nutrition"]
+        days = [
+            (tr["mon"], "Core + back: dead bug, bird dog, rows"),
+            (tr["tue"], "Hip + thoracic mobility 15 min"),
+            (tr["wed"], "Posterior chain: glutes + hamstrings + back"),
+            (tr["thu"], "Shoulder mobility + neck reset"),
+            (tr["fri"], "Core stability + light pull workout"),
+            (tr["sat"], "Long walk + posture reset"),
+            (tr["sun"], "Recovery mobility"),
+        ]
+        focus = "core + back + hip/shoulder mobility"
+    else:
+        title, note, prog, nutr = tr["general_title"], tr["general_note"], tr["general_progression"], tr["general_nutrition"]
+        days = [
+            (tr["mon"], "30 min walk + 10 min mobility"),
+            (tr["tue"], "Full body strength 35–45 min"),
+            (tr["wed"], "Zone 2 cardio 30 min"),
+            (tr["thu"], "Mobility + core"),
+            (tr["fri"], "Full body strength"),
+            (tr["sat"], "Long walk / cycling"),
+            (tr["sun"], tr["rest"]),
+        ]
+        focus = "sustainable weekly routine"
+    return {"title": title, "note": note, "progression": prog, "nutrition": nutr, "days": days, "focus": focus}
+
+
+def render_v28_goal_based_program(fitness_goal):
+    tr = v28_training_pack()
+    program = v28_goal_program(fitness_goal, tr, t)
+    st.markdown(f"""
+    <div class="card-purple">
+        <h2>🚀 {program['title']}</h2>
+        <p>{program['note']}</p>
+        <p><b>{tr['training_focus'] if 'training_focus' in tr else 'Focus'}:</b> {program['focus']}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    df = pd.DataFrame(program["days"], columns=["Day", "Training Plan"])
+    st.markdown(f"### 📅 {tr['weekly_program']}")
+    st.dataframe(df, use_container_width=True, hide_index=True)
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        render_ai_insight_card(f"📈 {tr['progression_model']}", program["progression"], "card-blue")
+    with c2:
+        render_ai_insight_card(f"🥗 {tr['nutrition_link']}", program["nutrition"], "card-green")
+    with c3:
+        render_ai_insight_card(f"🧘 {tr['recovery_rule']}", tr["recovery_default"], "card-orange")
+
+    st.markdown(f"### 🧩 {tr['session_blueprint']}")
+    b1,b2,b3,b4 = st.columns(4)
+    b1.metric(tr['warmup'], "8–12 min")
+    b2.metric(tr['main_work'], "30–55 min")
+    b3.metric(tr['cooldown'], "5–10 min")
+    b4.metric(tr['mobility_block'], "8–15 min")
+
+
 def render_v26_exercise_tab():
     x = section_extra_texts(); rf = rich_feature_texts(); vt = v26_texts()
     st.subheader(t["exercise"])
@@ -3962,6 +4111,8 @@ def render_v26_exercise_tab():
     p1.metric(vt["training_focus"], profile["focus"])
     p2.metric(vt["weekly_frequency"], profile["freq"])
     p3.metric(vt["primary_metrics"], profile["metrics"])
+
+    render_v28_goal_based_program(fitness_goal)
 
     st.markdown(f"### {vt['session_design']}")
     c1,c2,c3,c4 = st.columns(4)
