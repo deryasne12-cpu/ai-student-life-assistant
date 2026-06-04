@@ -5480,153 +5480,305 @@ def get_live_accountability_items():
 
 
 def render_home_notes_and_accountability():
-    """Unified dashboard-style notes board.
+    """Premium unified notes board.
 
-    One wide panel: notes on the left, quick note creation on the right.
-    No separate recent-notes block, no note type, no priority selector.
+    One wide dashboard block: visual note memory on top, notes list on the left,
+    and a clean blue glass note input on the right.
     """
     t_local = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"])
-    recent = load_daily_notes(limit=6)
+    recent = load_daily_notes(limit=8)
 
-    # Small CSS only for this upgraded notes board.
     st.markdown(
         """
         <style>
-        .unified-notes-title {
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:18px;
-            margin-bottom:18px;
+        .premium-notes-shell {
+            position: relative;
+            margin: 24px 0 30px 0;
+            padding: 30px;
+            border-radius: 30px;
+            background:
+                radial-gradient(circle at 12% 8%, rgba(59,130,246,.20), transparent 34%),
+                radial-gradient(circle at 85% 16%, rgba(249,115,22,.16), transparent 32%),
+                linear-gradient(135deg, rgba(15,23,42,.84), rgba(17,24,39,.76));
+            border: 1px solid rgba(96,165,250,.24);
+            box-shadow: 0 32px 90px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.04);
+            overflow: hidden;
         }
-        .unified-notes-title h3 {
-            margin:0;
-            font-size:2rem;
-            letter-spacing:-.03em;
-            color:#f8fafc;
+        .premium-notes-shell::before {
+            content:"";
+            position:absolute;
+            inset:0;
+            pointer-events:none;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.035) 44%, transparent 70%);
         }
-        .unified-notes-title p {
-            margin:.45rem 0 0 0;
-            color:#cbd5e1;
-            font-size:1.02rem;
-            line-height:1.7;
-        }
-        .memory-status-pill {
+        .premium-memory-pill {
             display:inline-flex;
             align-items:center;
             gap:8px;
             padding:10px 16px;
             border-radius:999px;
-            background:rgba(59,130,246,.18);
-            border:1px solid rgba(147,197,253,.24);
+            background:linear-gradient(135deg, rgba(59,130,246,.25), rgba(124,58,237,.18));
+            border:1px solid rgba(147,197,253,.28);
             color:#bfdbfe;
-            font-weight:700;
-            margin-bottom:12px;
+            font-weight:800;
+            box-shadow: 0 12px 28px rgba(37,99,235,.16);
         }
-        .note-empty-state {
-            padding:28px;
+        .premium-notes-title {
+            margin-top:24px;
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+        .premium-notes-title h3 {
+            margin:0;
+            font-size:2.15rem;
+            letter-spacing:-.04em;
+            color:#f8fafc;
+        }
+        .premium-notes-subtitle {
+            margin: 18px 0 24px 0;
+            max-width: 980px;
+            color:#dbeafe;
+            line-height:1.65;
+            font-size:1.04rem;
+        }
+        .premium-top-note {
+            min-height: 116px;
+            padding: 24px 28px;
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at 88% 45%, rgba(96,165,250,.20), transparent 28%),
+                linear-gradient(135deg, rgba(30,64,175,.20), rgba(15,23,42,.60));
+            border:1px solid rgba(96,165,250,.30);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:22px;
+            margin-bottom:24px;
+        }
+        .premium-top-note b {color:#f8fafc;font-size:1.12rem;}
+        .premium-top-note small {display:block;color:#93c5fd;margin-top:10px;font-size:.95rem;}
+        .premium-note-illustration {
+            font-size:4.8rem;
+            filter: drop-shadow(0 18px 26px rgba(96,165,250,.22));
+            opacity:.95;
+            padding-right:28px;
+        }
+        .premium-note-grid {
+            display:grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr);
+            gap:24px;
+            align-items:stretch;
+        }
+        .premium-note-panel {
+            min-height: 330px;
+            padding: 26px;
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at 18% 18%, rgba(124,58,237,.18), transparent 38%),
+                linear-gradient(135deg, rgba(15,23,42,.72), rgba(30,41,59,.48));
+            border:1px solid rgba(148,163,184,.22);
+            box-shadow: 0 22px 60px rgba(0,0,0,.25);
+        }
+        .premium-note-panel.left {
+            border-color: rgba(168,85,247,.32);
+        }
+        .premium-note-panel.right {
+            border-color: rgba(96,165,250,.40);
+            background:
+                radial-gradient(circle at 15% 12%, rgba(59,130,246,.24), transparent 36%),
+                radial-gradient(circle at 86% 82%, rgba(168,85,247,.18), transparent 34%),
+                linear-gradient(135deg, rgba(15,23,42,.76), rgba(30,58,138,.42));
+        }
+        .premium-panel-head {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            margin-bottom:20px;
+        }
+        .premium-panel-head h4 {
+            margin:0;
+            color:#f8fafc;
+            font-size:1.55rem;
+            letter-spacing:-.02em;
+        }
+        .premium-mini-tools {
+            display:flex;
+            gap:8px;
+            opacity:.85;
+        }
+        .premium-mini-tool {
+            width:38px;
+            height:38px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:12px;
+            background:rgba(15,23,42,.48);
+            border:1px solid rgba(148,163,184,.20);
+            color:#bfdbfe;
+        }
+        .premium-empty-note {
+            min-height: 205px;
             border-radius:22px;
-            background:rgba(15,23,42,.54);
-            border:1px solid rgba(148,163,184,.20);
-            color:#e2e8f0;
+            border:1px solid rgba(148,163,184,.18);
+            background:rgba(15,23,42,.38);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            padding:28px;
+            color:#cbd5e1;
         }
-        .note-empty-state b {font-size:1.15rem;color:#f8fafc;}
-        .note-empty-state small {display:block;margin-top:8px;color:#93c5fd;}
-        .note-write-header {
-            padding:22px 24px;
-            border-radius:24px;
-            margin-bottom:16px;
-            background:linear-gradient(135deg, rgba(67,56,202,.35), rgba(124,58,237,.18), rgba(234,88,12,.12));
-            border:1px solid rgba(148,163,184,.20);
-        }
-        .note-write-header h3 {margin:0;color:#f8fafc;font-size:1.55rem;}
-        .note-write-header p {margin:.55rem 0 0 0;color:#cbd5e1;line-height:1.6;}
-        .note-card-line {
+        .premium-empty-note .empty-icon {font-size:3rem;margin-bottom:14px;opacity:.9;}
+        .premium-empty-note b {font-size:1.15rem;color:#f8fafc;}
+        .premium-empty-note small {margin-top:10px;color:#bfdbfe;}
+        .premium-note-item {
             padding:16px 18px;
-            border-radius:20px;
-            background:rgba(15,23,42,.58);
+            border-radius:18px;
+            background:linear-gradient(135deg, rgba(15,23,42,.66), rgba(30,41,59,.42));
             border:1px solid rgba(148,163,184,.20);
-            margin-bottom:10px;
+            margin-bottom:12px;
+            box-shadow: 0 16px 32px rgba(0,0,0,.14);
         }
-        .note-card-line b {color:#f8fafc;font-size:1.06rem;}
-        .note-card-line small {display:block;color:#93c5fd;margin-top:7px;}
+        .premium-note-item b {color:#f8fafc;font-size:1.04rem;}
+        .premium-note-item small {display:block;color:#93c5fd;margin-top:7px;}
+        .premium-add-caption {
+            margin:0 0 20px 0;
+            color:#bfdbfe;
+            line-height:1.6;
+        }
+        .premium-notes-shell textarea {
+            background: linear-gradient(135deg, rgba(30,64,175,.28), rgba(15,23,42,.52)) !important;
+            border: 1px solid rgba(147,197,253,.34) !important;
+            color: #eaf2ff !important;
+            border-radius: 18px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 14px 30px rgba(2,6,23,.18) !important;
+        }
+        .premium-notes-shell textarea::placeholder {
+            color: rgba(191,219,254,.72) !important;
+        }
+        .premium-notes-shell div[data-testid="stForm"] {
+            border: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+        }
+        .premium-notes-shell div[data-testid="stFormSubmitButton"] button {
+            min-height: 58px;
+            border-radius: 17px;
+            font-weight: 900;
+            font-size: 1.02rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #f97316) !important;
+            box-shadow: 0 16px 34px rgba(59,130,246,.22), 0 12px 34px rgba(249,115,22,.16) !important;
+            border: 1px solid rgba(255,255,255,.16) !important;
+        }
+        @media (max-width: 1100px) {
+            .premium-note-grid { grid-template-columns: 1fr; }
+            .premium-note-illustration { display:none; }
+        }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
-    with st.container(border=True):
-        st.markdown(
-            f"""
-            <div class="unified-notes-title">
-                <div>
-                    <span class="memory-status-pill">🧠 {t_local['memory_link']}</span>
-                    <h3>{t_local['notes_panel_title']}</h3>
-                    <p>{t_local['notes_panel_subtitle']}</p>
-                </div>
+    st.markdown('<div class="premium-notes-shell">', unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <span class="premium-memory-pill">🧠 {t_local['memory_link']}</span>
+        <div class="premium-notes-title">
+            <span style="font-size:2.3rem;">📝</span>
+            <h3>{t_local['notes_panel_title'].replace('📝 ', '')}</h3>
+        </div>
+        <p class="premium-notes-subtitle">{t_local['notes_panel_subtitle']}</p>
+        <div class="premium-top-note">
+            <div>
+                <b>🕊️ {t_local['no_notes'] if recent.empty else recent.iloc[0]['note_text']}</b>
+                <small>{t_local['memory_link'] if recent.empty else str(recent.iloc[0]['note_date'])}</small>
             </div>
+            <div class="premium-note-illustration">📘</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    notes_col, write_col = st.columns([1.2, .92], gap="large")
+
+    with notes_col:
+        st.markdown(
+            """
+            <div class="premium-note-panel left">
+                <div class="premium-panel-head">
+                    <h4>🔖 Notlarım</h4>
+                    <div class="premium-mini-tools">
+                        <span class="premium-mini-tool">≡</span>
+                        <span class="premium-mini-tool">▦</span>
+                    </div>
+                </div>
             """,
             unsafe_allow_html=True,
         )
-
-        notes_col, write_col = st.columns([1.35, 1.05], gap="large")
-
-        with notes_col:
-            if recent.empty:
-                st.markdown(
-                    f"""
-                    <div class="note-empty-state">
-                        <b>🕊️ {t_local['no_notes']}</b>
-                        <small>{t_local['memory_link']}</small>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-            else:
-                for _, row in recent.iterrows():
-                    row_id = int(row["id"])
-                    c_text, c_delete = st.columns([8, 1])
-                    with c_text:
-                        st.markdown(
-                            f"""
-                            <div class="note-card-line">
-                                <b>✅ {row['note_text']}</b>
-                                <small>{row['note_date']}</small>
-                            </div>
-                            """,
-                            unsafe_allow_html=True,
-                        )
-                    with c_delete:
-                        st.write("")
-                        if st.button("🗑️", key=f"delete_note_v37_{row_id}", help="Delete note"):
-                            delete_daily_note(row_id)
-                            st.rerun()
-
-        with write_col:
+        if recent.empty:
             st.markdown(
-                f"""
-                <div class="note-write-header">
-                    <span class="memory-status-pill">⚡ Quick Memory</span>
-                    <h3>➕ {t_local['note_add'].replace('➕ ', '')}</h3>
-                    <p>{t_local['note_placeholder']}</p>
+                """
+                <div class="premium-empty-note">
+                    <div class="empty-icon">📋</div>
+                    <b>Henüz hiç not eklemedin.</b>
+                    <small>İlk notunu eklemek için sağdaki paneli kullan.</small>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-            with st.form(key=f"home_note_form_v37_{st.session_state.language}", clear_on_submit=True):
-                new_note = st.text_area(
-                    "",
-                    placeholder=t_local["note_placeholder"],
-                    key=f"home_note_text_v37_{st.session_state.language}",
-                    height=160,
-                )
-                submitted = st.form_submit_button(t_local["note_add"], use_container_width=True)
-                if submitted:
-                    if save_daily_note(new_note, "Note", "Normal"):
-                        st.success(t_local["note_added"])
+        else:
+            for _, row in recent.iterrows():
+                row_id = int(row["id"])
+                c_text, c_delete = st.columns([8, 1])
+                with c_text:
+                    st.markdown(
+                        f"""
+                        <div class="premium-note-item">
+                            <b>✅ {row['note_text']}</b>
+                            <small>{row['note_date']}</small>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                with c_delete:
+                    st.write("")
+                    if st.button("🗑️", key=f"delete_note_v38_{row_id}", help="Delete note"):
+                        delete_daily_note(row_id)
                         st.rerun()
-                    else:
-                        st.warning(t_local["note_placeholder"])
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with write_col:
+        st.markdown(
+            f"""
+            <div class="premium-note-panel right">
+                <div class="premium-panel-head">
+                    <h4>➕ {t_local['note_add'].replace('➕ ', '')}</h4>
+                </div>
+                <p class="premium-add-caption">{t_local['note_placeholder']}</p>
+            """,
+            unsafe_allow_html=True,
+        )
+        with st.form(key=f"home_note_form_v38_{st.session_state.language}", clear_on_submit=True):
+            new_note = st.text_area(
+                "",
+                placeholder=t_local["note_placeholder"],
+                key=f"home_note_text_v38_{st.session_state.language}",
+                height=190,
+            )
+            submitted = st.form_submit_button(t_local["note_add"], use_container_width=True)
+            if submitted:
+                if save_daily_note(new_note, "Note", "Normal"):
+                    st.success(t_local["note_added"])
+                    st.rerun()
+                else:
+                    st.warning(t_local["note_placeholder"])
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 # Run non-destructive migration after all original tables exist.
