@@ -1484,27 +1484,52 @@ div[data-testid="stTabs"] div[role="tablist"] {{
 
 
 /* === V18 PREMIUM INPUT POLISH === */
-div[data-testid="stForm"] {
+div[data-testid="stForm"] {{
     padding: 26px !important;
     border-radius: 24px !important;
     background: linear-gradient(135deg, rgba(15,23,42,.78), rgba(49,46,129,.25), rgba(251,146,60,.10)) !important;
     border: 1px solid rgba(148,163,184,.22) !important;
     box-shadow: 0 18px 46px rgba(0,0,0,.24) !important;
-}
-div[data-testid="stForm"] label p {
+}}
+div[data-testid="stForm"] label p {{
     font-weight: 750 !important;
     letter-spacing: -0.2px !important;
-}
-div[data-testid="stMetric"] {
+}}
+div[data-testid="stMetric"] {{
     padding: 14px 16px !important;
     border-radius: 18px !important;
     background: rgba(15,23,42,.25) !important;
     border: 1px solid rgba(148,163,184,.10) !important;
-}
+}}
 div[data-testid="stForm"] textarea,
-div[data-testid="stForm"] input {
+div[data-testid="stForm"] input {{
     border-radius: 14px !important;
-}
+}}
+
+/* V19 premium cards */
+.premium-report-card {{
+    padding: 24px 26px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(15,23,42,.88), rgba(49,46,129,.30), rgba(251,146,60,.12));
+    border: 1px solid rgba(251,146,60,.28);
+    box-shadow: 0 18px 48px rgba(0,0,0,.26);
+    margin: 18px 0;
+}}
+.premium-report-card h3 {{ margin-top:0; font-size: 28px; }}
+.premium-report-card h4 {{ margin-bottom:8px; }}
+.score-bar {{
+    height: 13px; border-radius: 999px; overflow:hidden;
+    background: rgba(148,163,184,.20); border: 1px solid rgba(255,255,255,.08);
+}}
+.score-fill {{ height:100%; border-radius:999px; background: linear-gradient(90deg, #22c55e, #facc15, #fb923c); }}
+.ai-assessment {{
+    padding: 24px 28px; border-radius: 22px;
+    background: linear-gradient(135deg, rgba(17,24,39,.92), rgba(30,64,175,.24), rgba(6,95,70,.18));
+    border: 1px solid rgba(56,189,248,.25);
+    box-shadow: 0 16px 42px rgba(0,0,0,.24);
+    margin: 18px 0;
+}}
+}}
 
 </style>
 """
@@ -2530,6 +2555,130 @@ def generate_deep_insights(records):
         "risk": risk,
     }
 
+
+def premium_texts():
+    packs = {
+        "Türkçe": {
+            "energy_level":"⚡ Enerji Seviyesi", "daily_targets":"🎯 Günlük Hedef", "today_tasks":"✅ Bugünkü Görevler", "end_note":"🧠 Gün Sonu Notu", "learned":"Bugün ne öğrendin?", "exam":"Sınav Hazırlığı", "project":"Proje", "coding":"Kodlama", "sport":"Spor", "language":"Dil Çalışması", "sql":"SQL", "python":"Python", "gym":"Gym", "water":"Su İç",
+            "ai_perf":"🚀 AI Performance Report", "strengths":"🟢 Güçlü Yanlar", "improve":"🟡 Geliştirilebilir Alanlar", "risks":"🔴 Riskler", "coach_assessment":"AI Coach Assessment", "recommendation":"Öneri", "expected_gain":"Beklenen verimlilik artışı", "weekly_academic":"Haftalık Akademik Rapor", "general_score":"Genel Skor", "academic":"Akademik Performans", "health":"Sağlık", "focus":"Odak", "sleep":"Uyku", "week_summary":"Bu haftanın özeti", "best_day":"En iyi gün", "worst_day":"En zor gün", "next_week":"Gelecek hafta tahmini", "expected_success":"Beklenen başarı"
+        },
+        "English": {
+            "energy_level":"⚡ Energy Level", "daily_targets":"🎯 Daily Targets", "today_tasks":"✅ Today's Tasks", "end_note":"🧠 End-of-Day Note", "learned":"What did you learn today?", "exam":"Exam Prep", "project":"Project", "coding":"Coding", "sport":"Sport", "language":"Language Study", "sql":"SQL", "python":"Python", "gym":"Gym", "water":"Drink Water",
+            "ai_perf":"🚀 AI Performance Report", "strengths":"🟢 Strengths", "improve":"🟡 Improvement Areas", "risks":"🔴 Risks", "coach_assessment":"AI Coach Assessment", "recommendation":"Recommendation", "expected_gain":"Expected productivity increase", "weekly_academic":"Weekly Academic Report", "general_score":"General Score", "academic":"Academic Performance", "health":"Health", "focus":"Focus", "sleep":"Sleep", "week_summary":"This week's summary", "best_day":"Best day", "worst_day":"Hardest day", "next_week":"Next week forecast", "expected_success":"Expected success"
+        },
+        "Deutsch": {
+            "energy_level":"⚡ Energielevel", "daily_targets":"🎯 Tagesziele", "today_tasks":"✅ Heutige Aufgaben", "end_note":"🧠 Tagesnotiz", "learned":"Was hast du heute gelernt?", "exam":"Prüfungsvorbereitung", "project":"Projekt", "coding":"Programmieren", "sport":"Sport", "language":"Sprachlernen", "sql":"SQL", "python":"Python", "gym":"Fitness", "water":"Wasser trinken",
+            "ai_perf":"🚀 KI-Leistungsbericht", "strengths":"🟢 Stärken", "improve":"🟡 Verbesserungsbereiche", "risks":"🔴 Risiken", "coach_assessment":"KI-Coach Bewertung", "recommendation":"Empfehlung", "expected_gain":"Erwartete Produktivitätssteigerung", "weekly_academic":"Wöchentlicher akademischer Bericht", "general_score":"Gesamtscore", "academic":"Akademische Leistung", "health":"Gesundheit", "focus":"Fokus", "sleep":"Schlaf", "week_summary":"Zusammenfassung der Woche", "best_day":"Bester Tag", "worst_day":"Schwierigster Tag", "next_week":"Prognose für nächste Woche", "expected_success":"Erwarteter Erfolg"
+        },
+        "Español": {
+            "energy_level":"⚡ Nivel de energía", "daily_targets":"🎯 Objetivos diarios", "today_tasks":"✅ Tareas de hoy", "end_note":"🧠 Nota del día", "learned":"¿Qué aprendiste hoy?", "exam":"Preparación de examen", "project":"Proyecto", "coding":"Programación", "sport":"Deporte", "language":"Estudio de idioma", "sql":"SQL", "python":"Python", "gym":"Gimnasio", "water":"Beber agua",
+            "ai_perf":"🚀 Informe de rendimiento IA", "strengths":"🟢 Fortalezas", "improve":"🟡 Áreas de mejora", "risks":"🔴 Riesgos", "coach_assessment":"Evaluación del Coach IA", "recommendation":"Recomendación", "expected_gain":"Aumento esperado de productividad", "weekly_academic":"Informe académico semanal", "general_score":"Puntuación general", "academic":"Rendimiento académico", "health":"Salud", "focus":"Enfoque", "sleep":"Sueño", "week_summary":"Resumen de esta semana", "best_day":"Mejor día", "worst_day":"Día más difícil", "next_week":"Pronóstico de la próxima semana", "expected_success":"Éxito esperado"
+        },
+        "Русский": {
+            "energy_level":"⚡ Уровень энергии", "daily_targets":"🎯 Цели дня", "today_tasks":"✅ Задачи на сегодня", "end_note":"🧠 Итоговая заметка", "learned":"Что ты сегодня выучил?", "exam":"Подготовка к экзамену", "project":"Проект", "coding":"Кодинг", "sport":"Спорт", "language":"Изучение языка", "sql":"SQL", "python":"Python", "gym":"Зал", "water":"Пить воду",
+            "ai_perf":"🚀 Отчет ИИ о продуктивности", "strengths":"🟢 Сильные стороны", "improve":"🟡 Что улучшить", "risks":"🔴 Риски", "coach_assessment":"Оценка ИИ-коуча", "recommendation":"Рекомендация", "expected_gain":"Ожидаемый рост продуктивности", "weekly_academic":"Недельный учебный отчет", "general_score":"Общий балл", "academic":"Учебная продуктивность", "health":"Здоровье", "focus":"Фокус", "sleep":"Сон", "week_summary":"Итог недели", "best_day":"Лучший день", "worst_day":"Самый сложный день", "next_week":"Прогноз на следующую неделю", "expected_success":"Ожидаемый успех"
+        }
+    }
+    return packs.get(st.session_state.language, packs["English"])
+
+def score_bar(label, value):
+    value = max(0, min(100, float(value)))
+    return f"""
+    <p style='margin:12px 0 6px 0;font-weight:800;'>{label}: {value:.0f}/100</p>
+    <div class='score-bar'><div class='score-fill' style='width:{value}%;'></div></div>
+    """
+
+def build_performance_lists(records):
+    avg_sleep = records["sleep_hours"].mean()
+    avg_stress = records["stress_level"].mean()
+    avg_exercise = records["exercise_minutes"].mean()
+    avg_water = records["water_liters"].mean()
+    avg_study = records["study_hours"].mean()
+    avg_focus = records["focus_level"].mean()
+    strengths, improvements, risks = [], [], []
+    if avg_sleep >= 6.5: strengths.append(t.get("sleep_good", "Sleep rhythm is stable."))
+    else: improvements.append(t.get("sleep_low", "Sleep is low. Try to increase sleep by at least 1 hour."))
+    if avg_stress <= 5.5: strengths.append(t.get("stress_ok", "Stress level is manageable."))
+    else: risks.append(t.get("stress_high", "Stress trend is high. Add recovery time."))
+    if avg_exercise >= 20: strengths.append(t.get("exercise_ok", "Exercise supports wellness and focus."))
+    else: improvements.append(t.get("exercise_low", "Exercise activity is low. Add walking or mobility sessions."))
+    if avg_water < 1.8: improvements.append(t.get("water_low", "Water intake is low. Increase hydration for better focus."))
+    if avg_study < 4: improvements.append(t.get("study_low", "Study time is below target. Add one focused block."))
+    if avg_focus < 6: risks.append(t.get("focus_risk", "Focus trend needs attention."))
+    if not risks: risks.append(t.get("risk_controlled", "No critical risk detected, but consistency should be protected."))
+    return strengths, improvements, risks
+
+def render_premium_performance_report(records):
+    px = premium_texts()
+    strengths, improvements, risks = build_performance_lists(records)
+    def lis(items): return "".join(f"<li>{i}</li>" for i in items)
+    html = f"""
+    <div class='premium-report-card'>
+      <h3>{px['ai_perf']}</h3>
+      <div style='display:grid; grid-template-columns: repeat(3, 1fr); gap:18px;'>
+        <div><h4>{px['strengths']}</h4><ul>{lis(strengths)}</ul></div>
+        <div><h4>{px['improve']}</h4><ul>{lis(improvements)}</ul></div>
+        <div><h4>{px['risks']}</h4><ul>{lis(risks)}</ul></div>
+      </div>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+
+def render_ai_coach_assessment(records):
+    px = premium_texts()
+    avg_focus = records["focus_level"].mean()
+    avg_study = records["study_hours"].mean()
+    avg_productivity = records["productivity_score"].mean()
+    weekly_focus = records["focus_level"].tail(7).mean()
+    prev_focus = records["focus_level"].head(max(1, len(records)-7)).mean()
+    diff = ((weekly_focus - prev_focus) / max(prev_focus, 1)) * 100
+    gain_low = 8 if avg_productivity < 60 else 4
+    gain_high = 12 if avg_productivity < 60 else 8
+    text = f"""
+    <div class='ai-assessment'>
+      <h3>{px['coach_assessment']}</h3>
+      <p>Bugün/hafta odak ortalaman <b>{avg_focus:.1f}/10</b>. Bu değer önceki trende göre yaklaşık <b>{diff:+.0f}%</b> değişim gösteriyor.</p>
+      <p>Çalışma süren <b>{avg_study:.1f} saat</b>. Odak yüksekken çalışma süresi düşük kalırsa potansiyel verim kullanılamaz.</p>
+      <p><b>{px['recommendation']}:</b> 18:00–19:00 arasında tek bir derin çalışma bloğu oluştur, sonra 10 dakika kısa tekrar yap.</p>
+      <p><b>{px['expected_gain']}:</b> +{gain_low} ila +{gain_high} puan.</p>
+    </div>
+    """
+    st.markdown(text, unsafe_allow_html=True)
+
+def render_premium_weekly_report(records):
+    px = premium_texts()
+    overall = (records["productivity_score"].mean()*0.45 + records["wellness_score"].mean()*0.35 + (10-records["stress_level"].mean())*2)
+    academic = min(100, records["productivity_score"].mean()+8)
+    health = records["wellness_score"].mean()
+    focus = records["focus_level"].mean()*10
+    sleep = min(100, records["sleep_hours"].mean()/8*100)
+    best_idx = records["productivity_score"].idxmax()
+    worst_idx = records["productivity_score"].idxmin()
+    best_day = str(records.loc[best_idx, "date"])
+    worst_day = str(records.loc[worst_idx, "date"])
+    forecast = min(100, overall + 5)
+    html = f"""
+    <div class='premium-report-card'>
+      <h3>{px['weekly_academic']}</h3>
+      <h2>{px['general_score']}: {overall:.0f}/100</h2>
+      {score_bar(px['academic'], academic)}
+      {score_bar(px['health'], health)}
+      {score_bar(px['focus'], focus)}
+      {score_bar(px['sleep'], sleep)}
+      <hr style='opacity:.18;margin:22px 0;'>
+      <h4>{px['week_summary']}</h4>
+      <ul>
+        <li>{px['best_day']}: {best_day}</li>
+        <li>{px['worst_day']}: {worst_day}</li>
+        <li>{t.get('average_sleep','Average Sleep')}: {records['sleep_hours'].mean():.1f}h</li>
+        <li>{t.get('average_study','Average Study')}: {records['study_hours'].mean():.1f}h</li>
+      </ul>
+      <h4>{px['next_week']}</h4>
+      <p>{px['expected_success']}: <b>{forecast:.0f}/100</b></p>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+
 def render_dashboard_tabs():
     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
         [
@@ -2580,6 +2729,14 @@ def render_dashboard_tabs():
                     value=t["default_mood"],
                     key=f"daily_mood_text_form_{st.session_state.language}",
                 )
+                px = premium_texts()
+                energy_level = st.slider(px["energy_level"], 0, 10, 6, key="daily_energy_level_form")
+                daily_targets = st.multiselect(
+                    px["daily_targets"],
+                    [px["exam"], px["project"], px["coding"], px["sport"], px["language"]],
+                    default=[px["project"], px["coding"]],
+                    key=f"daily_targets_{st.session_state.language}",
+                )
                 sleep_hours = st.slider(t["sleep"], 0, 12, 7, key="daily_sleep_hours_form")
                 study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours_form")
                 task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion_form")
@@ -2590,6 +2747,13 @@ def render_dashboard_tabs():
                 exercise_minutes = st.slider(t["exercise_min"], 0, 120, 25, key="daily_exercise_minutes_form")
                 water_liters = st.slider(t["water"], 0.0, 4.0, 2.0, key="daily_water_liters_form")
                 nutrition_quality = st.slider(t["nutrition_quality"], 1, 10, 7, key="daily_nutrition_quality_form")
+                today_tasks = st.multiselect(
+                    px["today_tasks"],
+                    [px["sql"], px["python"], px["gym"], px["water"]],
+                    default=[px["python"], px["water"]],
+                    key=f"today_tasks_{st.session_state.language}",
+                )
+                learned_note = st.text_area(px["end_note"], value=px["learned"], key=f"learned_note_{st.session_state.language}")
 
             st.markdown("---")
             submitted = st.form_submit_button(t["save_day"], use_container_width=True)
@@ -2669,6 +2833,11 @@ def render_dashboard_tabs():
                 "advice": advice,
                 "plan": plan,
                 "coach_style": coach_style,
+                "daily_mode": mood_mode,
+                "energy_level": energy_level,
+                "daily_targets": daily_targets,
+                "today_tasks": today_tasks,
+                "learned_note": learned_note,
                 "chart": pd.DataFrame(
                     {
                         t["chart_value"]: [
@@ -2699,6 +2868,10 @@ def render_dashboard_tabs():
             c3.metric(t["productivity_score"], f"{result['productivity_score']}/100")
             c4.metric(t["wellness_score"], f"{result['wellness_score']}/100")
             c5.metric(t["risk_level"], result["risk_level"])
+
+            records_scored = calculate_scores(st.session_state.records)
+            render_premium_performance_report(records_scored)
+            render_ai_coach_assessment(records_scored)
 
             if result["coach_style"] == "warning":
                 st.warning(result["advice"])
@@ -2922,6 +3095,8 @@ def render_dashboard_tabs():
         top2.metric(t["avg_sleep"], f"{avg_sleep:.1f}h")
         top3.metric(t["avg_stress"], f"{avg_stress:.1f}/10")
 
+        render_ai_coach_assessment(records)
+        render_premium_performance_report(records)
         render_ai_insight_card(a["coach_strategy"], a["mission"], "card-purple")
 
         p1, p2 = st.columns(2)
@@ -3000,6 +3175,7 @@ def render_dashboard_tabs():
                 ],
             }
         )
+        render_premium_weekly_report(records)
         st.dataframe(weekly_summary, use_container_width=True)
 
         r1, r2 = st.columns(2)
