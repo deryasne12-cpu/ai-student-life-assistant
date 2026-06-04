@@ -3231,6 +3231,8 @@ def render_dashboard_tabs():
         nscore_col.metric(rf["nutrition_score"], f"{nutrition_score}/100")
         signal_col.info(rf["nutrition_strong"] if nutrition_score >= 70 else rf["nutrition_warn"])
 
+        render_v27_nutrition_local_analysis()
+
         if protein_g < max(70, int(weight_kg * 1.2)):
             st.warning(x["protein_low"])
         elif calories_taken < calorie_goal - 350:
@@ -3277,6 +3279,7 @@ def render_dashboard_tabs():
         u = current_user_inputs()
 
         st.subheader(a["advanced_analysis"])
+        render_v27_global_analysis(records)
         k1, k2, k3, k4, k5 = st.columns(5)
         k1.metric(t["avg_productivity"], f"{round(records['productivity_score'].mean(), 1)}/100")
         k2.metric(t["avg_wellness"], f"{round(records['wellness_score'].mean(), 1)}/100")
@@ -3355,6 +3358,7 @@ def render_dashboard_tabs():
         top2.metric(t["avg_sleep"], f"{avg_sleep:.1f}h")
         top3.metric(t["avg_stress"], f"{avg_stress:.1f}/10")
 
+        render_v27_coach_master_plan(records)
         render_ai_coach_assessment(records)
         render_premium_performance_report(records)
         render_ai_insight_card(a["coach_strategy"], a["mission"], "card-purple")
@@ -4000,12 +4004,140 @@ def render_v26_exercise_tab():
     s2.metric(rf["recovery_need"], f"{recovery_need}/100")
     s3.metric(vt["smart_recommendation"], "Progress" if workout_score >= 70 and recovery_need < 55 else "Recover")
     st.info(rf["recovery_high"] if recovery_need >= 55 else rf["recovery_low"])
+    render_v27_exercise_local_analysis()
     st.caption(vt["profile_note"])
 
     exercise_log = pd.DataFrame({
         vt["exercise_profile"]:[fitness_goal], vt["workout_type"]:[exercise_type], vt["duration"]:[duration], vt["intensity"]:[intensity], vt["estimated_burn"]:[burned], rf["steps_today"]:[steps_today], rf["rpe"]:[rpe], rf["soreness"]:[soreness], rf["mobility_min"]:[mobility_min_final], vt["exercise_score"]:[workout_score], rf["recovery_need"]:[recovery_need]
     })
     st.dataframe(exercise_log, use_container_width=True)
+
+
+
+# === V27 INTEGRATED LOCAL + GLOBAL AI ANALYSIS ===
+def v27_pack():
+    packs = {
+        "Türkçe": {
+            "nutrition_ai_title":"🥗 Beslenme Analizi", "exercise_ai_title":"🎯 Egzersiz Analizi", "global_ai_title":"🧠 A’dan Z’ye Bütünleşik Analiz", "coach_master":"🤖 Kişisel AI Koç Planı", "local_decision":"Anlık Karar", "data_signal":"Veri Sinyali", "next_move":"Sonraki Hamle", "nutrition_score":"Beslenme Skoru", "exercise_score":"Egzersiz Skoru", "hydration":"Hidrasyon", "macro_quality":"Makro Kalitesi", "meal_timing":"Öğün Zamanlaması", "recovery":"Toparlanma", "study_load":"Çalışma Yükü", "body_energy":"Vücut Enerjisi", "academic_focus":"Akademik Odak", "behavior_pattern":"Davranış Deseni", "decision":"Karar", "plan":"Plan", "why":"Neden", "today":"Bugün", "week":"Hafta", "nutrition_good":"Makrolar dengeli; protein ve kalori yapısı çalışma + antrenman performansını destekliyor.", "nutrition_low":"Beslenme tarafında açık var; kalori/protein veya lif düşük kalırsa odak ve toparlanma düşer.", "water_good":"Su seviyesi güçlü. Bugün hidrasyon risk değil; bunu koru.", "water_low":"Su düşük görünüyor. Özellikle odak ve baş ağrısı riskini azaltmak için 500–750 ml ekle.", "protein_action":"Protein iyi. Ana risk protein değil; ritim ve süreklilik.", "protein_action_low":"Protein hedefin düşük. Bir öğüne yoğurt, yumurta, tavuk, balık veya bakliyat ekle.", "calorie_deficit":"Kalori hedefinin altındasın; enerji düşmemesi için dengeli ek öğün mantıklı.", "calorie_surplus":"Kalori hedefini aşıyorsun; hedef kilo almak değilse porsiyon ve yağ kaynaklarını kontrol et.", "calorie_stable":"Kalori dengesi hedefe yakın; sürdürülebilir performans için iyi.", "exercise_good":"Egzersiz verisi güçlü; süre, adım ve yoğunluk iyi bir aktivite profili veriyor.", "exercise_low":"Egzersiz tarafı zayıf; 20–30 dakikalık yürüyüş/mobilite eklemek verimi artırır.", "recovery_high":"Toparlanma ihtiyacı yüksek. Bugün ağır yük yerine hafif tempo + mobilite daha mantıklı.", "recovery_ok":"Toparlanma kabul edilebilir. Bir sonraki seansı planlayabilirsin.", "global_summary":"Sistem; ders, uyku, stres, su, beslenme ve egzersizi birlikte okuyarak bugünkü gerçek performans kapasiteni çıkarıyor.", "coach_academic":"Odak iyi ama çalışma süresi düşükse, potansiyel verim boşa gidiyor. Tek bir derin çalışma bloğu kur.", "coach_nutrition":"Beslenme hedefin enerji üretmek için kullanılmalı: protein + kompleks karbonhidrat + su üçlüsünü sabitle.", "coach_exercise":"Egzersizde amaç sadece kalori yakmak değil; odak, stres yönetimi ve uyku kalitesini de yükseltmek.", "coach_recovery":"Stres yükselirse planı büyütme; planı küçült, tamamlanabilir hale getir.", "master_plan_1":"18:00–19:00 tek derin çalışma bloğu", "master_plan_2":"Çalışma öncesi 500 ml su + hafif karbonhidrat", "master_plan_3":"Akşam 20 dk yürüyüş veya mobilite", "master_plan_4":"Gece kısa tekrar + erken uyku rutini", "excellent":"Güçlü", "medium":"Orta", "weak":"Zayıf"
+        },
+        "English": {
+            "nutrition_ai_title":"🥗 Nutrition Analysis", "exercise_ai_title":"🎯 Exercise Analysis", "global_ai_title":"🧠 Complete A-to-Z Integrated Analysis", "coach_master":"🤖 Personal AI Coach Plan", "local_decision":"Live Decision", "data_signal":"Data Signal", "next_move":"Next Move", "nutrition_score":"Nutrition Score", "exercise_score":"Exercise Score", "hydration":"Hydration", "macro_quality":"Macro Quality", "meal_timing":"Meal Timing", "recovery":"Recovery", "study_load":"Study Load", "body_energy":"Body Energy", "academic_focus":"Academic Focus", "behavior_pattern":"Behavior Pattern", "decision":"Decision", "plan":"Plan", "why":"Why", "today":"Today", "week":"Week", "nutrition_good":"Macros are balanced; protein and calories support study plus training performance.", "nutrition_low":"Nutrition has a gap; if calories/protein/fiber stay low, focus and recovery drop.", "water_good":"Hydration is strong. Water is not a risk today; maintain it.", "water_low":"Water looks low. Add 500–750 ml to reduce focus and headache risk.", "protein_action":"Protein is good. The main risk is rhythm and consistency, not protein.", "protein_action_low":"Protein target is low. Add yogurt, eggs, chicken, fish or legumes to one meal.", "calorie_deficit":"You are below target calories; add a balanced meal to avoid energy drop.", "calorie_surplus":"You are above target calories; if weight gain is not the goal, control portions and fat sources.", "calorie_stable":"Calories are close to target; good for sustainable performance.", "exercise_good":"Exercise data is strong; duration, steps and intensity create a solid activity profile.", "exercise_low":"Exercise is weak; add 20–30 minutes walking or mobility to improve output.", "recovery_high":"Recovery need is high. Use light tempo plus mobility instead of heavy load today.", "recovery_ok":"Recovery is acceptable. You can plan the next session.", "global_summary":"The system reads study, sleep, stress, water, nutrition and exercise together to estimate real daily capacity.", "coach_academic":"If focus is good but study time is low, potential productivity is wasted. Build one deep-work block.", "coach_nutrition":"Nutrition should produce energy: lock protein + complex carbs + water.", "coach_exercise":"Exercise is not only calorie burn; it also improves focus, stress control and sleep quality.", "coach_recovery":"When stress rises, do not expand the plan; shrink it until it becomes finishable.", "master_plan_1":"18:00–19:00 one deep-work block", "master_plan_2":"Before study: 500 ml water + light carbs", "master_plan_3":"Evening: 20 min walk or mobility", "master_plan_4":"Short night review + early sleep routine", "excellent":"Strong", "medium":"Moderate", "weak":"Weak"
+        },
+        "Deutsch": {
+            "nutrition_ai_title":"🥗 Ernährungsanalyse", "exercise_ai_title":"🎯 Trainingsanalyse", "global_ai_title":"🧠 Vollständige A-bis-Z Gesamtanalyse", "coach_master":"🤖 Persönlicher KI-Coach-Plan", "local_decision":"Live-Entscheidung", "data_signal":"Datensignal", "next_move":"Nächster Schritt", "nutrition_score":"Ernährungsscore", "exercise_score":"Trainingsscore", "hydration":"Hydration", "macro_quality":"Makroqualität", "meal_timing":"Mahlzeiten-Timing", "recovery":"Erholung", "study_load":"Lernlast", "body_energy":"Körperenergie", "academic_focus":"Akademischer Fokus", "behavior_pattern":"Verhaltensmuster", "decision":"Entscheidung", "plan":"Plan", "why":"Warum", "today":"Heute", "week":"Woche", "nutrition_good":"Makros sind ausgewogen; Protein und Kalorien unterstützen Lernen und Training.", "nutrition_low":"Ernährung hat eine Lücke; bleiben Kalorien/Protein/Ballaststoffe niedrig, sinken Fokus und Erholung.", "water_good":"Wasserzufuhr ist stark. Hydration ist heute kein Risiko; halte sie stabil.", "water_low":"Wasser wirkt niedrig. Ergänze 500–750 ml gegen Fokus- und Kopfschmerzrisiko.", "protein_action":"Protein ist gut. Das Hauptrisiko ist Rhythmus und Konstanz, nicht Protein.", "protein_action_low":"Protein ist niedrig. Ergänze Joghurt, Eier, Hähnchen, Fisch oder Hülsenfrüchte.", "calorie_deficit":"Du bist unter dem Kalorienziel; ergänze eine ausgewogene Mahlzeit gegen Energieabfall.", "calorie_surplus":"Du bist über dem Kalorienziel; wenn Muskel-/Gewichtszunahme nicht Ziel ist, kontrolliere Portionen.", "calorie_stable":"Kalorien liegen nah am Ziel; gut für nachhaltige Leistung.", "exercise_good":"Trainingsdaten sind stark; Dauer, Schritte und Intensität ergeben ein solides Aktivitätsprofil.", "exercise_low":"Training ist schwach; 20–30 Minuten Gehen oder Mobilität verbessern die Leistung.", "recovery_high":"Erholungsbedarf ist hoch. Heute leichte Intensität plus Mobilität statt schwerer Belastung.", "recovery_ok":"Erholung ist akzeptabel. Die nächste Einheit kann geplant werden.", "global_summary":"Das System liest Lernen, Schlaf, Stress, Wasser, Ernährung und Training gemeinsam, um echte Tageskapazität zu schätzen.", "coach_academic":"Wenn Fokus gut, aber Lernzeit niedrig ist, bleibt Potenzial ungenutzt. Baue einen Deep-Work-Block.", "coach_nutrition":"Ernährung soll Energie liefern: Protein + komplexe Kohlenhydrate + Wasser stabilisieren.", "coach_exercise":"Training ist nicht nur Kalorienverbrauch; es verbessert Fokus, Stresskontrolle und Schlafqualität.", "coach_recovery":"Wenn Stress steigt, vergrößere den Plan nicht; verkleinere ihn, bis er abschließbar ist.", "master_plan_1":"18:00–19:00 ein Deep-Work-Block", "master_plan_2":"Vor dem Lernen: 500 ml Wasser + leichte Kohlenhydrate", "master_plan_3":"Abends: 20 Min. Spaziergang oder Mobilität", "master_plan_4":"Kurze Wiederholung + frühe Schlafroutine", "excellent":"Stark", "medium":"Mittel", "weak":"Schwach"
+        },
+        "Español": {
+            "nutrition_ai_title":"🥗 Análisis de nutrición", "exercise_ai_title":"🎯 Análisis de ejercicio", "global_ai_title":"🧠 Análisis integral de A a Z", "coach_master":"🤖 Plan personal del Coach IA", "local_decision":"Decisión en vivo", "data_signal":"Señal de datos", "next_move":"Siguiente acción", "nutrition_score":"Puntuación de nutrición", "exercise_score":"Puntuación de ejercicio", "hydration":"Hidratación", "macro_quality":"Calidad de macros", "meal_timing":"Horario de comidas", "recovery":"Recuperación", "study_load":"Carga de estudio", "body_energy":"Energía corporal", "academic_focus":"Enfoque académico", "behavior_pattern":"Patrón de conducta", "decision":"Decisión", "plan":"Plan", "why":"Por qué", "today":"Hoy", "week":"Semana", "nutrition_good":"Los macros están equilibrados; proteína y calorías apoyan estudio y entrenamiento.", "nutrition_low":"Hay una brecha nutricional; si calorías/proteína/fibra quedan bajas, baja el enfoque y recuperación.", "water_good":"La hidratación es fuerte. El agua no es un riesgo hoy; mantenla.", "water_low":"El agua parece baja. Añade 500–750 ml para reducir riesgo de bajo enfoque y dolor de cabeza.", "protein_action":"La proteína está bien. El riesgo principal es ritmo y constancia.", "protein_action_low":"Proteína baja. Añade yogur, huevos, pollo, pescado o legumbres.", "calorie_deficit":"Estás bajo el objetivo calórico; añade una comida equilibrada para evitar caída de energía.", "calorie_surplus":"Estás sobre el objetivo calórico; si ganar peso no es meta, controla porciones y grasas.", "calorie_stable":"Calorías cerca del objetivo; buena señal para rendimiento sostenible.", "exercise_good":"Los datos de ejercicio son fuertes; duración, pasos e intensidad forman buen perfil.", "exercise_low":"Ejercicio débil; añade 20–30 minutos de caminar o movilidad.", "recovery_high":"Alta necesidad de recuperación. Hoy mejor ritmo suave + movilidad.", "recovery_ok":"Recuperación aceptable. Puedes planear la próxima sesión.", "global_summary":"El sistema lee estudio, sueño, estrés, agua, nutrición y ejercicio juntos para estimar capacidad real diaria.", "coach_academic":"Si el enfoque es bueno pero el estudio es bajo, se pierde productividad. Crea un bloque profundo.", "coach_nutrition":"La nutrición debe producir energía: fija proteína + carbohidratos complejos + agua.", "coach_exercise":"El ejercicio no solo quema calorías; mejora enfoque, estrés y sueño.", "coach_recovery":"Cuando sube el estrés, no agrandes el plan; hazlo más pequeño y terminable.", "master_plan_1":"18:00–19:00 un bloque de trabajo profundo", "master_plan_2":"Antes de estudiar: 500 ml de agua + carbs ligeros", "master_plan_3":"Noche: 20 min caminar o movilidad", "master_plan_4":"Repaso corto + rutina de sueño temprano", "excellent":"Fuerte", "medium":"Moderado", "weak":"Débil"
+        },
+        "Русский": {
+            "nutrition_ai_title":"🥗 Анализ питания", "exercise_ai_title":"🎯 Анализ тренировки", "global_ai_title":"🧠 Полный анализ от А до Я", "coach_master":"🤖 Личный план ИИ-коуча", "local_decision":"Текущее решение", "data_signal":"Сигнал данных", "next_move":"Следующий шаг", "nutrition_score":"Оценка питания", "exercise_score":"Оценка тренировки", "hydration":"Гидратация", "macro_quality":"Качество макро", "meal_timing":"Время приемов пищи", "recovery":"Восстановление", "study_load":"Учебная нагрузка", "body_energy":"Энергия тела", "academic_focus":"Учебный фокус", "behavior_pattern":"Поведенческий паттерн", "decision":"Решение", "plan":"План", "why":"Почему", "today":"Сегодня", "week":"Неделя", "nutrition_good":"Макро сбалансированы; белок и калории поддерживают учебу и тренировку.", "nutrition_low":"Есть пробел в питании; низкие калории/белок/клетчатка снижают фокус и восстановление.", "water_good":"Вода на хорошем уровне. Гидратация сегодня не риск; сохраняй.", "water_low":"Воды мало. Добавь 500–750 мл для фокуса и снижения риска головной боли.", "protein_action":"Белок хороший. Главный риск — ритм и стабильность.", "protein_action_low":"Белок низкий. Добавь йогурт, яйца, курицу, рыбу или бобовые.", "calorie_deficit":"Ты ниже цели калорий; добавь сбалансированный прием пищи против падения энергии.", "calorie_surplus":"Ты выше цели калорий; если набор веса не цель, контролируй порции и жиры.", "calorie_stable":"Калории близко к цели; хороший сигнал для устойчивой продуктивности.", "exercise_good":"Тренировка сильная: длительность, шаги и интенсивность дают хороший профиль.", "exercise_low":"Тренировка слабая; добавь 20–30 минут ходьбы или мобильности.", "recovery_high":"Нужно восстановление. Сегодня лучше легкий темп + мобильность.", "recovery_ok":"Восстановление приемлемое. Можно планировать следующую сессию.", "global_summary":"Система читает учебу, сон, стресс, воду, питание и тренировки вместе, чтобы оценить реальную дневную мощность.", "coach_academic":"Если фокус хороший, но учебы мало, потенциал теряется. Сделай один блок deep work.", "coach_nutrition":"Питание должно давать энергию: белок + сложные углеводы + вода.", "coach_exercise":"Тренировка — не только калории; она улучшает фокус, стресс и сон.", "coach_recovery":"Когда стресс растет, не расширяй план; уменьши его до выполнимого.", "master_plan_1":"18:00–19:00 один блок deep work", "master_plan_2":"Перед учебой: 500 мл воды + легкие углеводы", "master_plan_3":"Вечером: 20 мин ходьбы или мобильности", "master_plan_4":"Короткий повтор + ранний сон", "excellent":"Сильно", "medium":"Средне", "weak":"Слабо"
+        }
+    }
+    return packs.get(st.session_state.language, packs["English"])
+
+
+def _v27_status(score):
+    p = v27_pack()
+    return p["excellent"] if score >= 75 else p["medium"] if score >= 50 else p["weak"]
+
+
+def v27_nutrition_snapshot():
+    p = v27_pack(); u = current_user_inputs(); weight = st.session_state.profile.get("weight_kg", 70)
+    calorie_gap = int(u["calorie_goal"] - u["calories_taken"])
+    macro_cal = int(u["protein_g"]*4 + u["carb_g"]*4 + u["fat_g"]*9)
+    protein_need = max(70, int(weight*1.4))
+    fiber = st.session_state.get("nutrition_fiber_v25", 25); sugar = st.session_state.get("nutrition_sugar_v25", 35)
+    water_target = st.session_state.get("nutrition_hydration_target_v25", 2.5); caffeine = st.session_state.get("nutrition_caffeine_v25", 120)
+    late = st.session_state.get("nutrition_late_meal_v25", False); processed = st.session_state.get("nutrition_processed_v25", False)
+    score = int(min(100, (min(u["protein_g"]/protein_need,1)*28)+(min(fiber/30,1)*18)+(min(water_target/2.5,1)*14)+(max(0,1-sugar/100)*14)+(0 if late else 10)+(0 if processed else 10)+6))
+    calorie_msg = p["calorie_deficit"] if calorie_gap > 350 else p["calorie_surplus"] if calorie_gap < -350 else p["calorie_stable"]
+    protein_msg = p["protein_action"] if u["protein_g"] >= protein_need else p["protein_action_low"]
+    macro_msg = p["nutrition_good"] if score >= 70 else p["nutrition_low"]
+    return {"score":score,"calorie_gap":calorie_gap,"macro_cal":macro_cal,"protein_need":protein_need,"water_target":water_target,"fiber":fiber,"sugar":sugar,"caffeine":caffeine,"calorie_msg":calorie_msg,"protein_msg":protein_msg,"macro_msg":macro_msg}
+
+
+def v27_exercise_snapshot():
+    p = v27_pack(); rf = rich_feature_texts()
+    duration = st.session_state.get("exercise_duration_v26", st.session_state.get("exercise_duration_input", 30))
+    burned = st.session_state.get("exercise_burned_input", 0)
+    steps = st.session_state.get("exercise_steps_v26", 7500)
+    rpe = st.session_state.get("exercise_rpe_v26", 6)
+    soreness = st.session_state.get("exercise_soreness_v26", 3)
+    mobility = st.session_state.get("exercise_mobility_final_v26", 12)
+    score = int(min(100, (min(duration/45,1)*26)+(min(steps/9000,1)*22)+(min(mobility/15,1)*16)+(max(0,1-soreness/10)*16)+(max(0,1-abs(rpe-7)/7)*20)))
+    recovery = int(min(100, soreness*7 + max(0, rpe-7)*8 + max(0, 20-mobility)))
+    msg = p["exercise_good"] if score >= 70 else p["exercise_low"]
+    rec = p["recovery_high"] if recovery >= 55 else p["recovery_ok"]
+    return {"score":score,"recovery":recovery,"duration":duration,"burned":burned,"steps":steps,"rpe":rpe,"soreness":soreness,"mobility":mobility,"msg":msg,"rec":rec}
+
+
+def render_v27_nutrition_local_analysis():
+    p = v27_pack(); n = v27_nutrition_snapshot()
+    st.markdown(f"### {p['nutrition_ai_title']}")
+    a,b,c,d = st.columns(4)
+    a.metric(p["nutrition_score"], f"{n['score']}/100", _v27_status(n['score']))
+    b.metric(p["macro_quality"], f"{n['macro_cal']} kcal")
+    c.metric(p["hydration"], f"{n['water_target']} L")
+    d.metric("Protein", f"{current_user_inputs()['protein_g']}/{n['protein_need']}g")
+    col1,col2,col3 = st.columns(3)
+    with col1: render_ai_insight_card(p["data_signal"], n["macro_msg"], "card-green" if n["score"]>=70 else "card-orange")
+    with col2: render_ai_insight_card(p["local_decision"], n["calorie_msg"], "info-card")
+    with col3: render_ai_insight_card(p["next_move"], n["protein_msg"], "card-blue")
+    st.bar_chart(pd.DataFrame({p['nutrition_score']:[current_user_inputs()['protein_g'], current_user_inputs()['carb_g'], current_user_inputs()['fat_g'], n['fiber'], n['sugar']]}, index=["Protein","Carb","Fat","Fiber","Sugar"]))
+
+
+def render_v27_exercise_local_analysis():
+    p = v27_pack(); e = v27_exercise_snapshot()
+    st.markdown(f"### {p['exercise_ai_title']}")
+    a,b,c,d = st.columns(4)
+    a.metric(p["exercise_score"], f"{e['score']}/100", _v27_status(e['score']))
+    b.metric(p["recovery"], f"{e['recovery']}/100")
+    c.metric("kcal", e["burned"])
+    d.metric("Steps", e["steps"])
+    col1,col2,col3 = st.columns(3)
+    with col1: render_ai_insight_card(p["data_signal"], e["msg"], "card-green" if e["score"]>=70 else "card-orange")
+    with col2: render_ai_insight_card(p["recovery"], e["rec"], "info-card")
+    with col3: render_ai_insight_card(p["next_move"], p["coach_exercise"], "card-blue")
+    st.bar_chart(pd.DataFrame({p['exercise_score']:[e['duration'], e['steps']/1000, e['rpe'], e['soreness'], e['mobility'], e['score']]}, index=["Duration","Steps/1000","RPE","Soreness","Mobility","Score"]))
+
+
+def render_v27_global_analysis(records):
+    p = v27_pack(); records = calculate_scores(records); n = v27_nutrition_snapshot(); e = v27_exercise_snapshot(); raw = _v26_current_raw()
+    avg_prod = float(records['productivity_score'].mean()); avg_well = float(records['wellness_score'].mean()); avg_stress = float(records['stress_level'].mean()); avg_sleep = float(records['sleep_hours'].mean())
+    today_water = float(raw.get('water_liters', records['water_liters'].tail(1).mean()))
+    st.markdown(f"### {p['global_ai_title']}")
+    k1,k2,k3,k4,k5,k6 = st.columns(6)
+    k1.metric(t.get('avg_productivity','Productivity'), f"{avg_prod:.1f}/100")
+    k2.metric(t.get('avg_wellness','Wellness'), f"{avg_well:.1f}/100")
+    k3.metric(p['nutrition_score'], f"{n['score']}/100")
+    k4.metric(p['exercise_score'], f"{e['score']}/100")
+    k5.metric(p['hydration'], f"{today_water:.1f}L")
+    k6.metric(p['recovery'], f"{e['recovery']}/100")
+    render_ai_insight_card(p['decision'], p['global_summary'], 'card-purple')
+    c1,c2,c3 = st.columns(3)
+    with c1: render_ai_insight_card(p['academic_focus'], p['coach_academic'], 'info-card')
+    with c2: render_ai_insight_card(p['body_energy'], f"{n['macro_msg']} {n['calorie_msg']}", 'card-green')
+    with c3: render_ai_insight_card(p['recovery'], f"{e['msg']} {e['rec']}", 'card-orange')
+    trend = pd.DataFrame({
+        t.get('avg_productivity','Productivity'):[avg_prod], t.get('avg_wellness','Wellness'):[avg_well], p['nutrition_score']:[n['score']], p['exercise_score']:[e['score']], p['hydration']:[min(100,today_water/3*100)], p['recovery']:[max(0,100-e['recovery'])]
+    }, index=[p['today']]).T
+    st.bar_chart(trend)
+
+
+def render_v27_coach_master_plan(records):
+    p = v27_pack(); n = v27_nutrition_snapshot(); e = v27_exercise_snapshot(); records = calculate_scores(records)
+    avg_focus = records['focus_level'].mean(); avg_study = records['study_hours'].mean(); avg_stress = records['stress_level'].mean(); avg_sleep = records['sleep_hours'].mean()
+    st.markdown(f"### {p['coach_master']}")
+    render_ai_insight_card(p['why'], f"{p['coach_academic']} {p['coach_nutrition']} {p['coach_exercise']}", 'ai-assessment')
+    plan = [p['master_plan_1'], p['master_plan_2'], p['master_plan_3'], p['master_plan_4']]
+    html = '<div class="premium-report-card"><h3>'+p['plan']+'</h3><ol>' + ''.join(f'<li>{x}</li>' for x in plan) + '</ol></div>'
+    st.markdown(html, unsafe_allow_html=True)
+    c1,c2,c3,c4 = st.columns(4)
+    c1.metric(p['academic_focus'], f"{avg_focus:.1f}/10")
+    c2.metric(p['study_load'], f"{avg_study:.1f}h")
+    c3.metric(p['nutrition_score'], f"{n['score']}/100")
+    c4.metric(p['exercise_score'], f"{e['score']}/100")
+
 
 # Page routing
 # Header + concept card appear only on the main dashboard page.
