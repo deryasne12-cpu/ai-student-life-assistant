@@ -925,7 +925,7 @@ THEMES = {
 # === V18 DAILY FORM COPY PATCH ===
 _DAILY_FORM_COPY = {
     "Türkçe": {
-        "daily_form_intro": "Önce günün tüm verilerini gir. Analiz ve grafikler sadece butona bastığında oluşur; sayfa veri girerken zıplamaz.",
+        "daily_form_intro": "Bugünün enerjisini, hedeflerini, çalışma verilerini ve notunu tek yerde gir. Analiz butonuna bastığında sistem akademik performans, sağlık, risk ve öneri raporunu birlikte üretir.",
         "daily_input_panel": "Günlük Veri Giriş Paneli",
         "daily_mode": "Günün Modu",
         "mode_tired": "😴 Yorgun",
@@ -935,7 +935,7 @@ _DAILY_FORM_COPY = {
         "daily_waiting_message": "Tüm verileri girip analiz butonuna basınca bugünün AI raporu burada oluşacak.",
     },
     "English": {
-        "daily_form_intro": "Enter all daily data first. Analysis and charts are generated only after you press the button; the page will not jump while you edit values.",
+        "daily_form_intro": "Enter today’s energy, goals, study data and reflection in one place. After you press analysis, the system generates an academic, wellness, risk and action report together.",
         "daily_input_panel": "Daily Data Input Panel",
         "daily_mode": "Daily Mode",
         "mode_tired": "😴 Tired",
@@ -945,7 +945,7 @@ _DAILY_FORM_COPY = {
         "daily_waiting_message": "Fill all values and press the analysis button to generate today's AI report here.",
     },
     "Deutsch": {
-        "daily_form_intro": "Gib zuerst alle Tagesdaten ein. Analyse und Diagramme entstehen erst nach dem Button-Klick; die Seite springt nicht während der Eingabe.",
+        "daily_form_intro": "Erfasse Energie, Ziele, Lerndaten und Tagesnotiz an einem Ort. Nach dem Analyse-Klick erstellt das System gemeinsam Leistungs-, Gesundheits-, Risiko- und Aktionsbericht.",
         "daily_input_panel": "Tägliches Eingabepanel",
         "daily_mode": "Tagesmodus",
         "mode_tired": "😴 Müde",
@@ -955,7 +955,7 @@ _DAILY_FORM_COPY = {
         "daily_waiting_message": "Gib alle Werte ein und klicke auf Analyse, dann erscheint hier der KI-Bericht des Tages.",
     },
     "Русский": {
-        "daily_form_intro": "Сначала введи все дневные данные. Анализ и графики появятся только после нажатия кнопки; страница не будет прыгать при вводе.",
+        "daily_form_intro": "Введи энергию, цели, учебные данные и итоговую заметку дня в одном месте. После анализа система создаст отчет по учебе, самочувствию, рискам и действиям.",
         "daily_input_panel": "Панель дневного ввода",
         "daily_mode": "Режим дня",
         "mode_tired": "😴 Устал",
@@ -965,7 +965,7 @@ _DAILY_FORM_COPY = {
         "daily_waiting_message": "Заполни все значения и нажми кнопку анализа, чтобы создать сегодняшний AI-отчет.",
     },
     "Español": {
-        "daily_form_intro": "Primero introduce todos los datos del día. El análisis y los gráficos se generan solo al pulsar el botón; la página no saltará mientras editas.",
+        "daily_form_intro": "Introduce energía, objetivos, datos de estudio y reflexión del día en un solo lugar. Al pulsar análisis, el sistema genera rendimiento, bienestar, riesgo y acciones.",
         "daily_input_panel": "Panel de datos diarios",
         "daily_mode": "Modo del día",
         "mode_tired": "😴 Cansado",
@@ -2280,6 +2280,82 @@ def section_extra_texts():
     }
     return data.get(lang, data["English"])
 
+
+
+# === V25 RICH DATA / TRACKING EXTENSIONS ===
+def rich_feature_texts():
+    lang = st.session_state.language
+    data = {
+        "Türkçe": {
+            "meal_quality_title":"🥗 Beslenme Kalitesi ve Alışkanlıklar", "fiber":"Lif (g)", "sugar":"Şeker (g)", "caffeine":"Kafein (mg)", "late_meal":"Geç Saatte Yemek", "processed_food":"İşlenmiş Gıda", "supplement":"Takviye / Vitamin", "hydration_target":"Su Hedefi (L)", "nutrition_score":"Beslenme Skoru", "nutrition_signal":"Beslenme Sinyali", "nutrition_strong":"Makro ve öğün düzenin güçlü. Bu yapı odak ve antrenman performansını destekler.", "nutrition_warn":"Beslenme yapısında iyileştirme alanı var. Lif, su ve protein düzenini biraz güçlendirmek iyi olur.",
+            "workout_quality_title":"🏋️ Egzersiz Kalitesi ve Toparlanma", "steps_today":"Bugünkü Adım", "rpe":"Zorluk / RPE", "soreness":"Kas Ağrısı", "mobility_min":"Mobilite (dk)", "mood_after":"Egzersiz Sonrası Ruh Hali", "workout_score":"Egzersiz Skoru", "recovery_need":"Toparlanma İhtiyacı", "recovery_low":"Toparlanma iyi görünüyor. Bir sonraki antrenmanı planlayabilirsin.", "recovery_high":"Toparlanma ihtiyacı yüksek. Bugün hafif hareket, esneme ve uyku önceliği mantıklı.",
+            "tracking_date":"Tarih", "tracking_mood":"Duygu Durumu", "tracking_mood_text":"Günlük Not", "tracking_sleep":"Uyku", "tracking_study":"Çalışma", "tracking_focus":"Odak", "tracking_stress":"Stres", "tracking_exercise":"Egzersiz", "tracking_water":"Su", "tracking_nutrition":"Beslenme", "tracking_tasks":"Görev %", "tracking_steps":"Adım", "tracking_productivity":"Verimlilik", "tracking_wellness":"Sağlık", "tracking_risk":"Risk", "tracking_status":"Durum", "tracking_title":"Detaylı Takip Verisi", "tracking_note":"Bu tablo yalnızca ham veriyi değil; duygu durumu, verimlilik, sağlık ve risk sinyalini de gösterir.",
+        },
+        "English": {
+            "meal_quality_title":"🥗 Nutrition Quality & Habits", "fiber":"Fiber (g)", "sugar":"Sugar (g)", "caffeine":"Caffeine (mg)", "late_meal":"Late Meal", "processed_food":"Processed Food", "supplement":"Supplement / Vitamin", "hydration_target":"Water Target (L)", "nutrition_score":"Nutrition Score", "nutrition_signal":"Nutrition Signal", "nutrition_strong":"Your macro and meal structure is strong. This supports focus and training performance.", "nutrition_warn":"There is room to improve nutrition. Strengthen fiber, water and protein consistency.",
+            "workout_quality_title":"🏋️ Exercise Quality & Recovery", "steps_today":"Steps Today", "rpe":"Difficulty / RPE", "soreness":"Muscle Soreness", "mobility_min":"Mobility (min)", "mood_after":"Mood After Exercise", "workout_score":"Exercise Score", "recovery_need":"Recovery Need", "recovery_low":"Recovery looks good. You can plan the next workout.", "recovery_high":"Recovery need is high. Light movement, stretching and sleep should be priority today.",
+            "tracking_date":"Date", "tracking_mood":"Mood", "tracking_mood_text":"Daily Note", "tracking_sleep":"Sleep", "tracking_study":"Study", "tracking_focus":"Focus", "tracking_stress":"Stress", "tracking_exercise":"Exercise", "tracking_water":"Water", "tracking_nutrition":"Nutrition", "tracking_tasks":"Tasks %", "tracking_steps":"Steps", "tracking_productivity":"Productivity", "tracking_wellness":"Wellness", "tracking_risk":"Risk", "tracking_status":"Status", "tracking_title":"Detailed Tracking Data", "tracking_note":"This table shows not only raw values, but also mood, productivity, wellness and risk signals.",
+        },
+        "Deutsch": {
+            "meal_quality_title":"🥗 Ernährungsqualität & Gewohnheiten", "fiber":"Ballaststoffe (g)", "sugar":"Zucker (g)", "caffeine":"Koffein (mg)", "late_meal":"Späte Mahlzeit", "processed_food":"Verarbeitete Lebensmittel", "supplement":"Supplement / Vitamin", "hydration_target":"Wasserziel (L)", "nutrition_score":"Ernährungsscore", "nutrition_signal":"Ernährungssignal", "nutrition_strong":"Makros und Mahlzeitenstruktur sind stark. Das unterstützt Fokus und Training.", "nutrition_warn":"Bei der Ernährung gibt es Verbesserungsmöglichkeiten. Stärke Ballaststoffe, Wasser und Protein-Konstanz.",
+            "workout_quality_title":"🏋️ Trainingsqualität & Erholung", "steps_today":"Schritte heute", "rpe":"Schwierigkeit / RPE", "soreness":"Muskelkater", "mobility_min":"Mobilität (Min.)", "mood_after":"Stimmung nach Training", "workout_score":"Trainingsscore", "recovery_need":"Erholungsbedarf", "recovery_low":"Erholung sieht gut aus. Du kannst das nächste Training planen.", "recovery_high":"Erholungsbedarf ist hoch. Heute sind leichte Bewegung, Dehnen und Schlaf sinnvoll.",
+            "tracking_date":"Datum", "tracking_mood":"Stimmung", "tracking_mood_text":"Tagesnotiz", "tracking_sleep":"Schlaf", "tracking_study":"Lernen", "tracking_focus":"Fokus", "tracking_stress":"Stress", "tracking_exercise":"Training", "tracking_water":"Wasser", "tracking_nutrition":"Ernährung", "tracking_tasks":"Aufgaben %", "tracking_steps":"Schritte", "tracking_productivity":"Produktivität", "tracking_wellness":"Gesundheit", "tracking_risk":"Risiko", "tracking_status":"Status", "tracking_title":"Detaillierte Tracking-Daten", "tracking_note":"Diese Tabelle zeigt nicht nur Rohdaten, sondern auch Stimmung, Produktivität, Gesundheit und Risikosignal.",
+        },
+        "Русский": {
+            "meal_quality_title":"🥗 Качество питания и привычки", "fiber":"Клетчатка (г)", "sugar":"Сахар (г)", "caffeine":"Кофеин (мг)", "late_meal":"Поздний прием пищи", "processed_food":"Обработанная еда", "supplement":"Добавка / витамин", "hydration_target":"Цель воды (л)", "nutrition_score":"Оценка питания", "nutrition_signal":"Сигнал питания", "nutrition_strong":"Макро и режим питания выглядят сильными. Это поддерживает фокус и тренировки.", "nutrition_warn":"В питании есть зона роста. Усиль клетчатку, воду и стабильность белка.",
+            "workout_quality_title":"🏋️ Качество тренировки и восстановление", "steps_today":"Шаги сегодня", "rpe":"Сложность / RPE", "soreness":"Боль в мышцах", "mobility_min":"Мобилити (мин)", "mood_after":"Настроение после тренировки", "workout_score":"Оценка тренировки", "recovery_need":"Нужда в восстановлении", "recovery_low":"Восстановление выглядит хорошо. Можно планировать следующую тренировку.", "recovery_high":"Нужда в восстановлении высокая. Сегодня лучше легкое движение, растяжка и сон.",
+            "tracking_date":"Дата", "tracking_mood":"Настроение", "tracking_mood_text":"Заметка дня", "tracking_sleep":"Сон", "tracking_study":"Учеба", "tracking_focus":"Фокус", "tracking_stress":"Стресс", "tracking_exercise":"Тренировка", "tracking_water":"Вода", "tracking_nutrition":"Питание", "tracking_tasks":"Задачи %", "tracking_steps":"Шаги", "tracking_productivity":"Продуктивность", "tracking_wellness":"Здоровье", "tracking_risk":"Риск", "tracking_status":"Статус", "tracking_title":"Подробные данные трекинга", "tracking_note":"Таблица показывает не только значения, но и настроение, продуктивность, здоровье и риск.",
+        },
+        "Español": {
+            "meal_quality_title":"🥗 Calidad nutricional y hábitos", "fiber":"Fibra (g)", "sugar":"Azúcar (g)", "caffeine":"Cafeína (mg)", "late_meal":"Comida tarde", "processed_food":"Comida procesada", "supplement":"Suplemento / vitamina", "hydration_target":"Objetivo de agua (L)", "nutrition_score":"Puntuación de nutrición", "nutrition_signal":"Señal de nutrición", "nutrition_strong":"Tus macros y estructura de comidas son sólidos. Esto apoya enfoque y entrenamiento.", "nutrition_warn":"Hay margen de mejora en nutrición. Refuerza fibra, agua y consistencia de proteína.",
+            "workout_quality_title":"🏋️ Calidad de ejercicio y recuperación", "steps_today":"Pasos hoy", "rpe":"Dificultad / RPE", "soreness":"Dolor muscular", "mobility_min":"Movilidad (min)", "mood_after":"Ánimo tras ejercicio", "workout_score":"Puntuación de ejercicio", "recovery_need":"Necesidad de recuperación", "recovery_low":"La recuperación se ve bien. Puedes planificar el próximo entrenamiento.", "recovery_high":"La necesidad de recuperación es alta. Prioriza movimiento ligero, estiramiento y sueño.",
+            "tracking_date":"Fecha", "tracking_mood":"Estado de ánimo", "tracking_mood_text":"Nota diaria", "tracking_sleep":"Sueño", "tracking_study":"Estudio", "tracking_focus":"Enfoque", "tracking_stress":"Estrés", "tracking_exercise":"Ejercicio", "tracking_water":"Agua", "tracking_nutrition":"Nutrición", "tracking_tasks":"Tareas %", "tracking_steps":"Pasos", "tracking_productivity":"Productividad", "tracking_wellness":"Bienestar", "tracking_risk":"Riesgo", "tracking_status":"Estado", "tracking_title":"Datos detallados de seguimiento", "tracking_note":"Esta tabla muestra valores, ánimo, productividad, bienestar y señal de riesgo.",
+        },
+    }
+    return data.get(lang, data["English"])
+
+
+def enrich_tracking_dataframe(records):
+    r = calculate_scores(records).copy()
+    f = rich_feature_texts()
+    def mood_label(v):
+        if v >= 0.15:
+            return "🟢 Positive" if st.session_state.language == "English" else "🟢 Pozitif"
+        if v <= -0.15:
+            return "🔴 Negative" if st.session_state.language == "English" else "🔴 Negatif"
+        return "🟡 Neutral" if st.session_state.language == "English" else "🟡 Nötr"
+    def risk_label(v):
+        if v >= 70:
+            return "🔴 High"
+        if v >= 45:
+            return "🟡 Medium"
+        return "🟢 Low"
+    def status_label(row):
+        if row["productivity_score"] >= 70 and row["stress_level"] <= 5:
+            return "🚀 Strong"
+        if row["stress_level"] >= 7 or row["sleep_hours"] < 6:
+            return "⚠️ Attention"
+        return "🌱 Stable"
+    out = pd.DataFrame({
+        f["tracking_date"]: pd.to_datetime(r["date"]).dt.strftime("%Y-%m-%d"),
+        f["tracking_mood"]: r["sentiment_score"].apply(mood_label),
+        f["tracking_mood_text"]: r["mood_text"],
+        f["tracking_sleep"]: r["sleep_hours"],
+        f["tracking_study"]: r["study_hours"],
+        f["tracking_focus"]: r["focus_level"],
+        f["tracking_stress"]: r["stress_level"],
+        f["tracking_exercise"]: r["exercise_minutes"],
+        f["tracking_water"]: r["water_liters"],
+        f["tracking_nutrition"]: r["nutrition_quality"],
+        f["tracking_tasks"]: r["task_completion"],
+        f["tracking_steps"]: r["steps"],
+        f["tracking_productivity"]: r["productivity_score"],
+        f["tracking_wellness"]: r["wellness_score"],
+        f["tracking_risk"]: r["risk_score"].apply(risk_label),
+        f["tracking_status"]: r.apply(status_label, axis=1),
+    })
+    return out
+
 def render_login_profile():
     st.subheader(t["profile_title"])
 
@@ -3125,6 +3201,36 @@ def render_dashboard_tabs():
         c2.metric(x["remaining_calories"], remaining)
         c3.metric(x["meal_count"], meal_count)
 
+        rf = rich_feature_texts()
+        st.markdown(f"### {rf['meal_quality_title']}")
+        q1, q2, q3, q4 = st.columns(4)
+        with q1:
+            fiber_g = st.slider(rf["fiber"], 0, 60, 25, key="nutrition_fiber_v25")
+            hydration_target = st.slider(rf["hydration_target"], 1.0, 4.0, 2.5, step=0.1, key="nutrition_hydration_target_v25")
+        with q2:
+            sugar_g = st.slider(rf["sugar"], 0, 150, 35, key="nutrition_sugar_v25")
+            caffeine_mg = st.slider(rf["caffeine"], 0, 600, 120, step=10, key="nutrition_caffeine_v25")
+        with q3:
+            late_meal = st.checkbox(rf["late_meal"], value=False, key="nutrition_late_meal_v25")
+            processed_food = st.checkbox(rf["processed_food"], value=False, key="nutrition_processed_v25")
+        with q4:
+            supplement = st.checkbox(rf["supplement"], value=True, key="nutrition_supplement_v25")
+
+        nutrition_score = int(
+            min(100,
+                (min(protein_g / max(70, weight_kg * 1.2), 1) * 28)
+                + (min(fiber_g / 30, 1) * 18)
+                + (min(hydration_target / 2.5, 1) * 14)
+                + (max(0, 1 - sugar_g / 100) * 14)
+                + (0 if late_meal else 10)
+                + (0 if processed_food else 10)
+                + (6 if supplement else 0)
+            )
+        )
+        nscore_col, signal_col = st.columns([1, 2])
+        nscore_col.metric(rf["nutrition_score"], f"{nutrition_score}/100")
+        signal_col.info(rf["nutrition_strong"] if nutrition_score >= 70 else rf["nutrition_warn"])
+
         if protein_g < max(70, int(weight_kg * 1.2)):
             st.warning(x["protein_low"])
         elif calories_taken < calorie_goal - 350:
@@ -3206,11 +3312,35 @@ def render_dashboard_tabs():
         else:
             st.warning(x["exercise_low"])
 
+        rf = rich_feature_texts()
+        st.markdown(f"### {rf['workout_quality_title']}")
+        w1, w2, w3, w4 = st.columns(4)
+        with w1:
+            steps_today = st.number_input(rf["steps_today"], min_value=0, max_value=40000, value=7500, step=500, key="exercise_steps_v25")
+        with w2:
+            rpe = st.slider(rf["rpe"], 1, 10, 6, key="exercise_rpe_v25")
+        with w3:
+            soreness = st.slider(rf["soreness"], 0, 10, 3, key="exercise_soreness_v25")
+        with w4:
+            mobility_min = st.slider(rf["mobility_min"], 0, 60, 10, key="exercise_mobility_v25")
+
+        workout_score = int(min(100, (min(duration / 45, 1) * 30) + (min(steps_today / 9000, 1) * 25) + (min(mobility_min / 15, 1) * 15) + (max(0, 1 - soreness / 10) * 15) + (max(0, 1 - abs(rpe - 7) / 7) * 15)))
+        recovery_need = int(min(100, soreness * 7 + max(0, rpe - 7) * 8 + max(0, 20 - mobility_min)))
+        score_a, score_b = st.columns(2)
+        score_a.metric(rf["workout_score"], f"{workout_score}/100")
+        score_b.metric(rf["recovery_need"], f"{recovery_need}/100")
+        st.info(rf["recovery_high"] if recovery_need >= 55 else rf["recovery_low"])
+
         exercise_log = pd.DataFrame({
             x["exercise_type"]: [exercise_type],
             x["duration_min"]: [duration],
             x["intensity"]: [intensity],
             x["estimated_burn"]: [burned],
+            rf["steps_today"]: [steps_today],
+            rf["rpe"]: [rpe],
+            rf["soreness"]: [soreness],
+            rf["mobility_min"]: [mobility_min],
+            rf["workout_score"]: [workout_score],
         })
         st.dataframe(exercise_log, use_container_width=True)
 
@@ -3277,8 +3407,11 @@ def render_dashboard_tabs():
         else:
             st.success(insights["sleep_msg"] + " " + insights["stress_msg"])
 
-        with st.expander(t["complete_tracking_data"]):
-            st.dataframe(records, use_container_width=True)
+        rf = rich_feature_texts()
+        with st.expander(rf["tracking_title"]):
+            st.caption(rf["tracking_note"])
+            detailed_records = enrich_tracking_dataframe(st.session_state.records)
+            st.dataframe(detailed_records, use_container_width=True, height=440)
 
     with tab5:
         a = advanced_texts()
