@@ -3266,83 +3266,7 @@ def render_dashboard_tabs():
         st.dataframe(food_data, use_container_width=True)
 
     with tab3:
-        x = section_extra_texts()
-        st.subheader(t["exercise"])
-        fitness_goal = st.selectbox(
-            t["exercise_goal"],
-            [t["general_health"], t["weight_gain_muscle"], t["fat_loss"], t["stress_reduction"], t["posture_mobility"]],
-            key=f"exercise_goal_{st.session_state.language}",
-        )
-        plans = {
-            t["general_health"]: t["plan_general"],
-            t["weight_gain_muscle"]: t["plan_muscle"],
-            t["fat_loss"]: t["plan_fat"],
-            t["stress_reduction"]: t["plan_stress"],
-            t["posture_mobility"]: t["plan_posture"],
-        }
-        st.markdown(
-            f"""
-            <div class="card-green">
-            <h3>{fitness_goal}</h3>
-            <p>{t["exercise_plan_text"]}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        for item in plans[fitness_goal]:
-            st.write("•", item)
-
-        st.markdown(f"### {x['exercise_input_title']}")
-        e1, e2, e3 = st.columns(3)
-        with e1:
-            exercise_type = st.selectbox(x["exercise_type"], [x["walking"], x["running"], x["strength"], x["cycling"], x["mobility"]], key="exercise_type_input")
-            duration = st.slider(x["duration_min"], 0, 180, 30, key="exercise_duration_input")
-        with e2:
-            intensity = st.selectbox(x["intensity"], [x["low"], x["medium"], x["high"]], index=1, key="exercise_intensity_input")
-            body_weight = st.number_input(x["body_weight"], min_value=35, max_value=180, value=int(st.session_state.profile.get("weight_kg", 70)))
-        with e3:
-            base_met = {x["walking"]: 3.5, x["running"]: 8.5, x["strength"]: 5.0, x["cycling"]: 6.8, x["mobility"]: 2.5}.get(exercise_type, 4.0)
-            multiplier = {x["low"]: 0.8, x["medium"]: 1.0, x["high"]: 1.25}.get(intensity, 1.0)
-            burned = int(base_met * multiplier * 3.5 * body_weight / 200 * duration)
-            st.session_state.exercise_burned_input = burned
-            st.metric(x["estimated_burn"], burned)
-
-        if duration >= 20:
-            st.success(x["exercise_good"])
-        else:
-            st.warning(x["exercise_low"])
-
-        rf = rich_feature_texts()
-        st.markdown(f"### {rf['workout_quality_title']}")
-        w1, w2, w3, w4 = st.columns(4)
-        with w1:
-            steps_today = st.number_input(rf["steps_today"], min_value=0, max_value=40000, value=7500, step=500, key="exercise_steps_v25")
-        with w2:
-            rpe = st.slider(rf["rpe"], 1, 10, 6, key="exercise_rpe_v25")
-        with w3:
-            soreness = st.slider(rf["soreness"], 0, 10, 3, key="exercise_soreness_v25")
-        with w4:
-            mobility_min = st.slider(rf["mobility_min"], 0, 60, 10, key="exercise_mobility_v25")
-
-        workout_score = int(min(100, (min(duration / 45, 1) * 30) + (min(steps_today / 9000, 1) * 25) + (min(mobility_min / 15, 1) * 15) + (max(0, 1 - soreness / 10) * 15) + (max(0, 1 - abs(rpe - 7) / 7) * 15)))
-        recovery_need = int(min(100, soreness * 7 + max(0, rpe - 7) * 8 + max(0, 20 - mobility_min)))
-        score_a, score_b = st.columns(2)
-        score_a.metric(rf["workout_score"], f"{workout_score}/100")
-        score_b.metric(rf["recovery_need"], f"{recovery_need}/100")
-        st.info(rf["recovery_high"] if recovery_need >= 55 else rf["recovery_low"])
-
-        exercise_log = pd.DataFrame({
-            x["exercise_type"]: [exercise_type],
-            x["duration_min"]: [duration],
-            x["intensity"]: [intensity],
-            x["estimated_burn"]: [burned],
-            rf["steps_today"]: [steps_today],
-            rf["rpe"]: [rpe],
-            rf["soreness"]: [soreness],
-            rf["mobility_min"]: [mobility_min],
-            rf["workout_score"]: [workout_score],
-        })
-        st.dataframe(exercise_log, use_container_width=True)
+        render_v26_exercise_tab()
 
     with tab4:
         a = advanced_texts()
@@ -3406,6 +3330,8 @@ def render_dashboard_tabs():
             st.warning(insights["sleep_msg"] + " " + insights["stress_msg"])
         else:
             st.success(insights["sleep_msg"] + " " + insights["stress_msg"])
+
+        render_mood_trend_chart(records)
 
         rf = rich_feature_texts()
         with st.expander(rf["tracking_title"]):
@@ -3863,6 +3789,223 @@ div[data-testid="stForm"] [role="radiogroup"] label {
 }
 </style>
 """, unsafe_allow_html=True)
+
+
+# === V26: smarter current-day AI analysis, localized mood graph, richer exercise profiles ===
+def v26_texts():
+    packs = {
+        "Türkçe": {
+            "mood_trend":"Duygu Durumu Trendi", "mood_score":"Duygu Skoru", "mood_positive":"Pozitif", "mood_neutral":"Nötr", "mood_negative":"Negatif",
+            "analysis_brief":"Akıllı Özet", "current_day_signal":"Bugünkü veri sinyali", "water_full":"Bugünkü su hedefin güçlü görünüyor. Hidrasyon tarafı şu an risk değil.", "water_low_now":"Bugünkü su seviyesi düşük. Odak ve toparlanma için suyu artır.",
+            "exercise_profile":"Egzersiz Profili", "goal_profile":"Hedefe Göre Plan", "session_design":"Seans Tasarımı", "training_focus":"Antrenman Odağı", "weekly_frequency":"Haftalık Frekans", "primary_metrics":"Takip Edilecek Metrikler", "smart_recommendation":"Akıllı Öneri",
+            "walking":"Yürüyüş", "running":"Koşu", "strength":"Ağırlık / Kuvvet", "cycling":"Bisiklet", "mobility":"Mobilite", "workout_type":"Egzersiz Türü", "duration":"Süre", "intensity":"Yoğunluk", "body_weight":"Vücut ağırlığı", "estimated_burn":"Tahmini yakım", "sets":"Set", "reps":"Tekrar", "pace":"Tempo", "distance":"Mesafe", "mobility_area":"Mobilite bölgesi", "exercise_score":"Egzersiz Skoru", "profile_note":"Bu profil seçtiğin hedefe göre değişir; süre, yoğunluk, toparlanma ve odak alanını birlikte yorumlar.",
+            "general_profile":"Genel sağlık için hedef: düzenli hareket, sürdürülebilir tempo ve düşük sakatlık riski.", "muscle_profile":"Kas/kilo hedefinde öncelik: kuvvet antrenmanı, yeterli kalori, protein ve progresif yükleme.", "fat_profile":"Yağ kaybında öncelik: kalori dengesi, adım sayısı, orta yoğunluk ve haftalık süreklilik.", "stress_profile":"Stres azaltmada öncelik: düşük-orta yoğunluk, nefes, yürüyüş ve uyku toparlanması.", "posture_profile":"Duruş/mobilite hedefinde öncelik: core stabilite, sırt güçlendirme, kalça ve omuz mobilitesi.",
+            "coach_strong":"Bugünkü veriler güçlü: yüksek su/uyku/odak varsa koç riski düşürür ve çalışma planını zorlaştırır.", "coach_mismatch":"Not: tarihsel ortalama ile bugünkü veri farklıysa AI önce bugünkü sinyali, sonra trendi yorumlar."
+        },
+        "English": {
+            "mood_trend":"Mood Trend", "mood_score":"Mood Score", "mood_positive":"Positive", "mood_neutral":"Neutral", "mood_negative":"Negative",
+            "analysis_brief":"Smart Summary", "current_day_signal":"Current-day signal", "water_full":"Today's water target looks strong. Hydration is not a current risk.", "water_low_now":"Today's water level is low. Increase hydration for focus and recovery.",
+            "exercise_profile":"Exercise Profile", "goal_profile":"Goal-Based Plan", "session_design":"Session Design", "training_focus":"Training Focus", "weekly_frequency":"Weekly Frequency", "primary_metrics":"Metrics to Track", "smart_recommendation":"Smart Recommendation",
+            "walking":"Walking", "running":"Running", "strength":"Strength Training", "cycling":"Cycling", "mobility":"Mobility", "workout_type":"Workout Type", "duration":"Duration", "intensity":"Intensity", "body_weight":"Body weight", "estimated_burn":"Estimated burn", "sets":"Sets", "reps":"Reps", "pace":"Pace", "distance":"Distance", "mobility_area":"Mobility area", "exercise_score":"Exercise Score", "profile_note":"This profile changes with your selected goal; it reads duration, intensity, recovery and focus area together.",
+            "general_profile":"For general health: consistent movement, sustainable pace and low injury risk.", "muscle_profile":"For muscle/weight gain: strength training, enough calories, protein and progressive overload.", "fat_profile":"For fat loss: calorie balance, steps, moderate intensity and weekly consistency.", "stress_profile":"For stress reduction: low-medium intensity, breathing, walking and sleep recovery.", "posture_profile":"For posture/mobility: core stability, back strength, hip and shoulder mobility.",
+            "coach_strong":"If today's water/sleep/focus is strong, the coach lowers risk and makes the study plan more ambitious.", "coach_mismatch":"Note: when historical average and today's input differ, AI reads today's signal first, then the trend."
+        },
+        "Deutsch": {
+            "mood_trend":"Stimmungstrend", "mood_score":"Stimmungswert", "mood_positive":"Positiv", "mood_neutral":"Neutral", "mood_negative":"Negativ",
+            "analysis_brief":"Intelligente Zusammenfassung", "current_day_signal":"Signal des heutigen Tages", "water_full":"Dein heutiges Wasserziel sieht stark aus. Hydration ist aktuell kein Risiko.", "water_low_now":"Die heutige Wasseraufnahme ist niedrig. Erhöhe Hydration für Fokus und Erholung.",
+            "exercise_profile":"Trainingsprofil", "goal_profile":"Zielbasierter Plan", "session_design":"Einheitsdesign", "training_focus":"Trainingsfokus", "weekly_frequency":"Wöchentliche Frequenz", "primary_metrics":"Zu verfolgende Metriken", "smart_recommendation":"Smarte Empfehlung",
+            "walking":"Gehen", "running":"Laufen", "strength":"Krafttraining", "cycling":"Radfahren", "mobility":"Mobilität", "workout_type":"Trainingstyp", "duration":"Dauer", "intensity":"Intensität", "body_weight":"Körpergewicht", "estimated_burn":"Geschätzter Verbrauch", "sets":"Sätze", "reps":"Wiederholungen", "pace":"Tempo", "distance":"Distanz", "mobility_area":"Mobilitätsbereich", "exercise_score":"Trainingsscore", "profile_note":"Dieses Profil ändert sich je nach Ziel und bewertet Dauer, Intensität, Erholung und Fokus gemeinsam.",
+            "general_profile":"Für allgemeine Gesundheit: regelmäßige Bewegung, nachhaltiges Tempo und geringes Verletzungsrisiko.", "muscle_profile":"Für Muskel-/Gewichtszunahme: Krafttraining, genug Kalorien, Protein und progressive Steigerung.", "fat_profile":"Für Fettverlust: Kalorienbalance, Schritte, mittlere Intensität und wöchentliche Konsistenz.", "stress_profile":"Für Stressreduktion: niedrige bis mittlere Intensität, Atmung, Gehen und Schlaf-Erholung.", "posture_profile":"Für Haltung/Mobilität: Core-Stabilität, Rückenkräftigung, Hüft- und Schultermobilität.",
+            "coach_strong":"Wenn Wasser/Schlaf/Fokus heute stark sind, senkt der Coach das Risiko und macht den Lernplan ambitionierter.", "coach_mismatch":"Hinweis: Wenn historischer Durchschnitt und heutige Eingabe abweichen, bewertet die KI zuerst das heutige Signal, dann den Trend."
+        },
+        "Español": {
+            "mood_trend":"Tendencia del ánimo", "mood_score":"Puntuación de ánimo", "mood_positive":"Positivo", "mood_neutral":"Neutral", "mood_negative":"Negativo",
+            "analysis_brief":"Resumen inteligente", "current_day_signal":"Señal del día actual", "water_full":"Tu objetivo de agua de hoy se ve fuerte. La hidratación no es un riesgo actual.", "water_low_now":"El agua de hoy está baja. Aumenta hidratación para enfoque y recuperación.",
+            "exercise_profile":"Perfil de ejercicio", "goal_profile":"Plan según objetivo", "session_design":"Diseño de sesión", "training_focus":"Enfoque del entrenamiento", "weekly_frequency":"Frecuencia semanal", "primary_metrics":"Métricas a seguir", "smart_recommendation":"Recomendación inteligente",
+            "walking":"Caminar", "running":"Correr", "strength":"Fuerza", "cycling":"Ciclismo", "mobility":"Movilidad", "workout_type":"Tipo de ejercicio", "duration":"Duración", "intensity":"Intensidad", "body_weight":"Peso corporal", "estimated_burn":"Gasto estimado", "sets":"Series", "reps":"Repeticiones", "pace":"Ritmo", "distance":"Distancia", "mobility_area":"Zona de movilidad", "exercise_score":"Puntuación de ejercicio", "profile_note":"Este perfil cambia según el objetivo; interpreta duración, intensidad, recuperación y enfoque juntos.",
+            "general_profile":"Para salud general: movimiento constante, ritmo sostenible y bajo riesgo de lesión.", "muscle_profile":"Para ganar músculo/peso: fuerza, suficientes calorías, proteína y sobrecarga progresiva.", "fat_profile":"Para perder grasa: balance calórico, pasos, intensidad moderada y constancia semanal.", "stress_profile":"Para reducir estrés: intensidad baja-media, respiración, caminar y recuperación de sueño.", "posture_profile":"Para postura/movilidad: estabilidad del core, espalda fuerte, movilidad de cadera y hombro.",
+            "coach_strong":"Si agua/sueño/enfoque de hoy son fuertes, el coach baja el riesgo y hace el plan más ambicioso.", "coach_mismatch":"Nota: si el promedio histórico y el dato de hoy difieren, la IA lee primero la señal de hoy y luego la tendencia."
+        },
+        "Русский": {
+            "mood_trend":"Тренд настроения", "mood_score":"Оценка настроения", "mood_positive":"Позитивно", "mood_neutral":"Нейтрально", "mood_negative":"Негативно",
+            "analysis_brief":"Умная сводка", "current_day_signal":"Сигнал текущего дня", "water_full":"Сегодняшняя цель по воде выглядит сильной. Гидратация сейчас не риск.", "water_low_now":"Сегодня воды мало. Увеличь гидратацию для фокуса и восстановления.",
+            "exercise_profile":"Профиль тренировки", "goal_profile":"План по цели", "session_design":"Дизайн сессии", "training_focus":"Фокус тренировки", "weekly_frequency":"Частота в неделю", "primary_metrics":"Метрики для контроля", "smart_recommendation":"Умная рекомендация",
+            "walking":"Ходьба", "running":"Бег", "strength":"Силовая", "cycling":"Велосипед", "mobility":"Мобилити", "workout_type":"Тип тренировки", "duration":"Длительность", "intensity":"Интенсивность", "body_weight":"Вес тела", "estimated_burn":"Расход калорий", "sets":"Подходы", "reps":"Повторы", "pace":"Темп", "distance":"Дистанция", "mobility_area":"Зона мобилити", "exercise_score":"Оценка тренировки", "profile_note":"Профиль меняется по цели и вместе оценивает длительность, интенсивность, восстановление и фокус.",
+            "general_profile":"Для общего здоровья: регулярное движение, устойчивый темп и низкий риск травмы.", "muscle_profile":"Для набора мышц/веса: силовые, калории, белок и прогрессивная нагрузка.", "fat_profile":"Для жиросжигания: баланс калорий, шаги, средняя интенсивность и стабильность.", "stress_profile":"Для снижения стресса: низкая-средняя интенсивность, дыхание, ходьба и сон.", "posture_profile":"Для осанки/мобильности: стабильность кора, сильная спина, таз и плечи.",
+            "coach_strong":"Если сегодня вода/сон/фокус сильные, коуч снижает риск и делает учебный план смелее.", "coach_mismatch":"Если средние данные и ввод сегодня расходятся, ИИ сначала читает сегодняшний сигнал, потом тренд."
+        },
+    }
+    return packs.get(st.session_state.language, packs["English"])
+
+
+def _v26_current_raw():
+    res = st.session_state.get("last_daily_analysis", {})
+    return res.get("raw_chart_values", {}) if isinstance(res, dict) else {}
+
+
+def generate_deep_insights(records):
+    # V26: current-day input has priority, trend remains secondary. This fixes cases like water=4.0 but old averages still saying water is low.
+    a = advanced_texts(); vt = v26_texts(); u = current_user_inputs(); raw = _v26_current_raw()
+    avg_sleep = float(records["sleep_hours"].mean())
+    avg_stress = float(records["stress_level"].mean())
+    avg_productivity = float(records["productivity_score"].mean())
+    today_water = float(raw.get("water_liters", records["water_liters"].tail(1).mean()))
+    today_study = float(raw.get("study_hours", records["study_hours"].tail(1).mean()))
+    today_exercise = float(raw.get("exercise_minutes", records["exercise_minutes"].tail(1).mean()))
+    today_nutrition = float(raw.get("nutrition_quality", records["nutrition_quality"].tail(1).mean()))
+    today_focus = float(raw.get("focus_level", records["focus_level"].tail(1).mean()))
+    protein_need = max(70, int(st.session_state.profile.get("weight_kg", 70) * 1.4))
+    calorie_gap = u["calorie_goal"] - u["calories_taken"]
+    macro_cal = int(u["protein_g"] * 4 + u["carb_g"] * 4 + u["fat_g"] * 9)
+    net_cal = u["calories_taken"] - u["exercise_burned"]
+    nutrition_msg = a["calories_good"]
+    if calorie_gap > 350:
+        nutrition_msg = a["not_enough_calories"]
+    elif calorie_gap < -350:
+        nutrition_msg = a["calories_high"]
+    protein_msg = a["protein_good_detail"] if u["protein_g"] >= protein_need else a["protein_low_detail"]
+    exercise_msg = a["exercise_good_detail"] if today_exercise >= 20 else a["exercise_low_detail"]
+    sleep_msg = a["sleep_good_detail"] if avg_sleep >= 6 else a["sleep_low_detail"]
+    stress_msg = a["stress_ok_detail"] if avg_stress < 7 else a["stress_high_detail"]
+    hydration_msg = vt["water_full"] if today_water >= 2.3 else vt["water_low_now"]
+    current_day = f"{vt['current_day_signal']}: {hydration_msg} " + (a["exercise_good_detail"] if today_exercise >= 20 else a["exercise_low_detail"])
+    risk = "Low" if avg_stress < 5 and avg_sleep >= 6.5 and avg_productivity >= 50 and today_water >= 2.0 else "Medium" if avg_stress < 7 else "High"
+    return {
+        "calorie_gap": calorie_gap, "macro_cal": macro_cal, "net_cal": net_cal, "protein_need": protein_need,
+        "nutrition_msg": nutrition_msg, "protein_msg": protein_msg, "exercise_msg": exercise_msg,
+        "sleep_msg": sleep_msg, "stress_msg": stress_msg, "hydration_msg": hydration_msg,
+        "current_day": current_day, "risk": risk,
+        "today_water": today_water, "today_study": today_study, "today_exercise": today_exercise,
+        "today_nutrition": today_nutrition, "today_focus": today_focus,
+    }
+
+
+def build_performance_lists(records):
+    vt = v26_texts(); insights = generate_deep_insights(records)
+    avg_sleep = records["sleep_hours"].mean(); avg_stress = records["stress_level"].mean(); avg_exercise = records["exercise_minutes"].mean(); avg_study = records["study_hours"].mean(); avg_focus = records["focus_level"].mean()
+    strengths, improvements, risks = [], [], []
+    if avg_sleep >= 6.5: strengths.append(t.get("sleep_good", "Sleep rhythm is stable."))
+    else: improvements.append(t.get("sleep_low", "Sleep is low. Try to increase sleep by at least 1 hour."))
+    if avg_stress <= 5.5: strengths.append(t.get("stress_ok", "Stress level is manageable."))
+    else: risks.append(t.get("stress_high", "Stress trend is high. Add recovery time."))
+    if insights.get("today_water", 0) >= 2.3: strengths.append(vt["water_full"])
+    else: improvements.append(t.get("water_low", "Water intake is low. Increase hydration for better focus."))
+    if insights.get("today_exercise", avg_exercise) >= 20: strengths.append(t.get("exercise_ok", "Exercise supports wellness and focus."))
+    else: improvements.append(t.get("exercise_low", "Exercise activity is low. Add walking or mobility sessions."))
+    if avg_study < 4: improvements.append(t.get("study_low", "Study time is below target. Add one focused block."))
+    if avg_focus < 6: risks.append(t.get("focus_risk", "Focus trend needs attention."))
+    if not risks: risks.append(t.get("risk_controlled", "No critical risk detected, but consistency should be protected."))
+    return strengths, improvements, risks
+
+
+def enrich_tracking_dataframe(records):
+    r = calculate_scores(records).copy(); f = rich_feature_texts(); vt = v26_texts()
+    def mood_label(v):
+        if v >= 0.15: return "🟢 " + vt["mood_positive"]
+        if v <= -0.15: return "🔴 " + vt["mood_negative"]
+        return "🟡 " + vt["mood_neutral"]
+    def mood_score(v): return int(round((float(v) + 1) * 50))
+    def risk_label(v):
+        if v >= 70: return "🔴 " + t.get("high_risk", "High Risk")
+        if v >= 45: return "🟡 " + t.get("medium_risk", "Medium Risk")
+        return "🟢 " + t.get("low_risk", "Low Risk")
+    def status_label(row):
+        if row["productivity_score"] >= 70 and row["stress_level"] <= 5: return "🚀 " + t.get("excellent", "Excellent")
+        if row["stress_level"] >= 7 or row["sleep_hours"] < 6: return "⚠️ " + t.get("needs_attention", "Needs Attention")
+        return "🌱 " + t.get("stable", "Stable")
+    return pd.DataFrame({
+        f["tracking_date"]: pd.to_datetime(r["date"]).dt.strftime("%Y-%m-%d"),
+        f["tracking_mood"]: r["sentiment_score"].apply(mood_label),
+        vt["mood_score"]: r["sentiment_score"].apply(mood_score),
+        f["tracking_mood_text"]: r["mood_text"],
+        f["tracking_sleep"]: r["sleep_hours"], f["tracking_study"]: r["study_hours"], f["tracking_focus"]: r["focus_level"], f["tracking_stress"]: r["stress_level"],
+        f["tracking_exercise"]: r["exercise_minutes"], f["tracking_water"]: r["water_liters"], f["tracking_nutrition"]: r["nutrition_quality"], f["tracking_tasks"]: r["task_completion"], f["tracking_steps"]: r["steps"],
+        f["tracking_productivity"]: r["productivity_score"], f["tracking_wellness"]: r["wellness_score"], f["tracking_risk"]: r["risk_score"].apply(risk_label), f["tracking_status"]: r.apply(status_label, axis=1),
+    })
+
+
+def render_mood_trend_chart(records):
+    vt = v26_texts(); rr = calculate_scores(records).copy(); rr["date"] = pd.to_datetime(rr["date"])
+    mood_df = pd.DataFrame({vt["mood_score"]: ((rr["sentiment_score"] + 1) * 50).round(1).values}, index=rr["date"])
+    st.subheader(vt["mood_trend"])
+    st.line_chart(mood_df)
+    latest = mood_df.iloc[-1, 0]
+    if latest >= 60: st.success(f"{vt['analysis_brief']}: {vt['mood_positive']} trend. {v26_texts()['coach_strong']}")
+    elif latest <= 40: st.warning(f"{vt['analysis_brief']}: {vt['mood_negative']} signal. Recovery and lighter planning are recommended.")
+    else: st.info(f"{vt['analysis_brief']}: {vt['mood_neutral']} signal. Keep routine stable and avoid overload.")
+
+
+def v26_exercise_goal_profiles():
+    vt = v26_texts()
+    return {
+        t.get("general_health", "General Health"): {"note": vt["general_profile"], "focus": "Zone 2 + mobility", "freq": "3-5x/week", "metrics": "steps, duration, consistency"},
+        t.get("weight_gain_muscle", "Weight Gain / Muscle"): {"note": vt["muscle_profile"], "focus": "compound lifts + progressive overload", "freq": "3-4x/week", "metrics": "sets, reps, protein, recovery"},
+        t.get("fat_loss", "Fat Loss"): {"note": vt["fat_profile"], "focus": "steps + moderate cardio + strength", "freq": "4-6x/week", "metrics": "net calories, steps, duration"},
+        t.get("stress_reduction", "Stress Reduction"): {"note": vt["stress_profile"], "focus": "walking + breathing + light mobility", "freq": "daily light", "metrics": "stress, sleep, recovery"},
+        t.get("posture_mobility", "Posture & Mobility"): {"note": vt["posture_profile"], "focus": "core + back + hips/shoulders", "freq": "5-7 short sessions", "metrics": "mobility minutes, soreness, posture"},
+    }
+
+
+def render_v26_exercise_tab():
+    x = section_extra_texts(); rf = rich_feature_texts(); vt = v26_texts()
+    st.subheader(t["exercise"])
+    fitness_goal = st.selectbox(t["exercise_goal"], [t["general_health"], t["weight_gain_muscle"], t["fat_loss"], t["stress_reduction"], t["posture_mobility"]], key=f"exercise_goal_v26_{st.session_state.language}")
+    profile = v26_exercise_goal_profiles().get(fitness_goal, list(v26_exercise_goal_profiles().values())[0])
+    st.markdown(f"""
+    <div class="card-green"><h3>{vt['exercise_profile']}: {fitness_goal}</h3><p>{profile['note']}</p></div>
+    """, unsafe_allow_html=True)
+    p1,p2,p3 = st.columns(3)
+    p1.metric(vt["training_focus"], profile["focus"])
+    p2.metric(vt["weekly_frequency"], profile["freq"])
+    p3.metric(vt["primary_metrics"], profile["metrics"])
+
+    st.markdown(f"### {vt['session_design']}")
+    c1,c2,c3,c4 = st.columns(4)
+    with c1:
+        exercise_type = st.selectbox(vt["workout_type"], [vt["walking"], vt["running"], vt["strength"], vt["cycling"], vt["mobility"]], key=f"exercise_type_v26_{st.session_state.language}")
+        duration = st.slider(vt["duration"], 0, 180, 35, key="exercise_duration_v26")
+    with c2:
+        intensity = st.selectbox(vt["intensity"], [x["low"], x["medium"], x["high"]], index=1, key=f"exercise_intensity_v26_{st.session_state.language}")
+        body_weight = st.number_input(vt["body_weight"], min_value=35, max_value=180, value=int(st.session_state.profile.get("weight_kg", 70)), key="exercise_weight_v26")
+    with c3:
+        if exercise_type == vt["strength"]:
+            sets = st.slider(vt["sets"], 1, 8, 4, key="exercise_sets_v26")
+            reps = st.slider(vt["reps"], 3, 20, 10, key="exercise_reps_v26")
+            extra_metric = sets * reps
+        elif exercise_type in [vt["walking"], vt["running"], vt["cycling"]]:
+            distance = st.slider(vt["distance"], 0.0, 30.0, 4.0, step=0.5, key="exercise_distance_v26")
+            pace = round(duration / max(distance, 0.1), 1)
+            st.metric(vt["pace"], f"{pace} min/km")
+            extra_metric = distance
+        else:
+            area = st.selectbox(vt["mobility_area"], ["Neck/Shoulder", "Hip", "Back", "Full body"], key="exercise_mobility_area_v26")
+            mobility_min = st.slider(rf["mobility_min"], 0, 60, 20, key="exercise_mobility_min_v26")
+            extra_metric = mobility_min
+    with c4:
+        base_met = {vt["walking"]:3.5, vt["running"]:8.5, vt["strength"]:5.5, vt["cycling"]:6.8, vt["mobility"]:2.8}.get(exercise_type,4)
+        multiplier = {x["low"]:0.8, x["medium"]:1.0, x["high"]:1.25}.get(intensity,1.0)
+        burned = int(base_met * multiplier * 3.5 * body_weight / 200 * duration)
+        st.session_state.exercise_burned_input = burned
+        st.metric(vt["estimated_burn"], f"{burned} kcal")
+
+    q1,q2,q3,q4 = st.columns(4)
+    with q1: steps_today = st.number_input(rf["steps_today"], min_value=0, max_value=40000, value=8500, step=500, key="exercise_steps_v26")
+    with q2: rpe = st.slider(rf["rpe"], 1, 10, 6, key="exercise_rpe_v26")
+    with q3: soreness = st.slider(rf["soreness"], 0, 10, 3, key="exercise_soreness_v26")
+    with q4: mobility_min_final = st.slider(rf["mobility_min"], 0, 60, 12, key="exercise_mobility_final_v26")
+    workout_score = int(min(100, (min(duration/45,1)*26)+(min(steps_today/9000,1)*22)+(min(mobility_min_final/15,1)*16)+(max(0,1-soreness/10)*16)+(max(0,1-abs(rpe-7)/7)*20)))
+    recovery_need = int(min(100, soreness*7 + max(0, rpe-7)*8 + max(0, 20-mobility_min_final)))
+    s1,s2,s3 = st.columns(3)
+    s1.metric(vt["exercise_score"], f"{workout_score}/100")
+    s2.metric(rf["recovery_need"], f"{recovery_need}/100")
+    s3.metric(vt["smart_recommendation"], "Progress" if workout_score >= 70 and recovery_need < 55 else "Recover")
+    st.info(rf["recovery_high"] if recovery_need >= 55 else rf["recovery_low"])
+    st.caption(vt["profile_note"])
+
+    exercise_log = pd.DataFrame({
+        vt["exercise_profile"]:[fitness_goal], vt["workout_type"]:[exercise_type], vt["duration"]:[duration], vt["intensity"]:[intensity], vt["estimated_burn"]:[burned], rf["steps_today"]:[steps_today], rf["rpe"]:[rpe], rf["soreness"]:[soreness], rf["mobility_min"]:[mobility_min_final], vt["exercise_score"]:[workout_score], rf["recovery_need"]:[recovery_need]
+    })
+    st.dataframe(exercise_log, use_container_width=True)
 
 # Page routing
 # Header + concept card appear only on the main dashboard page.
