@@ -2695,29 +2695,28 @@ def render_dashboard_tabs():
     with tab1:
         st.subheader(t["daily_title"])
 
-        # Ana sayfa özet kartları artık sadece Günlük sekmesinde görünür.
-        # Beslenme / Egzersiz / Analiz / AI Koç / Rapor / Akıllı sekmelerine geçince
-        # ana sayfa kartları ekranda kalmaz.
+        # Daily page keeps the product overview, but other tabs stay clean.
         render_home_booster()
 
-        st.markdown(
-            f"""
-            <div class="info-card" style="padding:26px; margin-bottom:22px;">
-                <h3 style="margin-top:0;">📝 {t['daily_title']}</h3>
-                <p style="opacity:.88; margin-bottom:0;">
-                    {t.get('daily_form_intro', 'Enter your daily data first. The AI analysis will be generated only after you press the button.')}
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        px = premium_texts()
 
-        with st.form("daily_tracking_form", clear_on_submit=False):
-            st.markdown(f"### {t.get('daily_input_panel', 'Daily Input Panel')}")
-            col1, col2 = st.columns(2)
+        with st.form("daily_tracking_form_v22", clear_on_submit=False):
+            st.markdown(
+                f"""
+                <div class="daily-command-card">
+                    <div class="daily-command-icon">📝</div>
+                    <div>
+                        <h2>📅 {t['daily_title']}</h2>
+                        <p>{t.get('daily_form_intro', 'Enter the full day data first. The AI report is generated only after you press the analysis button.')}</p>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-            with col1:
-                entry_date = st.date_input(t["date_label"], value=date.today(), key="daily_entry_date_form")
+            st.markdown(f"### 🧭 {px['daily_targets']}")
+            mode_col, energy_col = st.columns([1.35, 1])
+            with mode_col:
                 mood_mode = st.radio(
                     t.get("daily_mode", "Daily Mode"),
                     [
@@ -2727,41 +2726,52 @@ def render_dashboard_tabs():
                         t.get("mode_deep_work", "🚀 Deep Work"),
                     ],
                     horizontal=True,
-                    key=f"daily_mode_{st.session_state.language}",
+                    key=f"daily_mode_v22_{st.session_state.language}",
                 )
+            with energy_col:
+                energy_level = st.slider(px["energy_level"], 0, 10, 6, key="daily_energy_level_v22")
+                st.progress(energy_level / 10)
+
+            st.markdown(f"### ✅ {px['today_tasks']}")
+            target_cols = st.columns(5)
+            target_options = [px["exam"], px["project"], px["coding"], px["sport"], px["language"]]
+            daily_targets = []
+            for i, option in enumerate(target_options):
+                with target_cols[i]:
+                    if st.checkbox(option, value=(i in [1, 2]), key=f"daily_target_v22_{i}_{st.session_state.language}"):
+                        daily_targets.append(option)
+
+            task_cols = st.columns(4)
+            task_options = [px["sql"], px["python"], px["gym"], px["water"]]
+            today_tasks = []
+            for i, option in enumerate(task_options):
+                with task_cols[i]:
+                    if st.checkbox(option, value=(i in [1, 3]), key=f"today_task_v22_{i}_{st.session_state.language}"):
+                        today_tasks.append(option)
+
+            st.markdown(f"### 📊 {t.get('advanced_analysis', 'Performance Inputs')}")
+            col1, col2 = st.columns(2)
+            with col1:
+                entry_date = st.date_input(t.get("date_label", "Date"), value=date.today(), key="daily_entry_date_v22")
                 mood_text = st.text_area(
                     t["mood_question"],
-                    value=t["default_mood"],
-                    key=f"daily_mood_text_form_{st.session_state.language}",
+                    value=t.get("default_mood", "I feel focused and ready to study."),
+                    key=f"daily_mood_text_v22_{st.session_state.language}",
+                    height=110,
                 )
-                px = premium_texts()
-                energy_level = st.slider(px["energy_level"], 0, 10, 6, key="daily_energy_level_form")
-                daily_targets = st.multiselect(
-                    px["daily_targets"],
-                    [px["exam"], px["project"], px["coding"], px["sport"], px["language"]],
-                    default=[px["project"], px["coding"]],
-                    key=f"daily_targets_{st.session_state.language}",
-                )
-                sleep_hours = st.slider(t["sleep"], 0, 12, 7, key="daily_sleep_hours_form")
-                study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours_form")
-                task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion_form")
-
+                sleep_hours = st.slider(t["sleep"], 0, 12, 7, key="daily_sleep_hours_v22")
+                study_hours = st.slider(t["study"], 0, 10, 4, key="daily_study_hours_v22")
+                task_completion = st.slider(t["task"], 0, 100, 65, key="daily_task_completion_v22")
             with col2:
-                focus_level = st.slider(t["focus"], 1, 10, 7, key="daily_focus_level_form")
-                stress_level = st.slider(t["stress"], 1, 10, 4, key="daily_stress_level_form")
-                exercise_minutes = st.slider(t["exercise_min"], 0, 120, 25, key="daily_exercise_minutes_form")
-                water_liters = st.slider(t["water"], 0.0, 4.0, 2.0, key="daily_water_liters_form")
-                nutrition_quality = st.slider(t["nutrition_quality"], 1, 10, 7, key="daily_nutrition_quality_form")
-                today_tasks = st.multiselect(
-                    px["today_tasks"],
-                    [px["sql"], px["python"], px["gym"], px["water"]],
-                    default=[px["python"], px["water"]],
-                    key=f"today_tasks_{st.session_state.language}",
-                )
-                learned_note = st.text_area(px["end_note"], value=px["learned"], key=f"learned_note_{st.session_state.language}")
+                focus_level = st.slider(t["focus"], 1, 10, 7, key="daily_focus_level_v22")
+                stress_level = st.slider(t["stress"], 1, 10, 4, key="daily_stress_level_v22")
+                exercise_minutes = st.slider(t["exercise_min"], 0, 120, 25, key="daily_exercise_minutes_v22")
+                water_liters = st.slider(t["water"], 0.0, 4.0, 2.0, key="daily_water_liters_v22")
+                nutrition_quality = st.slider(t["nutrition_quality"], 1, 10, 7, key="daily_nutrition_quality_v22")
 
-            st.markdown("---")
-            submitted = st.form_submit_button(t["save_day"], use_container_width=True)
+            learned_note = st.text_area(px["end_note"], value=px["learned"], key=f"learned_note_v22_{st.session_state.language}", height=90)
+
+            submitted = st.form_submit_button(f"🚀 {t.get('ai_analysis', 'Generate AI Analysis')}", use_container_width=True)
 
         if submitted:
             new_row = pd.DataFrame(
@@ -3475,6 +3485,65 @@ section[data-testid="stSidebar"] .block-container {
 </style>
 """, unsafe_allow_html=True)
 
+
+
+
+st.markdown("""
+<style>
+/* === V22 Daily Command Center polish === */
+.daily-command-card {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    padding: 28px 30px;
+    margin: 4px 0 24px 0;
+    border-radius: 26px;
+    background: linear-gradient(135deg, rgba(15,23,42,.92), rgba(30,41,59,.72), rgba(79,70,229,.22));
+    border: 1px solid rgba(148,163,184,.25);
+    box-shadow: 0 20px 58px rgba(0,0,0,.30);
+}
+.daily-command-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    background: linear-gradient(135deg, rgba(59,130,246,.55), rgba(251,146,60,.45));
+    border: 1px solid rgba(255,255,255,.18);
+}
+.daily-command-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 31px;
+    letter-spacing: -0.6px;
+}
+.daily-command-card p {
+    margin: 0;
+    color: #d1d5db;
+    font-size: 16px;
+    line-height: 1.55;
+}
+div[data-testid="stForm"] {
+    margin-top: 16px !important;
+    margin-bottom: 26px !important;
+}
+div[data-testid="stForm"] div[data-testid="stCheckbox"] label {
+    padding: 12px 14px !important;
+    border-radius: 16px !important;
+    background: rgba(15,23,42,.36) !important;
+    border: 1px solid rgba(148,163,184,.14) !important;
+}
+div[data-testid="stForm"] div[data-testid="stCheckbox"] label:hover {
+    background: rgba(59,130,246,.18) !important;
+    border-color: rgba(148,163,184,.28) !important;
+}
+div[data-testid="stForm"] [role="radiogroup"] label {
+    min-height: 48px !important;
+    border-radius: 16px !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # Page routing
 # Header + concept card appear only on the main dashboard page.
