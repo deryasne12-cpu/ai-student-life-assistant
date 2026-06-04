@@ -3267,6 +3267,7 @@ def render_dashboard_tabs():
     with tab1:
         # Daily page keeps the product overview, but other tabs stay clean.
         render_home_booster()
+        render_home_notes_and_accountability()
 
         px = premium_texts()
 
@@ -4709,9 +4710,24 @@ def _safe_add_column(cursor, table, column, col_type):
 
 
 def professional_db_migration():
-    """Adds user/profile linkage and richer tracking fields without breaking old databases."""
+    """Adds user/profile linkage, notes, and richer tracking fields without breaking old databases."""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS daily_notes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id TEXT,
+            note_date TEXT,
+            note_text TEXT,
+            note_type TEXT,
+            priority TEXT,
+            is_done INTEGER DEFAULT 0,
+            created_at TEXT
+        )
+        """
+    )
 
     # Profile table improvements
     for col, typ in [
@@ -5104,6 +5120,332 @@ def render_database_history():
         if "learned_note" in db_records.columns and db_records["learned_note"].fillna("").str.len().sum() > 0:
             last_note = db_records["learned_note"].fillna("").iloc[-1]
             st.info(f"{_db_text('last_reflection')}: {last_note}")
+
+
+
+# === V34 HOME NOTES + ACCOUNTABILITY COACH ===
+HOME_NOTES_AI_PATCH = {
+    "Türkçe": {
+        "notes_panel_title": "📝 Günlük Notlarım",
+        "notes_panel_subtitle": "Aklına gelen görev, fikir veya ders notunu buraya ekle. Sistem bunları öğrenci hafızasına bağlar.",
+        "note_placeholder": "Örn: Big Data quiz tekrar edilecek, SQL soruları çözülecek...",
+        "note_type": "Not Türü",
+        "note_priority": "Öncelik",
+        "note_add": "➕ Notu Kaydet",
+        "note_added": "Not öğrenci hafızasına kaydedildi.",
+        "recent_notes": "Son Notlar",
+        "no_notes": "Henüz not yok. İlk notunu ekle.",
+        "type_task": "Görev",
+        "type_study": "Ders",
+        "type_health": "Sağlık",
+        "type_idea": "Fikir",
+        "priority_low": "Düşük",
+        "priority_medium": "Orta",
+        "priority_high": "Yüksek",
+        "accountability_title": "🧭 AI Anne Modu",
+        "accountability_subtitle": "Sabit liste değil; bugünkü verilerine göre seni dürten akıllı kontrol paneli.",
+        "accountability_good": "Bugün iyi gidiyorsun. Şimdi dağılma; en zor görevi erken bitir.",
+        "accountability_water": "Su düşük görünüyor. Önce su iç, sonra çalışma bloğuna geç.",
+        "accountability_stress": "Stres yükselmiş. 10 dakika nefes + kısa yürüyüş yapmadan yeni işe girme.",
+        "accountability_study": "Çalışma süresi düşük. 45 dakikalık tek blok aç ve telefonu uzağa koy.",
+        "accountability_sleep": "Uyku sınırda. Gece rutini kur; yarınki performans buradan başlar.",
+        "accountability_note": "Not ekledin; şimdi onu aksiyona çevir. Bugün birini bitir.",
+        "live_mission": "Canlı Görev Akışı",
+        "memory_link": "Öğrenci hafızası aktif",
+    },
+    "English": {
+        "notes_panel_title": "📝 My Daily Notes",
+        "notes_panel_subtitle": "Add tasks, ideas, or study notes here. The system connects them to the student memory.",
+        "note_placeholder": "Example: review Big Data quiz, solve SQL questions...",
+        "note_type": "Note Type",
+        "note_priority": "Priority",
+        "note_add": "➕ Save Note",
+        "note_added": "Note saved to student memory.",
+        "recent_notes": "Recent Notes",
+        "no_notes": "No notes yet. Add your first note.",
+        "type_task": "Task",
+        "type_study": "Study",
+        "type_health": "Health",
+        "type_idea": "Idea",
+        "priority_low": "Low",
+        "priority_medium": "Medium",
+        "priority_high": "High",
+        "accountability_title": "🧭 AI Accountability Mode",
+        "accountability_subtitle": "Not a fixed list; a live control panel that pushes you based on today's data.",
+        "accountability_good": "You are doing well today. Do not drift now; finish the hardest task early.",
+        "accountability_water": "Hydration looks low. Drink water first, then start your study block.",
+        "accountability_stress": "Stress is elevated. Do 10 minutes of breathing and a short walk before adding new work.",
+        "accountability_study": "Study time is low. Open one 45-minute block and put your phone away.",
+        "accountability_sleep": "Sleep is borderline. Build a night routine; tomorrow's performance starts there.",
+        "accountability_note": "You added notes; now turn one into action. Finish one today.",
+        "live_mission": "Live Mission Feed",
+        "memory_link": "Student memory active",
+    },
+    "Deutsch": {
+        "notes_panel_title": "📝 Meine Tagesnotizen",
+        "notes_panel_subtitle": "Füge Aufgaben, Ideen oder Lernnotizen hinzu. Das System verbindet sie mit dem Studenten-Gedächtnis.",
+        "note_placeholder": "Beispiel: Big-Data-Quiz wiederholen, SQL-Fragen lösen...",
+        "note_type": "Notiztyp",
+        "note_priority": "Priorität",
+        "note_add": "➕ Notiz speichern",
+        "note_added": "Notiz im Studenten-Gedächtnis gespeichert.",
+        "recent_notes": "Letzte Notizen",
+        "no_notes": "Noch keine Notizen. Füge deine erste Notiz hinzu.",
+        "type_task": "Aufgabe",
+        "type_study": "Lernen",
+        "type_health": "Gesundheit",
+        "type_idea": "Idee",
+        "priority_low": "Niedrig",
+        "priority_medium": "Mittel",
+        "priority_high": "Hoch",
+        "accountability_title": "🧭 KI-Kontrollmodus",
+        "accountability_subtitle": "Keine feste Liste; ein Live-Kontrollpanel, das dich nach heutigen Daten antreibt.",
+        "accountability_good": "Heute läuft es gut. Jetzt nicht abdriften; erledige die schwerste Aufgabe früh.",
+        "accountability_water": "Die Hydration wirkt niedrig. Trinke zuerst Wasser, dann starte den Lernblock.",
+        "accountability_stress": "Stress ist erhöht. Mache 10 Minuten Atmung und einen kurzen Spaziergang vor neuer Arbeit.",
+        "accountability_study": "Die Lernzeit ist niedrig. Öffne einen 45-Minuten-Block und lege das Handy weg.",
+        "accountability_sleep": "Der Schlaf ist grenzwertig. Baue eine Abendroutine; Leistung beginnt dort.",
+        "accountability_note": "Du hast Notizen hinzugefügt; verwandle eine davon heute in Aktion.",
+        "live_mission": "Live-Missionsfeed",
+        "memory_link": "Studenten-Gedächtnis aktiv",
+    },
+    "Русский": {
+        "notes_panel_title": "📝 Мои дневные заметки",
+        "notes_panel_subtitle": "Добавляй задачи, идеи или учебные заметки. Система связывает их с памятью студента.",
+        "note_placeholder": "Напр.: повторить Big Data quiz, решить SQL вопросы...",
+        "note_type": "Тип заметки",
+        "note_priority": "Приоритет",
+        "note_add": "➕ Сохранить заметку",
+        "note_added": "Заметка сохранена в память студента.",
+        "recent_notes": "Последние заметки",
+        "no_notes": "Заметок пока нет. Добавь первую.",
+        "type_task": "Задача",
+        "type_study": "Учёба",
+        "type_health": "Здоровье",
+        "type_idea": "Идея",
+        "priority_low": "Низкий",
+        "priority_medium": "Средний",
+        "priority_high": "Высокий",
+        "accountability_title": "🧭 Режим ИИ-контроля",
+        "accountability_subtitle": "Не фиксированный список; живой контроль по сегодняшним данным.",
+        "accountability_good": "Сегодня идёшь хорошо. Не распыляйся; закончи сложную задачу раньше.",
+        "accountability_water": "Воды мало. Сначала выпей воды, потом начинай учебный блок.",
+        "accountability_stress": "Стресс повышен. 10 минут дыхания и короткая прогулка перед новой задачей.",
+        "accountability_study": "Учёбы мало. Открой один блок на 45 минут и убери телефон.",
+        "accountability_sleep": "Сон на границе. Сделай вечернюю рутину; завтрашняя форма начинается там.",
+        "accountability_note": "Ты добавил заметки; преврати одну в действие сегодня.",
+        "live_mission": "Живая лента миссий",
+        "memory_link": "Память студента активна",
+    },
+    "Español": {
+        "notes_panel_title": "📝 Mis notas diarias",
+        "notes_panel_subtitle": "Añade tareas, ideas o notas de estudio. El sistema las conecta con la memoria del estudiante.",
+        "note_placeholder": "Ej.: repasar quiz de Big Data, resolver preguntas SQL...",
+        "note_type": "Tipo de nota",
+        "note_priority": "Prioridad",
+        "note_add": "➕ Guardar nota",
+        "note_added": "Nota guardada en la memoria del estudiante.",
+        "recent_notes": "Notas recientes",
+        "no_notes": "Aún no hay notas. Añade la primera.",
+        "type_task": "Tarea",
+        "type_study": "Estudio",
+        "type_health": "Salud",
+        "type_idea": "Idea",
+        "priority_low": "Baja",
+        "priority_medium": "Media",
+        "priority_high": "Alta",
+        "accountability_title": "🧭 Modo de control IA",
+        "accountability_subtitle": "No es una lista fija; es un panel vivo que te empuja según tus datos de hoy.",
+        "accountability_good": "Hoy vas bien. No te disperses; termina primero la tarea más difícil.",
+        "accountability_water": "La hidratación parece baja. Bebe agua primero y luego empieza el bloque de estudio.",
+        "accountability_stress": "El estrés está alto. Haz 10 minutos de respiración y una caminata corta antes de más trabajo.",
+        "accountability_study": "El tiempo de estudio es bajo. Abre un bloque de 45 minutos y aleja el teléfono.",
+        "accountability_sleep": "El sueño está justo. Crea una rutina nocturna; el rendimiento de mañana empieza ahí.",
+        "accountability_note": "Añadiste notas; convierte una en acción hoy.",
+        "live_mission": "Flujo de misiones en vivo",
+        "memory_link": "Memoria del estudiante activa",
+    },
+}
+for _lang, _items in HOME_NOTES_AI_PATCH.items():
+    TRANSLATIONS[_lang].update(_items)
+
+st.markdown("""
+<style>
+.home-live-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 18px 0 24px 0;
+}
+.home-live-card {
+    min-height: 255px;
+    padding: 26px 28px;
+    border-radius: 26px;
+    background: linear-gradient(135deg, rgba(15,23,42,.95), rgba(67,56,202,.25), rgba(251,146,60,.10));
+    border: 1px solid rgba(148,163,184,.22);
+    box-shadow: 0 22px 55px rgba(0,0,0,.28);
+}
+.home-live-card h3 { margin: 0 0 8px 0; font-size: 25px; }
+.home-live-card p { color: #d1d5db; line-height: 1.55; }
+.ai-mom-card {
+    background: linear-gradient(135deg, rgba(88,28,135,.46), rgba(15,23,42,.86), rgba(16,185,129,.16));
+}
+.live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(59,130,246,.16);
+    border: 1px solid rgba(96,165,250,.18);
+    color: #bfdbfe;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.live-task {
+    padding: 12px 14px;
+    margin: 9px 0;
+    border-radius: 15px;
+    background: rgba(15,23,42,.48);
+    border: 1px solid rgba(148,163,184,.15);
+    color: #f8fafc;
+}
+.note-row {
+    padding: 10px 12px;
+    margin: 8px 0;
+    border-radius: 14px;
+    background: rgba(15,23,42,.42);
+    border: 1px solid rgba(148,163,184,.14);
+}
+.note-row small { color: #93c5fd; }
+@media (max-width: 1100px) { .home-live-grid { grid-template-columns: 1fr; } }
+</style>
+""", unsafe_allow_html=True)
+
+
+def save_daily_note(note_text, note_type, priority):
+    note_text = (note_text or "").strip()
+    if not note_text:
+        return False
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        INSERT INTO daily_notes (student_id, note_date, note_text, note_type, priority, is_done, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            st.session_state.profile.get("student_id", "0000"),
+            str(date.today()),
+            note_text,
+            note_type,
+            priority,
+            0,
+            str(date.today()),
+        ),
+    )
+    conn.commit()
+    conn.close()
+    return True
+
+
+def load_daily_notes(limit=5):
+    conn = sqlite3.connect(DB_NAME)
+    try:
+        df = pd.read_sql_query(
+            """
+            SELECT note_date, note_text, note_type, priority, is_done
+            FROM daily_notes
+            WHERE student_id = ?
+            ORDER BY id DESC
+            LIMIT ?
+            """,
+            conn,
+            params=(st.session_state.profile.get("student_id", "0000"), limit),
+        )
+    except Exception:
+        df = pd.DataFrame()
+    conn.close()
+    return df
+
+
+def get_live_accountability_items():
+    lang = st.session_state.language
+    records = calculate_scores(st.session_state.records)
+    latest = records.tail(1).iloc[0] if not records.empty else None
+    notes = load_daily_notes(limit=3)
+    items = []
+    if latest is not None:
+        if latest.get("water_liters", 0) < 2.0:
+            items.append(t["accountability_water"])
+        if latest.get("stress_level", 0) >= 7:
+            items.append(t["accountability_stress"])
+        if latest.get("study_hours", 0) < 4:
+            items.append(t["accountability_study"])
+        if latest.get("sleep_hours", 0) < 6.5:
+            items.append(t["accountability_sleep"])
+    if not notes.empty:
+        items.append(t["accountability_note"])
+    if not items:
+        items.append(t["accountability_good"])
+    rotating = get_dynamic_daily_mission()
+    # Daily rotating mission keeps the card alive even when metrics are stable.
+    for x in rotating:
+        if len(items) >= 4:
+            break
+        items.append(x)
+    return items[:4]
+
+
+def render_home_notes_and_accountability():
+    t_local = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"])
+    st.markdown(
+        f"""
+        <div class="home-live-grid">
+            <div class="home-live-card">
+                <span class="live-pill">🧠 {t_local['memory_link']}</span>
+                <h3>{t_local['notes_panel_title']}</h3>
+                <p>{t_local['notes_panel_subtitle']}</p>
+        """,
+        unsafe_allow_html=True,
+    )
+    with st.container():
+        note_col1, note_col2 = st.columns([2.2, 1])
+        with note_col1:
+            new_note = st.text_area("", placeholder=t_local["note_placeholder"], key=f"home_note_text_v34_{st.session_state.language}", height=90)
+        with note_col2:
+            note_type = st.selectbox(t_local["note_type"], [t_local["type_task"], t_local["type_study"], t_local["type_health"], t_local["type_idea"]], key=f"home_note_type_v34_{st.session_state.language}")
+            priority = st.selectbox(t_local["note_priority"], [t_local["priority_low"], t_local["priority_medium"], t_local["priority_high"]], index=1, key=f"home_note_priority_v34_{st.session_state.language}")
+        if st.button(t_local["note_add"], key=f"home_note_add_v34_{st.session_state.language}"):
+            if save_daily_note(new_note, note_type, priority):
+                st.success(t_local["note_added"])
+            else:
+                st.warning(t_local["note_placeholder"])
+        recent = load_daily_notes(limit=4)
+        st.markdown(f"**{t_local['recent_notes']}**")
+        if recent.empty:
+            st.info(t_local["no_notes"])
+        else:
+            for _, row in recent.iterrows():
+                st.markdown(
+                    f"<div class='note-row'>✅ <b>{row['note_text']}</b><br><small>{row['note_date']} · {row['note_type']} · {row['priority']}</small></div>",
+                    unsafe_allow_html=True,
+                )
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    items = get_live_accountability_items()
+    st.markdown(
+        f"""
+            <div class="home-live-card ai-mom-card">
+                <span class="live-pill">⚡ {t_local['live_mission']}</span>
+                <h3>{t_local['accountability_title']}</h3>
+                <p>{t_local['accountability_subtitle']}</p>
+                {''.join(f'<div class="live-task">☑️ {item}</div>' for item in items)}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # Run non-destructive migration after all original tables exist.
 professional_db_migration()
