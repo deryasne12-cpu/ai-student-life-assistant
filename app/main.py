@@ -906,15 +906,15 @@ section[data-testid="stSidebar"] .side-note {{
 
 
 /* === LOGIN PAGE LAYOUT + TABS HIGHER PATCH === */
-div[data-testid="stTabs"] {
+div[data-testid="stTabs"] {{
     margin-top: -18px !important;
-}
-div[data-testid="stTabs"] div[role="tablist"] {
+}}
+div[data-testid="stTabs"] div[role="tablist"] {{
     margin-top: -36px !important;
-}
-.login-profile-wrap {
+}}
+.login-profile-wrap {{
     margin-top: -6px;
-}
+}}
 
 </style>
 """
