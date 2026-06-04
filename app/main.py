@@ -585,6 +585,109 @@ _AVG_WELLNESS_LABELS = {
 for _lang, _label in _AVG_WELLNESS_LABELS.items():
     TRANSLATIONS[_lang]["avg_wellness"] = _label
 
+
+
+# === V33 BACKGROUND PALETTE PATCH ===
+BACKGROUND_PALETTE_PATCH = {
+    "Türkçe": {
+        "background_ocean": "Okyanus Mavisi",
+        "background_purple": "Mor Gece",
+        "background_neon": "Neon Siber",
+        "background_sakura": "Sakura Pembe",
+        "background_lava": "Lav Kırmızısı",
+        "background_aurora": "Aurora Kuzey Işıkları",
+        "background_mint": "Mint Ferahlığı",
+        "background_gold": "Altın Premium",
+        "background_cyber": "Siber Mavi",
+        "background_coffee": "Kahve Odak",
+        "background_midnight": "Gece Laciverti",
+        "background_rainbow": "Canlı Gradient",
+        "dashboard_preview": "Dashboard Önizleme",
+        "theme_label": "Tema",
+        "background_label": "Arka Plan",
+        "language_label": "Dil",
+        "settings_refresh_note": "Arka plan veya dil değiştikten sonra Streamlit otomatik yenilenebilir. Görsel hemen değişmezse sayfayı bir kez yenile.",
+    },
+    "English": {
+        "background_ocean": "Ocean Blue",
+        "background_purple": "Purple Night",
+        "background_neon": "Neon Cyber",
+        "background_sakura": "Sakura Pink",
+        "background_lava": "Lava Red",
+        "background_aurora": "Aurora Lights",
+        "background_mint": "Mint Fresh",
+        "background_gold": "Golden Premium",
+        "background_cyber": "Cyber Blue",
+        "background_coffee": "Coffee Focus",
+        "background_midnight": "Midnight Navy",
+        "background_rainbow": "Vivid Gradient",
+        "dashboard_preview": "Dashboard Preview",
+        "theme_label": "Theme",
+        "background_label": "Background",
+        "language_label": "Language",
+        "settings_refresh_note": "After changing background or language, Streamlit may rerun automatically. If the visual does not update instantly, refresh once.",
+    },
+    "Deutsch": {
+        "background_ocean": "Ozeanblau",
+        "background_purple": "Lila Nacht",
+        "background_neon": "Neon Cyber",
+        "background_sakura": "Sakura Pink",
+        "background_lava": "Lava Rot",
+        "background_aurora": "Aurora Lichter",
+        "background_mint": "Mint Frische",
+        "background_gold": "Gold Premium",
+        "background_cyber": "Cyber Blau",
+        "background_coffee": "Kaffee Fokus",
+        "background_midnight": "Mitternachtsblau",
+        "background_rainbow": "Lebendiger Gradient",
+        "dashboard_preview": "Dashboard-Vorschau",
+        "theme_label": "Thema",
+        "background_label": "Hintergrund",
+        "language_label": "Sprache",
+        "settings_refresh_note": "Nach dem Ändern von Hintergrund oder Sprache kann Streamlit automatisch neu laden. Wenn die Ansicht nicht sofort aktualisiert wird, lade die Seite einmal neu.",
+    },
+    "Русский": {
+        "background_ocean": "Океанский синий",
+        "background_purple": "Фиолетовая ночь",
+        "background_neon": "Неоновый кибер",
+        "background_sakura": "Сакура розовый",
+        "background_lava": "Лавовый красный",
+        "background_aurora": "Северное сияние",
+        "background_mint": "Мятная свежесть",
+        "background_gold": "Золотой премиум",
+        "background_cyber": "Кибер-синий",
+        "background_coffee": "Кофейный фокус",
+        "background_midnight": "Полуночный синий",
+        "background_rainbow": "Яркий градиент",
+        "dashboard_preview": "Предпросмотр панели",
+        "theme_label": "Тема",
+        "background_label": "Фон",
+        "language_label": "Язык",
+        "settings_refresh_note": "После изменения фона или языка Streamlit может перезапуститься автоматически. Если вид не обновился сразу, обновите страницу один раз.",
+    },
+    "Español": {
+        "background_ocean": "Azul océano",
+        "background_purple": "Noche púrpura",
+        "background_neon": "Neón ciber",
+        "background_sakura": "Rosa sakura",
+        "background_lava": "Rojo lava",
+        "background_aurora": "Luces aurora",
+        "background_mint": "Menta fresca",
+        "background_gold": "Dorado premium",
+        "background_cyber": "Azul ciber",
+        "background_coffee": "Café enfoque",
+        "background_midnight": "Azul medianoche",
+        "background_rainbow": "Gradiente vivo",
+        "dashboard_preview": "Vista previa del dashboard",
+        "theme_label": "Tema",
+        "background_label": "Fondo",
+        "language_label": "Idioma",
+        "settings_refresh_note": "Después de cambiar el fondo o el idioma, Streamlit puede reiniciarse automáticamente. Si la visualización no se actualiza de inmediato, actualiza una vez.",
+    },
+}
+for _lang, _patch in BACKGROUND_PALETTE_PATCH.items():
+    TRANSLATIONS[_lang].update(_patch)
+
 # === FULL LANGUAGE PATCH V8: fix remembered inputs, exercise plans and smart integration cards ===
 FULL_LANGUAGE_PATCH_V8 = {
     "Español": {
@@ -1185,7 +1288,25 @@ theme = THEMES[st.session_state.theme_name]
 
 
 def background_css(mode):
-    if mode in ["Açık / Beyaz", "Light / White", "Hell / Weiß", "Светлый / Белый", "Claro / Blanco"]:
+    light_modes = ["Açık / Beyaz", "Light / White", "Hell / Weiß", "Светлый / Белый", "Claro / Blanco"]
+    green_modes = ["Yeşil Sağlık", "Green Health", "Grüne Gesundheit", "Зеленое здоровье", "Salud verde"]
+    orange_modes = ["Turuncu Enerji", "Orange Energy", "Orange Energie", "Оранжевая энергия", "Energía naranja"]
+    dark_modes = ["Koyu", "Dark", "Dunkel", "Темный", "Oscuro"]
+
+    ocean_modes = ["Okyanus Mavisi", "Ocean Blue", "Ozeanblau", "Океанский синий", "Azul océano"]
+    purple_modes = ["Mor Gece", "Purple Night", "Lila Nacht", "Фиолетовая ночь", "Noche púrpura"]
+    neon_modes = ["Neon Siber", "Neon Cyber", "Неоновый кибер", "Neón ciber"]
+    sakura_modes = ["Sakura Pembe", "Sakura Pink", "Сакура розовый", "Rosa sakura"]
+    lava_modes = ["Lav Kırmızısı", "Lava Red", "Lava Rot", "Лавовый красный", "Rojo lava"]
+    aurora_modes = ["Aurora Kuzey Işıkları", "Aurora Lights", "Aurora Lichter", "Северное сияние", "Luces aurora"]
+    mint_modes = ["Mint Ferahlığı", "Mint Fresh", "Mint Frische", "Мятная свежесть", "Menta fresca"]
+    gold_modes = ["Altın Premium", "Golden Premium", "Gold Premium", "Золотой премиум", "Dorado premium"]
+    cyber_modes = ["Siber Mavi", "Cyber Blue", "Cyber Blau", "Кибер-синий", "Azul ciber"]
+    coffee_modes = ["Kahve Odak", "Coffee Focus", "Kaffee Fokus", "Кофейный фокус", "Café enfoque"]
+    midnight_modes = ["Gece Laciverti", "Midnight Navy", "Mitternachtsblau", "Полуночный синий", "Azul medianoche"]
+    rainbow_modes = ["Canlı Gradient", "Vivid Gradient", "Lebendiger Gradient", "Яркий градиент", "Gradiente vivo"]
+
+    if mode in light_modes:
         return """
         background:
             radial-gradient(circle at top left, rgba(251,146,60,0.18), transparent 30%),
@@ -1193,25 +1314,137 @@ def background_css(mode):
             #f8fafc;
         color: #111827;
         """
-    if mode in ["Yeşil Sağlık", "Green Health", "Grüne Gesundheit", "Зеленое здоровье", "Salud verde"]:
+    if mode in green_modes:
         return """
         background:
-            radial-gradient(circle at top left, rgba(16,185,129,0.28), transparent 32%),
-            radial-gradient(circle at bottom right, rgba(132,204,22,0.20), transparent 30%),
-            #061a14;
+            radial-gradient(circle at top left, rgba(16,185,129,0.32), transparent 32%),
+            radial-gradient(circle at bottom right, rgba(132,204,22,0.24), transparent 30%),
+            linear-gradient(135deg, #061a14 0%, #0b2418 48%, #102a18 100%);
         color: #f8fafc;
         """
-    if mode in ["Turuncu Enerji", "Orange Energy", "Orange Energie", "Оранжевая энергия", "Energía naranja"]:
+    if mode in orange_modes:
         return """
         background:
-            radial-gradient(circle at top left, rgba(251,146,60,0.30), transparent 30%),
-            radial-gradient(circle at bottom right, rgba(250,204,21,0.20), transparent 32%),
-            #1b1007;
+            radial-gradient(circle at top left, rgba(251,146,60,0.34), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(250,204,21,0.22), transparent 32%),
+            linear-gradient(135deg, #1b1007 0%, #261407 52%, #3b2607 100%);
         color: #f8fafc;
         """
-    if mode in ["Koyu", "Dark", "Dunkel", "Темный", "Oscuro"]:
+    if mode in dark_modes:
         return """
-        background: #0b0f17;
+        background:
+            radial-gradient(circle at 75% 10%, rgba(148,163,184,0.12), transparent 28%),
+            linear-gradient(135deg, #070b12 0%, #0b0f17 55%, #111827 100%);
+        color: #f8fafc;
+        """
+    if mode in ocean_modes:
+        return """
+        background:
+            radial-gradient(circle at 15% 10%, rgba(56,189,248,0.34), transparent 30%),
+            radial-gradient(circle at 85% 25%, rgba(14,165,233,0.24), transparent 26%),
+            radial-gradient(circle at bottom right, rgba(45,212,191,0.18), transparent 34%),
+            linear-gradient(135deg, #031525 0%, #06233a 48%, #083344 100%);
+        color: #f8fafc;
+        """
+    if mode in purple_modes:
+        return """
+        background:
+            radial-gradient(circle at 20% 20%, rgba(168,85,247,0.36), transparent 30%),
+            radial-gradient(circle at 85% 18%, rgba(236,72,153,0.22), transparent 28%),
+            radial-gradient(circle at bottom left, rgba(59,130,246,0.18), transparent 32%),
+            linear-gradient(135deg, #12091f 0%, #1d1230 48%, #2e1065 100%);
+        color: #f8fafc;
+        """
+    if mode in neon_modes:
+        return """
+        background:
+            radial-gradient(circle at 10% 10%, rgba(34,211,238,0.34), transparent 26%),
+            radial-gradient(circle at 90% 16%, rgba(217,70,239,0.30), transparent 28%),
+            radial-gradient(circle at 50% 100%, rgba(132,204,22,0.16), transparent 32%),
+            linear-gradient(135deg, #020617 0%, #08111f 50%, #111827 100%);
+        color: #f8fafc;
+        """
+    if mode in sakura_modes:
+        return """
+        background:
+            radial-gradient(circle at 18% 12%, rgba(251,113,133,0.28), transparent 30%),
+            radial-gradient(circle at 80% 20%, rgba(244,114,182,0.26), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(251,191,36,0.16), transparent 32%),
+            linear-gradient(135deg, #1f0a16 0%, #2a1020 50%, #3b1229 100%);
+        color: #fff7ed;
+        """
+    if mode in lava_modes:
+        return """
+        background:
+            radial-gradient(circle at 20% 15%, rgba(239,68,68,0.34), transparent 28%),
+            radial-gradient(circle at 82% 20%, rgba(249,115,22,0.30), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(250,204,21,0.18), transparent 32%),
+            linear-gradient(135deg, #170505 0%, #2b0a0a 50%, #431407 100%);
+        color: #fff7ed;
+        """
+    if mode in aurora_modes:
+        return """
+        background:
+            radial-gradient(circle at 15% 20%, rgba(34,197,94,0.28), transparent 30%),
+            radial-gradient(circle at 50% 12%, rgba(59,130,246,0.24), transparent 28%),
+            radial-gradient(circle at 85% 20%, rgba(168,85,247,0.28), transparent 30%),
+            linear-gradient(135deg, #020617 0%, #061625 48%, #0f172a 100%);
+        color: #f8fafc;
+        """
+    if mode in mint_modes:
+        return """
+        background:
+            radial-gradient(circle at top left, rgba(110,231,183,0.32), transparent 30%),
+            radial-gradient(circle at 85% 20%, rgba(45,212,191,0.22), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(59,130,246,0.14), transparent 32%),
+            linear-gradient(135deg, #042f2e 0%, #064e3b 48%, #0f3f35 100%);
+        color: #ecfeff;
+        """
+    if mode in gold_modes:
+        return """
+        background:
+            radial-gradient(circle at 20% 15%, rgba(250,204,21,0.26), transparent 28%),
+            radial-gradient(circle at 80% 18%, rgba(251,146,60,0.24), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(245,158,11,0.18), transparent 32%),
+            linear-gradient(135deg, #171006 0%, #281a08 50%, #3f2a0a 100%);
+        color: #fff7ed;
+        """
+    if mode in cyber_modes:
+        return """
+        background:
+            radial-gradient(circle at 12% 12%, rgba(59,130,246,0.30), transparent 28%),
+            radial-gradient(circle at 88% 20%, rgba(6,182,212,0.26), transparent 28%),
+            radial-gradient(circle at bottom left, rgba(99,102,241,0.18), transparent 32%),
+            linear-gradient(135deg, #020617 0%, #071425 52%, #0b1f3a 100%);
+        color: #f8fafc;
+        """
+    if mode in coffee_modes:
+        return """
+        background:
+            radial-gradient(circle at 18% 14%, rgba(120,53,15,0.30), transparent 28%),
+            radial-gradient(circle at 84% 20%, rgba(217,119,6,0.20), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(87,83,78,0.20), transparent 32%),
+            linear-gradient(135deg, #120b07 0%, #1c120c 52%, #2b1b12 100%);
+        color: #fff7ed;
+        """
+    if mode in midnight_modes:
+        return """
+        background:
+            radial-gradient(circle at 20% 12%, rgba(30,64,175,0.28), transparent 30%),
+            radial-gradient(circle at 80% 16%, rgba(15,23,42,0.40), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(79,70,229,0.14), transparent 34%),
+            linear-gradient(135deg, #020617 0%, #0f172a 52%, #111827 100%);
+        color: #f8fafc;
+        """
+    if mode in rainbow_modes:
+        return """
+        background:
+            radial-gradient(circle at 12% 14%, rgba(244,63,94,0.30), transparent 28%),
+            radial-gradient(circle at 40% 10%, rgba(251,146,60,0.22), transparent 28%),
+            radial-gradient(circle at 72% 14%, rgba(34,197,94,0.22), transparent 28%),
+            radial-gradient(circle at 88% 60%, rgba(59,130,246,0.24), transparent 32%),
+            radial-gradient(circle at 25% 88%, rgba(168,85,247,0.20), transparent 34%),
+            linear-gradient(135deg, #050816 0%, #111827 48%, #1e1b4b 100%);
         color: #f8fafc;
         """
     return """
@@ -1222,7 +1455,6 @@ def background_css(mode):
         #0b0f17;
     color: #f8fafc;
     """
-
 
 def apply_css(theme_dict, bg_mode):
     css = """
@@ -2717,6 +2949,18 @@ def render_settings():
         t["background_light"],
         t["background_green"],
         t["background_orange"],
+        t["background_ocean"],
+        t["background_purple"],
+        t["background_neon"],
+        t["background_sakura"],
+        t["background_lava"],
+        t["background_aurora"],
+        t["background_mint"],
+        t["background_gold"],
+        t["background_cyber"],
+        t["background_coffee"],
+        t["background_midnight"],
+        t["background_rainbow"],
     ]
 
     current_bg = st.session_state.background_mode
@@ -2729,16 +2973,16 @@ def render_settings():
     st.markdown(
         f"""
         <div class="info-card">
-        <h3>Dashboard Preview</h3>
-        <p><b>Theme:</b> {st.session_state.theme_name}</p>
-        <p><b>Background:</b> {st.session_state.background_mode}</p>
-        <p><b>Language:</b> {st.session_state.language}</p>
+        <h3>{t["dashboard_preview"]}</h3>
+        <p><b>{t["theme_label"]}:</b> {st.session_state.theme_name}</p>
+        <p><b>{t["background_label"]}:</b> {st.session_state.background_mode}</p>
+        <p><b>{t["language_label"]}:</b> {st.session_state.language}</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    st.warning("After changing background or language, Streamlit may rerun automatically. If the visual does not update instantly, refresh once.")
+    st.warning(t["settings_refresh_note"])
 
 
 def render_database_history():
