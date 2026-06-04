@@ -3375,6 +3375,70 @@ div[data-testid="stTabs"] div[data-testid="stVerticalBlock"] > div:has(hr) {
 @media (max-width: 900px) {
     .welcome-detail-grid { grid-template-columns: 1fr; }
 }
+
+
+/* === V20 HOME + DAILY PREMIUM PATCH === */
+.welcome-card {
+    margin: 26px 0 20px 0 !important;
+    padding: 34px 38px !important;
+    border-radius: 26px !important;
+    background: linear-gradient(135deg, rgba(15,23,42,.92), rgba(88,28,135,.22), rgba(251,146,60,.18)) !important;
+    border: 1px solid rgba(251,146,60,.30) !important;
+    box-shadow: 0 22px 60px rgba(0,0,0,.32) !important;
+}
+.welcome-card h3 {
+    font-size: 32px !important;
+    margin-bottom: 18px !important;
+}
+.welcome-card p {
+    font-size: 16px !important;
+    line-height: 1.65 !important;
+}
+.welcome-quote {
+    color: #fde68a !important;
+    font-style: italic !important;
+    font-weight: 750 !important;
+}
+.ai-avatar-card {
+    background: linear-gradient(135deg, rgba(79,70,229,.46), rgba(251,146,60,.18), rgba(15,23,42,.62)) !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 16px 40px rgba(0,0,0,.22) !important;
+}
+div[data-testid="stForm"] {
+    margin-top: 16px !important;
+    padding: 30px !important;
+    border-radius: 28px !important;
+    background: linear-gradient(135deg, rgba(15,23,42,.94), rgba(30,41,59,.72), rgba(88,28,135,.18)) !important;
+    border: 1px solid rgba(148,163,184,.28) !important;
+    box-shadow: 0 24px 70px rgba(0,0,0,.34) !important;
+}
+div[data-testid="stForm"] h3,
+div[data-testid="stForm"] h4,
+div[data-testid="stForm"] p {
+    color: #f8fafc !important;
+}
+div[data-testid="stForm"] label p {
+    font-size: 15px !important;
+    font-weight: 680 !important;
+    color: #e5e7eb !important;
+}
+div[data-testid="stForm"] textarea,
+div[data-testid="stForm"] input {
+    background: rgba(15,23,42,.64) !important;
+    border: 1px solid rgba(148,163,184,.18) !important;
+    border-radius: 16px !important;
+}
+div[data-testid="stFormSubmitButton"] button {
+    height: 58px !important;
+    border-radius: 18px !important;
+    font-size: 16px !important;
+    background: linear-gradient(135deg, #f97316, #fb923c) !important;
+    box-shadow: 0 16px 32px rgba(249,115,22,.28) !important;
+}
+.premium-report-card, .ai-assessment {
+    border-radius: 24px !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -3384,6 +3448,7 @@ div[data-testid="stTabs"] div[data-testid="stVerticalBlock"] > div:has(hr) {
 # Login/Profile, Settings, and Database pages stay clean and separate.
 if st.session_state.sidebar_page == "home":
     render_header()
+    render_home_booster()
     render_dashboard_tabs()
 elif st.session_state.sidebar_page == "login":
     st.markdown('<div class="login-profile-wrap">', unsafe_allow_html=True)
