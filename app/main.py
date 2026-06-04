@@ -691,6 +691,88 @@ V9_PRODUCT_PATCH = {
 for _lang, _patch in V9_PRODUCT_PATCH.items():
     TRANSLATIONS[_lang].update(_patch)
 
+
+# === V24 LANGUAGE HARDENING PATCH: no stale Turkish text after language changes ===
+V24_LANGUAGE_PATCH = {
+    "Türkçe": {
+        "sleep_good":"Uyku düzeni iyi.", "sleep_low":"Uyku düşük. En az 1 saat artırmayı dene.",
+        "stress_ok":"Stres kontrol altında.", "stress_high":"Stres trendi yüksek. Toparlanma aralığı ekle.",
+        "exercise_ok":"Egzersiz istikrarlı.", "exercise_low":"Egzersiz düşük. Yürüyüş veya mobilite ekle.",
+        "water_low":"Su tüketimi düşük. Daha iyi odak için hidrasyonu artır.", "study_low":"Çalışma süresi hedef altında. Bir odak bloğu ekle.",
+        "focus_risk":"Odak trendi dikkat istiyor.", "risk_controlled":"Kritik risk yok; istikrar korunmalı.",
+        "daily_waiting_message":"Tüm verileri girip analiz butonuna basınca bugünün AI raporu burada oluşacak.",
+        "plan_low":"25 dk hafif çalışma → 5 dk mola → 20 dk tekrar",
+        "plan_medium":"45 dk çalışma → 10 dk mola → 45 dk pratik",
+        "plan_high":"60 dk derin çalışma → 10 dk mola → 60 dk odaklı çalışma",
+        "ai_low_advice":"AI Koçu: Yükü azalt, su iç, dengeli bir öğün ye ve tek küçük görevi bitir.",
+        "ai_medium_advice":"AI Koçu: Orta düzey görevlerle devam et, çoklu görevden kaçın ve sabit ritmini koru.",
+        "ai_high_advice":"AI Koçu: Verimlilik durumun güçlü. Zor görevlerle başla ve derin çalışma yap.",
+        "home_bottom_title":"✨ Günlük Motivasyon",
+    },
+    "English": {
+        "sleep_good":"Sleep rhythm is stable.", "sleep_low":"Sleep is low. Try to increase it by at least 1 hour.",
+        "stress_ok":"Stress is under control.", "stress_high":"Stress trend is high. Add recovery time.",
+        "exercise_ok":"Exercise is consistent.", "exercise_low":"Exercise is low. Add walking or mobility.",
+        "water_low":"Water intake is low. Increase hydration for better focus.", "study_low":"Study time is below target. Add one focused block.",
+        "focus_risk":"Focus trend needs attention.", "risk_controlled":"No critical risk detected; protect consistency.",
+        "daily_waiting_message":"After you enter all data and press the analysis button, today’s AI report will appear here.",
+        "plan_low":"25 min light study → 5 min break → 20 min review",
+        "plan_medium":"45 min study → 10 min break → 45 min practice",
+        "plan_high":"60 min deep work → 10 min break → 60 min focused study",
+        "ai_low_advice":"AI Coach: Reduce workload, drink water, eat a balanced meal, and finish one small task.",
+        "ai_medium_advice":"AI Coach: Continue with medium-level tasks, avoid multitasking, and protect a stable rhythm.",
+        "ai_high_advice":"AI Coach: Your productivity state is strong. Start with harder tasks and use deep work.",
+        "home_bottom_title":"✨ Daily Motivation",
+    },
+    "Deutsch": {
+        "sleep_good":"Der Schlafrhythmus ist stabil.", "sleep_low":"Der Schlaf ist niedrig. Versuche, ihn um mindestens 1 Stunde zu erhöhen.",
+        "stress_ok":"Stress ist unter Kontrolle.", "stress_high":"Der Stress-Trend ist hoch. Füge Erholungszeit hinzu.",
+        "exercise_ok":"Training ist konstant.", "exercise_low":"Training ist niedrig. Ergänze Gehen oder Mobilität.",
+        "water_low":"Die Wasseraufnahme ist niedrig. Erhöhe die Hydration für besseren Fokus.", "study_low":"Die Lernzeit liegt unter dem Ziel. Ergänze einen Fokusblock.",
+        "focus_risk":"Der Fokus-Trend braucht Aufmerksamkeit.", "risk_controlled":"Kein kritisches Risiko erkannt; Stabilität schützen.",
+        "daily_waiting_message":"Wenn du alle Daten eingibst und die Analyse startest, erscheint hier der heutige KI-Bericht.",
+        "plan_low":"25 Min. leichtes Lernen → 5 Min. Pause → 20 Min. Wiederholung",
+        "plan_medium":"45 Min. Lernen → 10 Min. Pause → 45 Min. Übung",
+        "plan_high":"60 Min. Deep Work → 10 Min. Pause → 60 Min. fokussiertes Lernen",
+        "ai_low_advice":"KI-Coach: Reduziere die Last, trinke Wasser, iss ausgewogen und erledige eine kleine Aufgabe.",
+        "ai_medium_advice":"KI-Coach: Mach mit mittleren Aufgaben weiter, vermeide Multitasking und halte den Rhythmus stabil.",
+        "ai_high_advice":"KI-Coach: Deine Produktivität ist stark. Beginne mit schweren Aufgaben und nutze Deep Work.",
+        "home_bottom_title":"✨ Tägliche Motivation",
+    },
+    "Español": {
+        "sleep_good":"El ritmo de sueño es estable.", "sleep_low":"El sueño es bajo. Intenta aumentarlo al menos 1 hora.",
+        "stress_ok":"El estrés está bajo control.", "stress_high":"La tendencia de estrés es alta. Añade recuperación.",
+        "exercise_ok":"El ejercicio es constante.", "exercise_low":"El ejercicio es bajo. Añade caminata o movilidad.",
+        "water_low":"La ingesta de agua es baja. Aumenta la hidratación para mejorar el enfoque.", "study_low":"El tiempo de estudio está bajo el objetivo. Añade un bloque enfocado.",
+        "focus_risk":"La tendencia de enfoque necesita atención.", "risk_controlled":"No hay riesgo crítico; protege la constancia.",
+        "daily_waiting_message":"Cuando ingreses todos los datos y pulses análisis, aparecerá aquí el informe IA de hoy.",
+        "plan_low":"25 min de estudio ligero → 5 min descanso → 20 min repaso",
+        "plan_medium":"45 min de estudio → 10 min descanso → 45 min práctica",
+        "plan_high":"60 min de trabajo profundo → 10 min descanso → 60 min de estudio enfocado",
+        "ai_low_advice":"Coach IA: Reduce la carga, bebe agua, come equilibrado y termina una tarea pequeña.",
+        "ai_medium_advice":"Coach IA: Continúa con tareas medias, evita multitarea y protege un ritmo estable.",
+        "ai_high_advice":"Coach IA: Tu productividad está fuerte. Empieza con tareas difíciles y usa trabajo profundo.",
+        "home_bottom_title":"✨ Motivación diaria",
+    },
+    "Русский": {
+        "sleep_good":"Ритм сна стабильный.", "sleep_low":"Сна мало. Попробуй увеличить минимум на 1 час.",
+        "stress_ok":"Стресс под контролем.", "stress_high":"Тренд стресса высокий. Добавь восстановление.",
+        "exercise_ok":"Тренировки стабильны.", "exercise_low":"Тренировок мало. Добавь ходьбу или мобильность.",
+        "water_low":"Воды мало. Увеличь гидратацию для лучшего фокуса.", "study_low":"Учебное время ниже цели. Добавь один фокус-блок.",
+        "focus_risk":"Тренд фокуса требует внимания.", "risk_controlled":"Критических рисков нет; сохраняй стабильность.",
+        "daily_waiting_message":"Когда введешь все данные и нажмешь анализ, здесь появится сегодняшний ИИ-отчет.",
+        "plan_low":"25 мин легкой учебы → 5 мин перерыв → 20 мин повторение",
+        "plan_medium":"45 мин учебы → 10 мин перерыв → 45 мин практики",
+        "plan_high":"60 мин deep work → 10 мин перерыв → 60 мин фокусной учебы",
+        "ai_low_advice":"ИИ-коуч: Снизь нагрузку, выпей воды, поешь сбалансированно и заверши одну маленькую задачу.",
+        "ai_medium_advice":"ИИ-коуч: Продолжай средние задачи, избегай многозадачности и держи стабильный ритм.",
+        "ai_high_advice":"ИИ-коуч: Продуктивность сильная. Начни со сложных задач и используй deep work.",
+        "home_bottom_title":"✨ Мотивация дня",
+    },
+}
+for _lang, _patch in V24_LANGUAGE_PATCH.items():
+    TRANSLATIONS[_lang].update(_patch)
+
 # === V16 PATCH: richer welcome card text in all languages ===
 V16_WELCOME_PATCH = {
     "Türkçe": {
@@ -2898,16 +2980,16 @@ def render_dashboard_tabs():
             emoji, status_label = get_status_emoji(productivity_score, stress_level, sleep_hours)
 
             if productivity == "Low":
-                advice = t["ai_low_advice"]
-                plan = t["plan_low"]
+                advice_key = "ai_low_advice"
+                plan_key = "plan_low"
                 coach_style = "warning"
             elif productivity == "Medium":
-                advice = t["ai_medium_advice"]
-                plan = t["plan_medium"]
+                advice_key = "ai_medium_advice"
+                plan_key = "plan_medium"
                 coach_style = "info"
             else:
-                advice = t["ai_high_advice"]
-                plan = t["plan_high"]
+                advice_key = "ai_high_advice"
+                plan_key = "plan_high"
                 coach_style = "success"
 
             st.session_state.last_daily_analysis = {
@@ -2917,14 +2999,25 @@ def render_dashboard_tabs():
                 "wellness_score": wellness_score,
                 "risk_level": risk_level,
                 "risk_score": risk_score,
-                "advice": advice,
-                "plan": plan,
+                "advice_key": advice_key,
+                "plan_key": plan_key,
                 "coach_style": coach_style,
                 "daily_mode": mood_mode,
                 "energy_level": energy_level,
                 "daily_targets": daily_targets,
                 "today_tasks": today_tasks,
                 "learned_note": learned_note,
+                "raw_chart_values": {
+                    "sleep_hours": sleep_hours,
+                    "study_hours": study_hours,
+                    "focus_level": focus_level,
+                    "stress_level": stress_level,
+                    "exercise_minutes": exercise_minutes,
+                    "task_completion": task_completion,
+                    "water_liters": water_liters,
+                    "nutrition_quality": nutrition_quality,
+                    "sentiment": sentiment,
+                },
                 "chart": pd.DataFrame(
                     {
                         t["chart_value"]: [
@@ -2960,21 +3053,42 @@ def render_dashboard_tabs():
             render_premium_performance_report(records_scored)
             render_ai_coach_assessment(records_scored)
 
+            advice_text = t.get(result.get("advice_key", "ai_medium_advice"), t.get("ai_medium_advice", "AI Coach: Keep a stable rhythm."))
             if result["coach_style"] == "warning":
-                st.warning(result["advice"])
+                st.warning(advice_text)
             elif result["coach_style"] == "success":
-                st.success(result["advice"])
+                st.success(advice_text)
             else:
-                st.info(result["advice"])
+                st.info(advice_text)
 
+            plan_text = t.get(result.get("plan_key", "plan_medium"), t.get("plan_medium", "45 min study → 10 min break → 45 min practice"))
             render_ai_insight_card(
                 t.get("suggested_daily_plan", "Suggested Daily Plan"),
-                result["plan"],
+                plan_text,
                 "card-purple",
             )
-            st.bar_chart(result["chart"])
+            raw = result.get("raw_chart_values")
+            if raw:
+                current_chart = pd.DataFrame(
+                    {t.get("chart_value", "Value"): [
+                        raw["sleep_hours"], raw["study_hours"], raw["focus_level"], raw["stress_level"],
+                        raw["exercise_minutes"] / 10, raw["task_completion"] / 10, raw["water_liters"],
+                        raw["nutrition_quality"], raw["sentiment"] * 10,
+                    ]},
+                    index=[
+                        t.get("chart_sleep", "Sleep"), t.get("chart_study", "Study"), t.get("chart_focus", "Focus"),
+                        t.get("chart_stress", "Stress"), t.get("chart_exercise", "Exercise / 10"),
+                        t.get("chart_tasks", "Tasks / 10"), t.get("chart_water", "Water"),
+                        t.get("chart_nutrition", "Nutrition"), t.get("chart_sentiment", "Sentiment x10"),
+                    ],
+                )
+                st.bar_chart(current_chart)
+            else:
+                st.bar_chart(result["chart"])
         else:
             st.info(t.get("daily_waiting_message", "Fill the form and press the analysis button to generate today's AI report."))
+
+        render_student_bottom_summary()
 
     with tab2:
         x = section_extra_texts()
