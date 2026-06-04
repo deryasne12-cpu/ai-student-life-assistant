@@ -3169,6 +3169,19 @@ def render_dashboard_tabs():
                         "water_liters": water_liters,
                         "nutrition_quality": nutrition_quality,
                         "steps": 7500,
+                        "student_id": st.session_state.profile.get("student_id", "0000"),
+                        "student_name": st.session_state.profile.get("name", "Student"),
+                        "faculty": st.session_state.profile.get("faculty", ""),
+                        "semester": st.session_state.profile.get("semester", 1),
+                        "main_goal": st.session_state.profile.get("goal", ""),
+                        "focus_state": focus_state,
+                        "stress_state": stress_state,
+                        "mood_state": mood_state,
+                        "daily_mode": mood_mode,
+                        "energy_level": energy_level,
+                        "daily_targets": ", ".join(daily_targets),
+                        "today_tasks": ", ".join(today_tasks),
+                        "learned_note": learned_note,
                     }
                 ]
             )
@@ -4439,6 +4452,267 @@ def render_v27_coach_master_plan(records):
     c2.metric(p['study_load'], f"{avg_study:.1f}h")
     c3.metric(p['nutrition_score'], f"{n['score']}/100")
     c4.metric(p['exercise_score'], f"{e['score']}/100")
+
+
+
+
+# === V30 PROFESSIONAL DATABASE LAYER ===
+def _safe_add_column(cursor, table, column, col_type):
+    cursor.execute(f"PRAGMA table_info({table})")
+    existing = {row[1] for row in cursor.fetchall()}
+    if column not in existing:
+        cursor.execute(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")
+
+
+def professional_db_migration():
+    """Adds user/profile linkage and richer tracking fields without breaking old databases."""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    # Profile table improvements
+    for col, typ in [
+        ("updated_at", "TEXT"),
+        ("bmi", "REAL"),
+        ("bmi_status", "TEXT"),
+    ]:
+        _safe_add_column(cursor, "student_profile", col, typ)
+
+    # Daily records now remember the student and the categorical inputs shown in the UI.
+    for col, typ in [
+        ("student_id", "TEXT"),
+        ("student_name", "TEXT"),
+        ("faculty", "TEXT"),
+        ("semester", "INTEGER"),
+        ("main_goal", "TEXT"),
+        ("focus_state", "TEXT"),
+        ("stress_state", "TEXT"),
+        ("mood_state", "TEXT"),
+        ("daily_mode", "TEXT"),
+        ("energy_level", "REAL"),
+        ("daily_targets", "TEXT"),
+        ("today_tasks", "TEXT"),
+        ("learned_note", "TEXT"),
+        ("created_at", "TEXT"),
+    ]:
+        _safe_add_column(cursor, "daily_records", col, typ)
+
+    conn.commit()
+    conn.close()
+
+
+def load_profiles_from_db():
+    conn = sqlite3.connect(DB_NAME)
+    try:
+        df = pd.read_sql_query("SELECT * FROM student_profile ORDER BY id DESC", conn)
+    except Exception:
+        df = pd.DataFrame()
+    conn.close()
+    return df
+
+
+def load_latest_profile_from_db():
+    profiles = load_profiles_from_db()
+    if profiles.empty:
+        return None
+    row = profiles.iloc[0].to_dict()
+    return {
+        "name": row.get("name") or "Student",
+        "student_id": row.get("student_id") or "0000",
+        "faculty": row.get("faculty") or "Software Engineering",
+        "semester": int(row.get("semester") or 1),
+        "age": int(row.get("age") or 22),
+        "height_cm": int(row.get("height_cm") or 175),
+        "weight_kg": int(row.get("weight_kg") or 70),
+        "goal": row.get("goal") or "Improve Productivity",
+    }
+
+
+def save_profile_to_db(profile):
+    bmi = round(profile["weight_kg"] / ((profile["height_cm"] / 100) ** 2), 2)
+    bmi_status, _ = get_bmi_status(bmi)
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        INSERT INTO student_profile (
+            name, student_id, faculty, semester, age,
+            height_cm, weight_kg, goal, created_at, updated_at, bmi, bmi_status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            profile["name"], profile["student_id"], profile["faculty"], profile["semester"],
+            profile["age"], profile["height_cm"], profile["weight_kg"], profile["goal"],
+            str(date.today()), str(date.today()), bmi, bmi_status,
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+
+def save_daily_record_to_db(row):
+    scored = calculate_scores(row).iloc[0]
+    raw = row.iloc[0].to_dict()
+    profile = st.session_state.profile
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        INSERT OR REPLACE INTO daily_records (
+            record_date, mood_text, sleep_hours, study_hours, focus_level,
+            stress_level, exercise_minutes, task_completion, water_liters,
+            nutrition_quality, steps, sentiment_score, wellness_score,
+            productivity_score, risk_score, student_id, student_name, faculty,
+            semester, main_goal, focus_state, stress_state, mood_state,
+            daily_mode, energy_level, daily_targets, today_tasks, learned_note, created_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            str(scored["date"]), scored["mood_text"], float(scored["sleep_hours"]),
+            float(scored["study_hours"]), float(scored["focus_level"]),
+            float(scored["stress_level"]), float(scored["exercise_minutes"]),
+            float(scored["task_completion"]), float(scored["water_liters"]),
+            float(scored["nutrition_quality"]), int(scored["steps"]),
+            float(scored["sentiment_score"]), float(scored["wellness_score"]),
+            float(scored["productivity_score"]), float(scored["risk_score"]),
+            profile.get("student_id", "0000"), profile.get("name", "Student"),
+            profile.get("faculty", ""), int(profile.get("semester", 1)), profile.get("goal", ""),
+            raw.get("focus_state", ""), raw.get("stress_state", ""), raw.get("mood_state", ""),
+            raw.get("daily_mode", ""), float(raw.get("energy_level", 0) or 0),
+            raw.get("daily_targets", ""), raw.get("today_tasks", ""), raw.get("learned_note", ""),
+            str(date.today()),
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+
+def load_records_from_db():
+    conn = sqlite3.connect(DB_NAME)
+    try:
+        df = pd.read_sql_query("SELECT * FROM daily_records ORDER BY record_date", conn)
+    except Exception:
+        df = pd.DataFrame()
+    conn.close()
+    return df
+
+
+def _professional_tracking_view(df):
+    if df.empty:
+        return df
+    out = df.copy()
+    rename = {
+        "student_name": "Öğrenci", "student_id": "Öğrenci ID", "faculty": "Bölüm", "semester": "Dönem",
+        "main_goal": "Ana Hedef", "record_date": "Tarih", "mood_text": "Günlük Not",
+        "mood_state": "Duygu Durumu", "focus_state": "Odak Durumu", "stress_state": "Stres Durumu",
+        "daily_mode": "Günün Modu", "energy_level": "Enerji", "sleep_hours": "Uyku", "study_hours": "Çalışma",
+        "exercise_minutes": "Egzersiz dk", "water_liters": "Su L", "nutrition_quality": "Beslenme",
+        "task_completion": "Görev %", "steps": "Adım", "daily_targets": "Hedefler", "today_tasks": "Görevler",
+        "learned_note": "Gün Sonu Notu", "productivity_score": "Verimlilik", "wellness_score": "Sağlık", "risk_score": "Risk"
+    }
+    cols = [c for c in [
+        "student_name", "student_id", "faculty", "semester", "main_goal", "record_date",
+        "mood_state", "focus_state", "stress_state", "daily_mode", "energy_level",
+        "sleep_hours", "study_hours", "exercise_minutes", "water_liters", "nutrition_quality",
+        "task_completion", "steps", "daily_targets", "today_tasks", "learned_note",
+        "productivity_score", "wellness_score", "risk_score"
+    ] if c in out.columns]
+    out = out[cols].rename(columns=rename)
+    return out
+
+
+def _render_student_summary_card(profile, records):
+    bmi = round(profile.get("weight_kg", 70) / ((profile.get("height_cm", 175) / 100) ** 2), 2)
+    bmi_status, bmi_advice = get_bmi_status(bmi)
+    total_records = len(records) if records is not None else 0
+    last_date = "-" if records is None or records.empty else str(records["record_date"].iloc[-1])[:10]
+    st.markdown(
+        f"""
+        <div class="premium-report-card">
+            <h3>👤 Student Data Profile</h3>
+            <p><b>{profile.get('name','Student')}</b> · {profile.get('faculty','-')} · Semester {profile.get('semester','-')}</p>
+            <p>ID: <b>{profile.get('student_id','0000')}</b> · Age: {profile.get('age','-')} · Height: {profile.get('height_cm','-')} cm · Weight: {profile.get('weight_kg','-')} kg</p>
+            <p>BMI: <b>{bmi}</b> ({bmi_status}) · Goal: <b>{profile.get('goal','-')}</b></p>
+            <p>Database Records: <b>{total_records}</b> · Last Tracking Date: <b>{last_date}</b></p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.info(bmi_advice)
+
+
+def render_database_history():
+    st.subheader(f"🗄️ {t['db']}")
+    profiles = load_profiles_from_db()
+    db_records = load_records_from_db()
+    latest_profile = load_latest_profile_from_db() or st.session_state.profile
+
+    _render_student_summary_card(latest_profile, db_records)
+
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Students", len(profiles) if not profiles.empty else 0)
+    k2.metric("Tracking Records", len(db_records) if not db_records.empty else 0)
+    k3.metric("Latest Student", latest_profile.get("name", "Student"))
+    k4.metric("Active Goal", latest_profile.get("goal", "-"))
+
+    if db_records.empty:
+        st.info(t["no_records"])
+        if not profiles.empty:
+            with st.expander("👥 Saved Student Profiles", expanded=True):
+                st.dataframe(profiles, use_container_width=True)
+        return
+
+    # Fill missing student fields in old records so the database view never looks disconnected.
+    for col, default in [
+        ("student_name", latest_profile.get("name", "Student")),
+        ("student_id", latest_profile.get("student_id", "0000")),
+        ("faculty", latest_profile.get("faculty", "")),
+        ("semester", latest_profile.get("semester", 1)),
+        ("main_goal", latest_profile.get("goal", "")),
+    ]:
+        if col not in db_records.columns:
+            db_records[col] = default
+        db_records[col] = db_records[col].fillna(default).replace("", default)
+
+    st.success(f"Professional database loaded: {len(profiles)} profile record(s), {len(db_records)} tracking record(s).")
+
+    with st.expander("👤 Student Profiles Table", expanded=False):
+        if profiles.empty:
+            st.info("No saved profile records yet.")
+        else:
+            st.dataframe(profiles, use_container_width=True)
+
+    with st.expander("📊 Linked Student Tracking Records", expanded=True):
+        st.dataframe(_professional_tracking_view(db_records), use_container_width=True, height=360)
+
+    chart_df = db_records.copy()
+    chart_df["record_date"] = pd.to_datetime(chart_df["record_date"])
+    chart_cols = [c for c in ["productivity_score", "wellness_score", "sleep_hours", "study_hours", "stress_level", "water_liters"] if c in chart_df.columns]
+    if chart_cols:
+        st.markdown("### 📈 Student Performance Timeline")
+        st.line_chart(chart_df.set_index("record_date")[chart_cols])
+
+    with st.expander("🧠 AI Memory Summary", expanded=True):
+        status_note = create_status_note(db_records, latest_profile)
+        st.markdown(
+            f"""
+            <div class="card-green">
+            <h3>{t["current_student_status_short"]}</h3>
+            <p>{status_note}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        if "learned_note" in db_records.columns and db_records["learned_note"].fillna("").str.len().sum() > 0:
+            last_note = db_records["learned_note"].fillna("").iloc[-1]
+            st.info(f"Last reflection: {last_note}")
+
+# Run non-destructive migration after all original tables exist.
+professional_db_migration()
+_loaded_profile = load_latest_profile_from_db()
+if _loaded_profile and (st.session_state.profile.get("name") in ["Student", "Öğrenci", ""] or st.session_state.profile.get("student_id") in ["0000", ""]):
+    st.session_state.profile.update(_loaded_profile)
 
 
 # Page routing
