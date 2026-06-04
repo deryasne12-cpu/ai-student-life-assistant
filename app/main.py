@@ -1933,6 +1933,61 @@ def render_header():
     )
 
 
+
+def section_extra_texts():
+    lang = st.session_state.language
+    data = {
+        "Türkçe": {
+            "nutrition_input_title": "🍽️ Günlük Beslenme Girişi",
+            "calorie_goal": "Günlük Kalori Hedefi",
+            "calories_taken": "Bugün Alınan Kalori",
+            "protein_g": "Protein (g)",
+            "carb_g": "Karbonhidrat (g)",
+            "fat_g": "Yağ (g)",
+            "meal_count": "Öğün Sayısı",
+            "macro_calories": "Makrolardan Hesaplanan Kalori",
+            "remaining_calories": "Kalan Kalori",
+            "nutrition_note": "Beslenme Notu",
+            "nutrition_detail_note": "Kalori hedefini ve makroları düzenli takip etmek kilo, enerji ve odak yönetimini daha net hale getirir.",
+            "protein_low": "Protein düşük görünüyor. Ana öğünlere yumurta, yoğurt, tavuk, balık veya bakliyat ekle.",
+            "calorie_low": "Kalori hedefinin altındasın. Enerji düşüşü yaşamamak için dengeli bir ek öğün iyi olur.",
+            "calorie_high": "Kalori hedefinin üstündesin. Bu sorun olmak zorunda değil; hedefin kilo almaksa mantıklı, yağ kaybıysa kontrol et.",
+            "nutrition_good": "Bugünkü beslenme dengeli görünüyor.",
+            "exercise_input_title": "🏃 Egzersiz Girişi",
+            "exercise_type": "Egzersiz Türü",
+            "duration_min": "Süre (dk)",
+            "intensity": "Yoğunluk",
+            "body_weight": "Vücut Ağırlığı (kg)",
+            "estimated_burn": "Tahmini Yakılan Kalori",
+            "exercise_note": "Egzersiz Notu",
+            "walking": "Yürüyüş",
+            "running": "Koşu",
+            "strength": "Ağırlık / Kuvvet",
+            "cycling": "Bisiklet",
+            "mobility": "Mobilite / Esneme",
+            "low": "Düşük", "medium": "Orta", "high": "Yüksek",
+            "exercise_good": "Bugünkü hareket seviyesi iyi. Bunu haftalık rutine bağlarsan güçlü alışkanlık olur.",
+            "exercise_low": "Egzersiz düşük. Bugün 15-20 dakika yürüyüş bile sistemi canlı tutar.",
+        },
+        "English": {
+            "nutrition_input_title": "🍽️ Daily Nutrition Entry", "calorie_goal": "Daily Calorie Goal", "calories_taken": "Calories Taken Today", "protein_g": "Protein (g)", "carb_g": "Carbohydrates (g)", "fat_g": "Fat (g)", "meal_count": "Meal Count", "macro_calories": "Calories From Macros", "remaining_calories": "Remaining Calories", "nutrition_note": "Nutrition Note", "nutrition_detail_note": "Tracking calories and macros makes weight, energy and focus management more precise.", "protein_low": "Protein looks low. Add eggs, yogurt, chicken, fish or legumes to your meals.", "calorie_low": "You are below your calorie goal. A balanced extra meal can help prevent low energy.", "calorie_high": "You are above your calorie goal. This may be fine for weight gain, but check it if your goal is fat loss.", "nutrition_good": "Today's nutrition looks balanced.",
+            "exercise_input_title": "🏃 Exercise Entry", "exercise_type": "Exercise Type", "duration_min": "Duration (min)", "intensity": "Intensity", "body_weight": "Body Weight (kg)", "estimated_burn": "Estimated Calories Burned", "exercise_note": "Exercise Note", "walking": "Walking", "running": "Running", "strength": "Strength Training", "cycling": "Cycling", "mobility": "Mobility / Stretching", "low": "Low", "medium": "Medium", "high": "High", "exercise_good": "Today's activity level is good. Connect it to a weekly routine and it becomes a strong habit.", "exercise_low": "Exercise is low. Even a 15-20 minute walk keeps the system active.",
+        },
+        "Deutsch": {
+            "nutrition_input_title": "🍽️ Tägliche Ernährungseingabe", "calorie_goal": "Tägliches Kalorienziel", "calories_taken": "Heute aufgenommene Kalorien", "protein_g": "Protein (g)", "carb_g": "Kohlenhydrate (g)", "fat_g": "Fett (g)", "meal_count": "Anzahl der Mahlzeiten", "macro_calories": "Kalorien aus Makros", "remaining_calories": "Verbleibende Kalorien", "nutrition_note": "Ernährungsnotiz", "nutrition_detail_note": "Kalorien und Makros regelmäßig zu verfolgen macht Gewicht, Energie und Fokus besser steuerbar.", "protein_low": "Protein wirkt niedrig. Ergänze Eier, Joghurt, Hähnchen, Fisch oder Hülsenfrüchte.", "calorie_low": "Du liegst unter deinem Kalorienziel. Eine ausgewogene Zusatzmahlzeit kann Energieverlust verhindern.", "calorie_high": "Du liegst über deinem Kalorienziel. Für Gewichtszunahme kann das passen, bei Fettverlust solltest du es prüfen.", "nutrition_good": "Die heutige Ernährung wirkt ausgewogen.",
+            "exercise_input_title": "🏃 Trainingseingabe", "exercise_type": "Trainingsart", "duration_min": "Dauer (Min.)", "intensity": "Intensität", "body_weight": "Körpergewicht (kg)", "estimated_burn": "Geschätzte verbrannte Kalorien", "exercise_note": "Trainingsnotiz", "walking": "Gehen", "running": "Laufen", "strength": "Krafttraining", "cycling": "Radfahren", "mobility": "Mobilität / Dehnen", "low": "Niedrig", "medium": "Mittel", "high": "Hoch", "exercise_good": "Das heutige Aktivitätsniveau ist gut. Als Wochenroutine wird daraus eine starke Gewohnheit.", "exercise_low": "Training ist niedrig. Schon 15-20 Minuten Gehen halten das System aktiv.",
+        },
+        "Русский": {
+            "nutrition_input_title": "🍽️ Ежедневное питание", "calorie_goal": "Дневная цель калорий", "calories_taken": "Калории за сегодня", "protein_g": "Белок (г)", "carb_g": "Углеводы (г)", "fat_g": "Жиры (г)", "meal_count": "Количество приемов пищи", "macro_calories": "Калории по макроэлементам", "remaining_calories": "Осталось калорий", "nutrition_note": "Заметка по питанию", "nutrition_detail_note": "Отслеживание калорий и макроэлементов помогает точнее управлять весом, энергией и фокусом.", "protein_low": "Белка мало. Добавь яйца, йогурт, курицу, рыбу или бобовые.", "calorie_low": "Ты ниже цели калорий. Сбалансированный перекус поможет избежать упадка энергии.", "calorie_high": "Ты выше цели калорий. Для набора веса это может быть нормально, но при снижении жира стоит проверить.", "nutrition_good": "Сегодняшнее питание выглядит сбалансированным.",
+            "exercise_input_title": "🏃 Ввод тренировки", "exercise_type": "Тип упражнения", "duration_min": "Длительность (мин)", "intensity": "Интенсивность", "body_weight": "Вес тела (кг)", "estimated_burn": "Примерно сожжено калорий", "exercise_note": "Заметка о тренировке", "walking": "Ходьба", "running": "Бег", "strength": "Силовая тренировка", "cycling": "Велосипед", "mobility": "Мобилити / растяжка", "low": "Низкая", "medium": "Средняя", "high": "Высокая", "exercise_good": "Сегодняшняя активность хорошая. Если привязать ее к неделе, получится сильная привычка.", "exercise_low": "Активность низкая. Даже 15-20 минут ходьбы поддержат систему.",
+        },
+        "Español": {
+            "nutrition_input_title": "🍽️ Registro diario de nutrición", "calorie_goal": "Objetivo diario de calorías", "calories_taken": "Calorías consumidas hoy", "protein_g": "Proteína (g)", "carb_g": "Carbohidratos (g)", "fat_g": "Grasa (g)", "meal_count": "Número de comidas", "macro_calories": "Calorías por macros", "remaining_calories": "Calorías restantes", "nutrition_note": "Nota de nutrición", "nutrition_detail_note": "Seguir calorías y macros hace más claro el control de peso, energía y enfoque.", "protein_low": "La proteína parece baja. Añade huevos, yogur, pollo, pescado o legumbres.", "calorie_low": "Estás por debajo de tu objetivo calórico. Una comida extra equilibrada puede evitar baja energía.", "calorie_high": "Estás por encima del objetivo calórico. Puede estar bien si quieres subir de peso, pero revísalo si buscas perder grasa.", "nutrition_good": "La nutrición de hoy parece equilibrada.",
+            "exercise_input_title": "🏃 Registro de ejercicio", "exercise_type": "Tipo de ejercicio", "duration_min": "Duración (min)", "intensity": "Intensidad", "body_weight": "Peso corporal (kg)", "estimated_burn": "Calorías quemadas estimadas", "exercise_note": "Nota de ejercicio", "walking": "Caminar", "running": "Correr", "strength": "Fuerza / pesas", "cycling": "Bicicleta", "mobility": "Movilidad / estiramiento", "low": "Baja", "medium": "Media", "high": "Alta", "exercise_good": "El nivel de actividad de hoy es bueno. Si lo conectas a una rutina semanal, se vuelve un hábito fuerte.", "exercise_low": "El ejercicio es bajo. Incluso caminar 15-20 minutos mantiene el sistema activo.",
+        },
+    }
+    return data.get(lang, data["English"])
+
 def render_login_profile():
     st.subheader(t["profile_title"])
 
@@ -2284,6 +2339,7 @@ def render_dashboard_tabs():
             st.bar_chart(today_chart)
 
     with tab2:
+        x = section_extra_texts()
         st.subheader(t["nutrition"])
         profile = st.session_state.profile
         height_cm = profile["height_cm"]
@@ -2298,30 +2354,61 @@ def render_dashboard_tabs():
         col3.metric(t["goal"], goal)
         st.info(bmi_advice)
 
+        st.markdown(f"### {x['nutrition_input_title']}")
+        n1, n2, n3 = st.columns(3)
+        with n1:
+            calorie_goal = st.number_input(x["calorie_goal"], min_value=1000, max_value=6000, value=2600, step=50)
+            calories_taken = st.number_input(x["calories_taken"], min_value=0, max_value=7000, value=2100, step=50)
+        with n2:
+            protein_g = st.number_input(x["protein_g"], min_value=0, max_value=350, value=110, step=5)
+            carb_g = st.number_input(x["carb_g"], min_value=0, max_value=700, value=260, step=10)
+        with n3:
+            fat_g = st.number_input(x["fat_g"], min_value=0, max_value=250, value=70, step=5)
+            meal_count = st.slider(x["meal_count"], 1, 8, 4)
+
+        macro_calories = int((protein_g * 4) + (carb_g * 4) + (fat_g * 9))
+        remaining = calorie_goal - calories_taken
+        c1, c2, c3 = st.columns(3)
+        c1.metric(x["macro_calories"], macro_calories)
+        c2.metric(x["remaining_calories"], remaining)
+        c3.metric(x["meal_count"], meal_count)
+
+        if protein_g < max(70, int(weight_kg * 1.2)):
+            st.warning(x["protein_low"])
+        elif calories_taken < calorie_goal - 350:
+            st.info(x["calorie_low"])
+        elif calories_taken > calorie_goal + 350:
+            st.warning(x["calorie_high"])
+        else:
+            st.success(x["nutrition_good"])
+
+        st.markdown(
+            f"""
+            <div class="card-green">
+            <h3>{x['nutrition_note']}</h3>
+            <p>{x['nutrition_detail_note']}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
         food_data = pd.DataFrame(
             {
                 t["food_category"]: [t["protein"], t["carbohydrate"], t["healthy_fat"], t["fruit"], t["vegetable"], t["hydration"]],
                 t["food_examples"]: [
-                    t["protein_examples"],
-                    t["carb_examples"],
-                    t["fat_examples"],
-                    t["fruit_examples"],
-                    t["veg_examples"],
-                    t["hydration_examples"],
+                    t["protein_examples"], t["carb_examples"], t["fat_examples"],
+                    t["fruit_examples"], t["veg_examples"], t["hydration_examples"],
                 ],
                 t["food_purpose"]: [
-                    t["protein_purpose"],
-                    t["carb_purpose"],
-                    t["fat_purpose"],
-                    t["fruit_purpose"],
-                    t["veg_purpose"],
-                    t["hydration_purpose"],
+                    t["protein_purpose"], t["carb_purpose"], t["fat_purpose"],
+                    t["fruit_purpose"], t["veg_purpose"], t["hydration_purpose"],
                 ],
             }
         )
         st.dataframe(food_data, use_container_width=True)
 
     with tab3:
+        x = section_extra_texts()
         st.subheader(t["exercise"])
         fitness_goal = st.selectbox(
             t["exercise_goal"],
@@ -2346,6 +2433,33 @@ def render_dashboard_tabs():
         )
         for item in plans[fitness_goal]:
             st.write("•", item)
+
+        st.markdown(f"### {x['exercise_input_title']}")
+        e1, e2, e3 = st.columns(3)
+        with e1:
+            exercise_type = st.selectbox(x["exercise_type"], [x["walking"], x["running"], x["strength"], x["cycling"], x["mobility"]])
+            duration = st.slider(x["duration_min"], 0, 180, 30)
+        with e2:
+            intensity = st.selectbox(x["intensity"], [x["low"], x["medium"], x["high"]], index=1)
+            body_weight = st.number_input(x["body_weight"], min_value=35, max_value=180, value=int(st.session_state.profile.get("weight_kg", 70)))
+        with e3:
+            base_met = {x["walking"]: 3.5, x["running"]: 8.5, x["strength"]: 5.0, x["cycling"]: 6.8, x["mobility"]: 2.5}.get(exercise_type, 4.0)
+            multiplier = {x["low"]: 0.8, x["medium"]: 1.0, x["high"]: 1.25}.get(intensity, 1.0)
+            burned = int(base_met * multiplier * 3.5 * body_weight / 200 * duration)
+            st.metric(x["estimated_burn"], burned)
+
+        if duration >= 20:
+            st.success(x["exercise_good"])
+        else:
+            st.warning(x["exercise_low"])
+
+        exercise_log = pd.DataFrame({
+            x["exercise_type"]: [exercise_type],
+            x["duration_min"]: [duration],
+            x["intensity"]: [intensity],
+            x["estimated_burn"]: [burned],
+        })
+        st.dataframe(exercise_log, use_container_width=True)
 
     with tab4:
         records = calculate_scores(st.session_state.records)
@@ -2626,8 +2740,8 @@ div[data-testid="stTabs"] div[data-testid="stVerticalBlock"] > div:has(hr) {
 # Login/Profile, Settings, and Database pages stay clean and separate.
 if st.session_state.sidebar_page == "home":
     render_header()
-    render_dashboard_tabs()
     render_student_bottom_summary()
+    render_dashboard_tabs()
 elif st.session_state.sidebar_page == "login":
     st.markdown('<div class="login-profile-wrap">', unsafe_allow_html=True)
     render_login_profile()
