@@ -351,7 +351,7 @@ if "theme_name" not in st.session_state:
 if "background_mode" not in st.session_state:
     st.session_state.background_mode = "Yumuşak Çoklu Renk"
 if "sidebar_page" not in st.session_state:
-    st.session_state.sidebar_page = "login"
+    st.session_state.sidebar_page = "home"
 
 
 def get_text():
@@ -377,16 +377,29 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
+    home_label = {
+        "Türkçe": "🏠 Ana Sayfa",
+        "English": "🏠 Home",
+        "Deutsch": "🏠 Startseite",
+        "Русский": "🏠 Главная",
+        "Español": "🏠 Inicio",
+    }.get(st.session_state.language, "🏠 Home")
+
     page_labels = {
+        "home": home_label,
         "login": t["login"],
         "settings": t["settings"],
         "database": t["db"],
     }
 
+    page_order = ["home", "login", "settings", "database"]
+    if st.session_state.sidebar_page not in page_order:
+        st.session_state.sidebar_page = "home"
+
     selected_label = st.radio(
         "Navigation",
-        [page_labels["login"], page_labels["settings"], page_labels["database"]],
-        index=["login", "settings", "database"].index(st.session_state.sidebar_page),
+        [page_labels[key] for key in page_order],
+        index=page_order.index(st.session_state.sidebar_page),
         label_visibility="collapsed",
         key="sidebar_radio_visible",
     )
@@ -497,8 +510,16 @@ def apply_css(theme_dict, bg_mode):
     {background_style}
 }}
 .block-container {{
-    padding-top: 3rem;
+    padding-top: 0.8rem;
     max-width: 1500px;
+}}
+header[data-testid="stHeader"] {{
+    background: transparent !important;
+    height: 2.2rem !important;
+}}
+[data-testid="stToolbar"] {{
+    right: 1rem !important;
+    top: 0.2rem !important;
 }}
 .main-title {{
     font-size: 46px;
@@ -907,7 +928,7 @@ section[data-testid="stSidebar"] .side-note {{
 
 /* === LOGIN PAGE LAYOUT + TABS HIGHER PATCH === */
 div[data-testid="stTabs"] {{
-    margin-top: -18px !important;
+    margin-top: -30px !important;
 }}
 div[data-testid="stTabs"] div[role="tablist"] {{
     margin-top: -36px !important;
@@ -1870,24 +1891,18 @@ def render_dashboard_tabs():
 
 
 # Page routing
-# Login/Profile is now shown only inside the sidebar Login page.
-# The main dashboard tabs stay clean and do not repeat the student profile form.
-if st.session_state.sidebar_page == "login":
+# Header + concept card appear only on the main dashboard page.
+# Login/Profile, Settings, and Database pages stay clean and separate.
+if st.session_state.sidebar_page == "home":
+    render_header()
+    st.divider()
+    render_dashboard_tabs()
+    render_student_bottom_summary()
+elif st.session_state.sidebar_page == "login":
     st.markdown('<div class="login-profile-wrap">', unsafe_allow_html=True)
     render_login_profile()
     st.markdown('</div>', unsafe_allow_html=True)
 elif st.session_state.sidebar_page == "settings":
-    render_header()
-    st.divider()
     render_settings()
 elif st.session_state.sidebar_page == "database":
-    render_header()
-    st.divider()
     render_database_history()
-else:
-    render_header()
-    st.divider()
-    render_dashboard_tabs()
-
-if st.session_state.sidebar_page != "login":
-    render_student_bottom_summary()
