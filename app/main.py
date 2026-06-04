@@ -2275,6 +2275,91 @@ def _current_streak(records, column, threshold):
     return streak
 
 
+
+def get_dynamic_daily_mission():
+    lang = st.session_state.language
+    mission_sets = {
+        "Türkçe": [
+            ["2 litre su iç", "45 dakika odaklı çalışma yap", "20 dakika yürüyüş veya esneme", "Bugün 1 küçük görevi bitir"],
+            ["1 zor konuyu 30 dakika tekrar et", "Proteinli bir öğün ekle", "10 dakika oda/masa düzeni yap", "Gece ekran süresini azalt"],
+            ["1 saat proje/kodlama bloğu aç", "2.2 litre su hedefle", "Kısa bir mobilite çalışması yap", "Günün sonunda 3 satır not yaz"],
+            ["Sınav için 20 soru çöz", "30 dakika yürüyüş yap", "Öğünlerini kaydet", "Yarın için tek öncelik seç"],
+        ],
+        "English": [
+            ["Drink 2 liters of water", "Complete 45 minutes of focused study", "Walk or stretch for 20 minutes", "Finish one small task today"],
+            ["Review one hard topic for 30 minutes", "Add one protein-rich meal", "Clean your desk for 10 minutes", "Reduce screen time tonight"],
+            ["Open a 1-hour project/coding block", "Aim for 2.2 liters of water", "Do a short mobility session", "Write 3 lines about today"],
+            ["Solve 20 exam questions", "Walk for 30 minutes", "Log your meals", "Pick one priority for tomorrow"],
+        ],
+        "Deutsch": [
+            ["Trinke 2 Liter Wasser", "Arbeite 45 Minuten fokussiert", "Gehe oder dehne dich 20 Minuten", "Erledige heute eine kleine Aufgabe"],
+            ["Wiederhole ein schwieriges Thema 30 Minuten", "Füge eine proteinreiche Mahlzeit hinzu", "Räume deinen Tisch 10 Minuten auf", "Reduziere heute Abend Bildschirmzeit"],
+            ["Plane 1 Stunde Projekt-/Coding-Zeit", "Ziele auf 2,2 Liter Wasser", "Mache eine kurze Mobilitätseinheit", "Schreibe 3 Zeilen über den Tag"],
+            ["Löse 20 Prüfungsfragen", "Gehe 30 Minuten spazieren", "Trage deine Mahlzeiten ein", "Wähle eine Priorität für morgen"],
+        ],
+        "Español": [
+            ["Bebe 2 litros de agua", "Haz 45 minutos de estudio enfocado", "Camina o estira 20 minutos", "Termina una tarea pequeña hoy"],
+            ["Repasa un tema difícil 30 minutos", "Añade una comida rica en proteína", "Ordena tu mesa 10 minutos", "Reduce pantallas esta noche"],
+            ["Abre un bloque de proyecto/código de 1 hora", "Apunta a 2,2 litros de agua", "Haz movilidad corta", "Escribe 3 líneas sobre el día"],
+            ["Resuelve 20 preguntas de examen", "Camina 30 minutos", "Registra tus comidas", "Elige una prioridad para mañana"],
+        ],
+        "Русский": [
+            ["Выпей 2 литра воды", "Сделай 45 минут фокусной учебы", "Пройдись или растянись 20 минут", "Заверши одну маленькую задачу"],
+            ["Повтори сложную тему 30 минут", "Добавь белковый прием пищи", "Наведи порядок на столе 10 минут", "Сократи экранное время вечером"],
+            ["Открой 1 час проекта/кодинга", "Цель — 2,2 литра воды", "Сделай короткую мобилити-сессию", "Напиши 3 строки о дне"],
+            ["Реши 20 экзаменационных вопросов", "Прогуляйся 30 минут", "Запиши приемы пищи", "Выбери один приоритет на завтра"],
+        ],
+    }
+    sets = mission_sets.get(lang, mission_sets["English"])
+    return sets[date.today().toordinal() % len(sets)]
+
+
+def coach_assessment_text(records):
+    px = premium_texts()
+    avg_focus = records["focus_level"].mean()
+    avg_study = records["study_hours"].mean()
+    avg_productivity = records["productivity_score"].mean()
+    weekly_focus = records["focus_level"].tail(7).mean()
+    prev_focus = records["focus_level"].head(max(1, len(records)-7)).mean()
+    diff = ((weekly_focus - prev_focus) / max(prev_focus, 1)) * 100
+    gain_low = 8 if avg_productivity < 60 else 4
+    gain_high = 12 if avg_productivity < 60 else 8
+    lang = st.session_state.language
+    data = {
+        "Türkçe": (
+            f"Bugün/hafta odak ortalaman <b>{avg_focus:.1f}/10</b>. Bu değer önceki trende göre yaklaşık <b>{diff:+.0f}%</b> değişim gösteriyor.",
+            f"Çalışma süren <b>{avg_study:.1f} saat</b>. Odak yüksekken çalışma süresi düşük kalırsa potansiyel verim kullanılamaz.",
+            "18:00–19:00 arasında tek bir derin çalışma bloğu oluştur, sonra 10 dakika kısa tekrar yap.",
+            f"+{gain_low} ila +{gain_high} puan.",
+        ),
+        "English": (
+            f"Your focus average is <b>{avg_focus:.1f}/10</b>. Compared with the previous trend, this shows roughly a <b>{diff:+.0f}%</b> change.",
+            f"Your study time is <b>{avg_study:.1f} hours</b>. When focus is high but study duration is low, potential productivity is not fully used.",
+            "Create one deep-work block between 18:00–19:00, then do a short 10-minute review.",
+            f"+{gain_low} to +{gain_high} points.",
+        ),
+        "Deutsch": (
+            f"Dein Fokusdurchschnitt liegt bei <b>{avg_focus:.1f}/10</b>. Gegenüber dem vorherigen Trend zeigt das etwa <b>{diff:+.0f}%</b> Veränderung.",
+            f"Deine Lernzeit beträgt <b>{avg_study:.1f} Stunden</b>. Wenn der Fokus hoch ist, aber die Lernzeit niedrig bleibt, wird Potenzial verschenkt.",
+            "Plane zwischen 18:00–19:00 einen Deep-Work-Block und danach 10 Minuten kurze Wiederholung.",
+            f"+{gain_low} bis +{gain_high} Punkte.",
+        ),
+        "Español": (
+            f"Tu promedio de enfoque es <b>{avg_focus:.1f}/10</b>. Frente a la tendencia anterior muestra un cambio aproximado de <b>{diff:+.0f}%</b>.",
+            f"Tu tiempo de estudio es <b>{avg_study:.1f} horas</b>. Si el enfoque es alto pero el tiempo de estudio bajo, se pierde potencial.",
+            "Crea un bloque de trabajo profundo entre 18:00–19:00 y luego repasa 10 minutos.",
+            f"+{gain_low} a +{gain_high} puntos.",
+        ),
+        "Русский": (
+            f"Средний фокус: <b>{avg_focus:.1f}/10</b>. По сравнению с прошлым трендом изменение примерно <b>{diff:+.0f}%</b>.",
+            f"Время учебы: <b>{avg_study:.1f} часа</b>. Если фокус высокий, но учебы мало, продуктивность теряется.",
+            "Сделай один deep-work блок с 18:00 до 19:00, затем 10 минут короткого повторения.",
+            f"+{gain_low}–+{gain_high} пунктов.",
+        ),
+    }
+    p1, p2, rec, gain = data.get(lang, data["English"])
+    return px, p1, p2, rec, gain
+
 def render_home_booster():
     records = calculate_scores(st.session_state.records)
     profile = st.session_state.profile
@@ -2315,10 +2400,7 @@ def render_home_booster():
                 <div class="ai-avatar">🤖</div>
                 <b>{t["ai_mission_title"]}</b>
                 <ul>
-                    <li>{t["mission_water"]}</li>
-                    <li>{t["mission_study"]}</li>
-                    <li>{t["mission_walk"]}</li>
-                    <li>{t["mission_sleep"]}</li>
+                    {''.join(f'<li>{item}</li>' for item in get_dynamic_daily_mission())}
                 </ul>
             </div>
         </div>
@@ -2625,22 +2707,14 @@ def render_premium_performance_report(records):
     st.markdown(html, unsafe_allow_html=True)
 
 def render_ai_coach_assessment(records):
-    px = premium_texts()
-    avg_focus = records["focus_level"].mean()
-    avg_study = records["study_hours"].mean()
-    avg_productivity = records["productivity_score"].mean()
-    weekly_focus = records["focus_level"].tail(7).mean()
-    prev_focus = records["focus_level"].head(max(1, len(records)-7)).mean()
-    diff = ((weekly_focus - prev_focus) / max(prev_focus, 1)) * 100
-    gain_low = 8 if avg_productivity < 60 else 4
-    gain_high = 12 if avg_productivity < 60 else 8
+    px, p1, p2, rec, gain = coach_assessment_text(records)
     text = f"""
     <div class='ai-assessment'>
       <h3>{px['coach_assessment']}</h3>
-      <p>Bugün/hafta odak ortalaman <b>{avg_focus:.1f}/10</b>. Bu değer önceki trende göre yaklaşık <b>{diff:+.0f}%</b> değişim gösteriyor.</p>
-      <p>Çalışma süren <b>{avg_study:.1f} saat</b>. Odak yüksekken çalışma süresi düşük kalırsa potansiyel verim kullanılamaz.</p>
-      <p><b>{px['recommendation']}:</b> 18:00–19:00 arasında tek bir derin çalışma bloğu oluştur, sonra 10 dakika kısa tekrar yap.</p>
-      <p><b>{px['expected_gain']}:</b> +{gain_low} ila +{gain_high} puan.</p>
+      <p>{p1}</p>
+      <p>{p2}</p>
+      <p><b>{px['recommendation']}:</b> {rec}</p>
+      <p><b>{px['expected_gain']}:</b> {gain}</p>
     </div>
     """
     st.markdown(text, unsafe_allow_html=True)
@@ -2693,8 +2767,6 @@ def render_dashboard_tabs():
     )
 
     with tab1:
-        st.subheader(t["daily_title"])
-
         # Daily page keeps the product overview, but other tabs stay clean.
         render_home_booster()
 
