@@ -5480,71 +5480,153 @@ def get_live_accountability_items():
 
 
 def render_home_notes_and_accountability():
-    """Clean home notes panel: notes + quick add live in the same dashboard block."""
+    """Unified dashboard-style notes board.
+
+    One wide panel: notes on the left, quick note creation on the right.
+    No separate recent-notes block, no note type, no priority selector.
+    """
     t_local = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"])
-    recent = load_daily_notes(limit=5)
+    recent = load_daily_notes(limit=6)
 
-    if recent.empty:
-        notes_html = f"<div class='note-preview-card'><b>🕊️ {t_local['no_notes']}</b><small>{t_local['memory_link']}</small></div>"
-    else:
-        cards = []
-        for _, row in recent.iterrows():
-            cards.append(
-                f"<div class='note-preview-card'><b>✅ {row['note_text']}</b>"
-                f"<small>{row['note_date']}</small></div>"
-            )
-        notes_html = "".join(cards)
+    # Small CSS only for this upgraded notes board.
+    st.markdown(
+        """
+        <style>
+        .unified-notes-title {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:18px;
+            margin-bottom:18px;
+        }
+        .unified-notes-title h3 {
+            margin:0;
+            font-size:2rem;
+            letter-spacing:-.03em;
+            color:#f8fafc;
+        }
+        .unified-notes-title p {
+            margin:.45rem 0 0 0;
+            color:#cbd5e1;
+            font-size:1.02rem;
+            line-height:1.7;
+        }
+        .memory-status-pill {
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:10px 16px;
+            border-radius:999px;
+            background:rgba(59,130,246,.18);
+            border:1px solid rgba(147,197,253,.24);
+            color:#bfdbfe;
+            font-weight:700;
+            margin-bottom:12px;
+        }
+        .note-empty-state {
+            padding:28px;
+            border-radius:22px;
+            background:rgba(15,23,42,.54);
+            border:1px solid rgba(148,163,184,.20);
+            color:#e2e8f0;
+        }
+        .note-empty-state b {font-size:1.15rem;color:#f8fafc;}
+        .note-empty-state small {display:block;margin-top:8px;color:#93c5fd;}
+        .note-write-header {
+            padding:22px 24px;
+            border-radius:24px;
+            margin-bottom:16px;
+            background:linear-gradient(135deg, rgba(67,56,202,.35), rgba(124,58,237,.18), rgba(234,88,12,.12));
+            border:1px solid rgba(148,163,184,.20);
+        }
+        .note-write-header h3 {margin:0;color:#f8fafc;font-size:1.55rem;}
+        .note-write-header p {margin:.55rem 0 0 0;color:#cbd5e1;line-height:1.6;}
+        .note-card-line {
+            padding:16px 18px;
+            border-radius:20px;
+            background:rgba(15,23,42,.58);
+            border:1px solid rgba(148,163,184,.20);
+            margin-bottom:10px;
+        }
+        .note-card-line b {color:#f8fafc;font-size:1.06rem;}
+        .note-card-line small {display:block;color:#93c5fd;margin-top:7px;}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    left_col, right_col = st.columns([1.25, 1])
-
-    with left_col:
+    with st.container(border=True):
         st.markdown(
             f"""
-            <div class="note-management-card">
-                <span class="live-pill">🧠 {t_local['memory_link']}</span>
-                <h3>{t_local['notes_panel_title']}</h3>
-                <p>{t_local['notes_panel_subtitle']}</p>
-                <div class="notes-preview-grid">{notes_html}</div>
+            <div class="unified-notes-title">
+                <div>
+                    <span class="memory-status-pill">🧠 {t_local['memory_link']}</span>
+                    <h3>{t_local['notes_panel_title']}</h3>
+                    <p>{t_local['notes_panel_subtitle']}</p>
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        # Delete stays directly under each note area, not as a separate "Recent Notes" section.
-        if not recent.empty:
-            for _, row in recent.iterrows():
-                d1, d2 = st.columns([6, 1])
-                with d1:
-                    st.caption(f"✅ {row['note_text']} · {row['note_date']}")
-                with d2:
-                    if st.button("🗑️", key=f"delete_note_v36_{int(row['id'])}"):
-                        delete_daily_note(int(row["id"]))
-                        st.rerun()
+        notes_col, write_col = st.columns([1.35, 1.05], gap="large")
 
-    with right_col:
-        st.markdown(
-            f"""
-            <div class="note-management-card">
-                <span class="live-pill">⚡ Quick Memory</span>
-                <h3>➕ {t_local['note_add'].replace('➕ ', '')}</h3>
-                <p>{t_local['note_placeholder']}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        new_note = st.text_area(
-            "",
-            placeholder=t_local["note_placeholder"],
-            key=f"home_note_text_v36_{st.session_state.language}",
-            height=120,
-        )
-        if st.button(t_local["note_add"], key=f"home_note_add_v36_{st.session_state.language}"):
-            # Notes are notes. No forced category/priority UI.
-            if save_daily_note(new_note, "Note", "Normal"):
-                st.success(t_local["note_added"])
-                st.rerun()
+        with notes_col:
+            if recent.empty:
+                st.markdown(
+                    f"""
+                    <div class="note-empty-state">
+                        <b>🕊️ {t_local['no_notes']}</b>
+                        <small>{t_local['memory_link']}</small>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
             else:
-                st.warning(t_local["note_placeholder"])
+                for _, row in recent.iterrows():
+                    row_id = int(row["id"])
+                    c_text, c_delete = st.columns([8, 1])
+                    with c_text:
+                        st.markdown(
+                            f"""
+                            <div class="note-card-line">
+                                <b>✅ {row['note_text']}</b>
+                                <small>{row['note_date']}</small>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+                    with c_delete:
+                        st.write("")
+                        if st.button("🗑️", key=f"delete_note_v37_{row_id}", help="Delete note"):
+                            delete_daily_note(row_id)
+                            st.rerun()
+
+        with write_col:
+            st.markdown(
+                f"""
+                <div class="note-write-header">
+                    <span class="memory-status-pill">⚡ Quick Memory</span>
+                    <h3>➕ {t_local['note_add'].replace('➕ ', '')}</h3>
+                    <p>{t_local['note_placeholder']}</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            with st.form(key=f"home_note_form_v37_{st.session_state.language}", clear_on_submit=True):
+                new_note = st.text_area(
+                    "",
+                    placeholder=t_local["note_placeholder"],
+                    key=f"home_note_text_v37_{st.session_state.language}",
+                    height=160,
+                )
+                submitted = st.form_submit_button(t_local["note_add"], use_container_width=True)
+                if submitted:
+                    if save_daily_note(new_note, "Note", "Normal"):
+                        st.success(t_local["note_added"])
+                        st.rerun()
+                    else:
+                        st.warning(t_local["note_placeholder"])
 
 
 # Run non-destructive migration after all original tables exist.
