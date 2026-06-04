@@ -638,6 +638,47 @@ FULL_LANGUAGE_PATCH_V8 = {
 for _lang, _patch in FULL_LANGUAGE_PATCH_V8.items():
     TRANSLATIONS[_lang].update(_patch)
 
+# === V9 PRODUCT PATCH: daily rotating motivation, missions, streaks, cleaner sidebar ===
+V9_PRODUCT_PATCH = {
+    "Türkçe": {
+        "welcome_title": "👋 Hoş geldin, {name}", "welcome_text": "Bugünün odak hedefi: küçük ama net ilerleme.", "ai_mission_title": "🤖 Bugünün AI Görevi",
+        "mission_water": "2 litre su iç", "mission_study": "1 saat odaklı çalışma yap", "mission_walk": "20 dakika yürü veya esne", "mission_sleep": "Gece rutini kur ve erken uyu",
+        "study_streak": "Çalışma Serisi", "water_streak": "Su Serisi", "exercise_streak": "Egzersiz Serisi", "day_unit": "gün",
+        "productivity_kpi": "Verimlilik", "wellness_kpi": "Sağlık", "sleep_kpi": "Uyku", "stress_kpi": "Stres",
+        "motivation_quotes": ["Bugün vazgeçmezsen yarın kendine teşekkür edeceksin.", "Disiplin, motivasyonun bittiği yerde oyuna girer.", "Küçük adımlar büyük hayatları sessizce inşa eder.", "Bugünkü emek, yarının özgürlüğüdür.", "Odaklan, sadeleş, ilerle.", "Bir saatlik gerçek çalışma, bir gün pişmanlıktan iyidir.", "Bugün sistem kur; yarın sistem seni taşır."],
+    },
+    "English": {
+        "welcome_title": "👋 Welcome, {name}", "welcome_text": "Today's focus target: small but clear progress.", "ai_mission_title": "🤖 Today's AI Mission",
+        "mission_water": "Drink 2 liters of water", "mission_study": "Complete 1 focused study hour", "mission_walk": "Walk or stretch for 20 minutes", "mission_sleep": "Build a night routine and sleep early",
+        "study_streak": "Study Streak", "water_streak": "Water Streak", "exercise_streak": "Exercise Streak", "day_unit": "days",
+        "productivity_kpi": "Productivity", "wellness_kpi": "Wellness", "sleep_kpi": "Sleep", "stress_kpi": "Stress",
+        "motivation_quotes": ["Small steps create serious momentum.", "Discipline beats motivation when the day gets heavy.", "Your future self is built by today's routine.", "Do the next right thing, then repeat.", "Focus is a skill. Train it daily.", "One honest hour beats a full day of excuses.", "Build the system; the system will carry you."],
+    },
+    "Deutsch": {
+        "welcome_title": "👋 Willkommen, {name}", "welcome_text": "Heutiges Fokusziel: kleiner, aber klarer Fortschritt.", "ai_mission_title": "🤖 Heutige KI-Mission",
+        "mission_water": "2 Liter Wasser trinken", "mission_study": "1 Stunde fokussiert lernen", "mission_walk": "20 Minuten gehen oder dehnen", "mission_sleep": "Abendroutine aufbauen und früher schlafen",
+        "study_streak": "Lernserie", "water_streak": "Wasserserie", "exercise_streak": "Trainingsserie", "day_unit": "Tage",
+        "productivity_kpi": "Produktivität", "wellness_kpi": "Wellness", "sleep_kpi": "Schlaf", "stress_kpi": "Stress",
+        "motivation_quotes": ["Kleine Schritte erzeugen starke Dynamik.", "Disziplin übernimmt, wenn Motivation nachlässt.", "Dein zukünftiges Ich entsteht durch deine heutige Routine.", "Mach den nächsten richtigen Schritt, dann wiederhole ihn.", "Fokus ist eine Fähigkeit. Trainiere sie täglich.", "Eine ehrliche Stunde schlägt einen ganzen Tag voller Ausreden.", "Baue das System; das System trägt dich."],
+    },
+    "Русский": {
+        "welcome_title": "👋 Добро пожаловать, {name}", "welcome_text": "Фокус дня: небольшой, но ясный прогресс.", "ai_mission_title": "🤖 Миссия ИИ на сегодня",
+        "mission_water": "Выпить 2 литра воды", "mission_study": "Сделать 1 час сфокусированной учёбы", "mission_walk": "20 минут ходьбы или растяжки", "mission_sleep": "Создать вечернюю рутину и лечь раньше",
+        "study_streak": "Серия учёбы", "water_streak": "Серия воды", "exercise_streak": "Серия тренировок", "day_unit": "дн.",
+        "productivity_kpi": "Продуктивность", "wellness_kpi": "Здоровье", "sleep_kpi": "Сон", "stress_kpi": "Стресс",
+        "motivation_quotes": ["Маленькие шаги создают серьёзную инерцию.", "Дисциплина работает там, где мотивация устала.", "Твоё будущее строится сегодняшней рутиной.", "Сделай следующий правильный шаг и повтори.", "Фокус — это навык. Тренируй его каждый день.", "Один честный час лучше дня оправданий.", "Построй систему; система будет нести тебя."],
+    },
+    "Español": {
+        "welcome_title": "👋 Bienvenido, {name}", "welcome_text": "Objetivo de enfoque de hoy: progreso pequeño pero claro.", "ai_mission_title": "🤖 Misión IA de hoy",
+        "mission_water": "Beber 2 litros de agua", "mission_study": "Completar 1 hora de estudio enfocado", "mission_walk": "Caminar o estirar 20 minutos", "mission_sleep": "Crear una rutina nocturna y dormir temprano",
+        "study_streak": "Racha de estudio", "water_streak": "Racha de agua", "exercise_streak": "Racha de ejercicio", "day_unit": "días",
+        "productivity_kpi": "Productividad", "wellness_kpi": "Bienestar", "sleep_kpi": "Sueño", "stress_kpi": "Estrés",
+        "motivation_quotes": ["Los pequeños pasos crean una gran inercia.", "La disciplina gana cuando la motivación se cansa.", "Tu futuro se construye con la rutina de hoy.", "Haz el siguiente paso correcto y repítelo.", "El enfoque es una habilidad. Entrénalo a diario.", "Una hora honesta vale más que un día de excusas.", "Construye el sistema; el sistema te sostendrá."],
+    },
+}
+for _lang, _patch in V9_PRODUCT_PATCH.items():
+    TRANSLATIONS[_lang].update(_patch)
+
 # Small UI labels used in profile/PDF/model areas
 for _lang in TRANSLATIONS:
     TRANSLATIONS[_lang].setdefault("faculty_software", "Software Engineering")
@@ -769,6 +810,8 @@ with st.sidebar:
 
     if selected_language != st.session_state.language:
         st.session_state.language = selected_language
+        # Reset language-sensitive input defaults so example texts switch language too.
+        st.session_state.pop("daily_mood_text", None)
         st.rerun()
 
     t = get_text()
@@ -1296,6 +1339,67 @@ div[data-testid="stTabs"] div[role="tablist"] {{
 
 apply_css(theme, st.session_state.background_mode)
 
+st.markdown("""
+<style>
+/* === V9 SIDEBAR POLISH + PRODUCT CARDS === */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, rgba(31,35,48,0.98), rgba(24,28,39,0.98)) !important;
+}
+section[data-testid="stSidebar"] label,
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] span {
+    font-weight: 650 !important;
+}
+.side-menu-title {
+    font-size: 27px !important;
+    font-weight: 780 !important;
+    letter-spacing: -0.5px !important;
+}
+section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    background: linear-gradient(135deg, rgba(30,41,59,0.95), rgba(49,46,129,0.55)) !important;
+    border: 1px solid rgba(148,163,184,0.24) !important;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18) !important;
+}
+section[data-testid="stSidebar"] div[role="radiogroup"] label {
+    background: linear-gradient(135deg, rgba(30,41,59,0.80), rgba(36,40,60,0.82)) !important;
+    border: 1px solid rgba(148,163,184,0.20) !important;
+}
+section[data-testid="stSidebar"] div[role="radiogroup"] label p {
+    font-size: 14px !important;
+    font-weight: 720 !important;
+}
+.language-card {
+    background: linear-gradient(135deg, rgba(30,41,59,0.92), rgba(37,99,235,0.18)) !important;
+}
+.welcome-card {
+    display: grid;
+    grid-template-columns: 1.35fr 0.85fr;
+    gap: 18px;
+    padding: 22px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(15,23,42,0.82), rgba(154,52,18,0.42));
+    border: 1px solid rgba(251,146,60,0.30);
+    box-shadow: 0 18px 42px rgba(0,0,0,0.26);
+    margin: 10px 0 22px 0;
+}
+.welcome-card h3 { margin: 0 0 8px 0; font-size: 25px; }
+.welcome-card p { margin: 0 0 8px 0; color: #e5e7eb; }
+.welcome-quote { font-style: italic; color: #fde68a !important; }
+.ai-avatar-card {
+    border-radius: 18px;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, rgba(37,99,235,0.32), rgba(16,185,129,0.24));
+    border: 1px solid rgba(148,163,184,0.22);
+}
+.ai-avatar { font-size: 34px; margin-bottom: 4px; }
+.ai-avatar-card ul { margin: 8px 0 0 18px; padding: 0; }
+.ai-avatar-card li { margin: 5px 0; }
+@media (max-width: 900px) {
+    .welcome-card { grid-template-columns: 1fr; }
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 DB_NAME = "student_tracker.db"
 
@@ -1494,13 +1598,11 @@ def get_status_emoji(avg_productivity, avg_stress, avg_sleep):
 
 
 def get_motivation_quote(avg_productivity, avg_stress, avg_sleep):
-    if avg_productivity >= 70:
-        return t["quote_productive"]
-    if avg_stress >= 7:
-        return t["quote_stress"]
-    if avg_sleep < 6:
-        return t["quote_sleep"]
-    return t["quote_default"]
+    quotes = t.get("motivation_quotes", [t.get("quote_default", "Small consistent steps create strong long-term results.")])
+    if not quotes:
+        return t.get("quote_default", "Small consistent steps create strong long-term results.")
+    today_index = date.today().toordinal() % len(quotes)
+    return quotes[today_index]
 
 
 def create_status_note(records, profile):
@@ -1728,6 +1830,72 @@ def render_login_profile():
 
     st.info(bmi_advice)
 
+
+
+def _current_streak(records, column, threshold):
+    if records.empty or column not in records.columns:
+        return 0
+    df = records.copy()
+    df["date"] = pd.to_datetime(df["date"]).dt.date
+    df = df.sort_values("date").drop_duplicates(subset=["date"], keep="last")
+    streak = 0
+    expected = date.today()
+    values = {row["date"]: row[column] for _, row in df.iterrows()}
+    while expected in values and values[expected] >= threshold:
+        streak += 1
+        expected = expected - timedelta(days=1)
+    return streak
+
+
+def render_home_booster():
+    records = calculate_scores(st.session_state.records)
+    profile = st.session_state.profile
+    name = profile.get("name", "Student") or "Student"
+
+    avg_productivity = records["productivity_score"].mean()
+    avg_wellness = records["wellness_score"].mean()
+    avg_sleep = records["sleep_hours"].mean()
+    avg_stress = records["stress_level"].mean()
+
+    study_streak = _current_streak(records, "study_hours", 1)
+    water_streak = _current_streak(records, "water_liters", 1.8)
+    exercise_streak = _current_streak(records, "exercise_minutes", 20)
+
+    quote = get_motivation_quote(avg_productivity, avg_stress, avg_sleep)
+
+    st.markdown(
+        f"""
+        <div class="welcome-card">
+            <div>
+                <h3>{t["welcome_title"].format(name=name)}</h3>
+                <p>{t["welcome_text"]}</p>
+                <p class="welcome-quote">“{quote}”</p>
+            </div>
+            <div class="ai-avatar-card">
+                <div class="ai-avatar">🤖</div>
+                <b>{t["ai_mission_title"]}</b>
+                <ul>
+                    <li>{t["mission_water"]}</li>
+                    <li>{t["mission_study"]}</li>
+                    <li>{t["mission_walk"]}</li>
+                    <li>{t["mission_sleep"]}</li>
+                </ul>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric(t["productivity_kpi"], f"{avg_productivity:.0f}/100")
+    k2.metric(t["wellness_kpi"], f"{avg_wellness:.0f}/100")
+    k3.metric(t["sleep_kpi"], f"{avg_sleep:.1f}h")
+    k4.metric(t["stress_kpi"], f"{avg_stress:.1f}/10")
+
+    s1, s2, s3 = st.columns(3)
+    s1.metric(f"🔥 {t['study_streak']}", f"{study_streak} {t['day_unit']}")
+    s2.metric(f"💧 {t['water_streak']}", f"{water_streak} {t['day_unit']}")
+    s3.metric(f"🏃 {t['exercise_streak']}", f"{exercise_streak} {t['day_unit']}")
 
 
 def render_student_bottom_summary():
@@ -2226,6 +2394,7 @@ def render_dashboard_tabs():
 # Login/Profile, Settings, and Database pages stay clean and separate.
 if st.session_state.sidebar_page == "home":
     render_header()
+    render_home_booster()
     st.divider()
     render_dashboard_tabs()
     render_student_bottom_summary()
