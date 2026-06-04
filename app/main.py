@@ -4598,18 +4598,162 @@ def load_records_from_db():
     return df
 
 
+
+# === V32 FULL MULTILINGUAL PROFESSIONAL DATABASE VIEW ===
+def _db_text(key):
+    packs = {
+        "Türkçe": {
+            "student_profile": "Öğrenci Veri Profili", "student": "Öğrenci", "students": "Öğrenciler",
+            "records": "Takip Kayıtları", "latest_student": "Son Öğrenci", "active_goal": "Aktif Hedef",
+            "id": "ID", "age": "Yaş", "height": "Boy", "weight": "Kilo", "semester_word": "Dönem",
+            "bmi": "BMI", "goal": "Hedef", "database_records": "Veritabanı Kayıtları", "last_tracking_date": "Son Takip Tarihi",
+            "database_loaded": "Profesyonel veritabanı yüklendi: {profiles} profil kaydı, {records} takip kaydı.",
+            "saved_profiles": "Kayıtlı Öğrenci Profilleri", "linked_records": "Bağlı Öğrenci Takip Kayıtları",
+            "no_profiles": "Henüz kayıtlı öğrenci profili yok.", "timeline": "Öğrenci Performans Zaman Çizelgesi",
+            "ai_memory": "AI Hafıza Özeti", "last_reflection": "Son günlük notu", "profile_advice": "Profil, günlük kayıtlarla bağlantılı şekilde takip ediliyor.",
+            "col_student": "Öğrenci", "col_student_id": "Öğrenci ID", "col_faculty": "Bölüm", "col_semester": "Dönem",
+            "col_goal": "Ana Hedef", "col_date": "Tarih", "col_note": "Günlük Not", "col_mood": "Duygu Durumu",
+            "col_focus": "Odak Durumu", "col_stress": "Stres Durumu", "col_mode": "Günün Modu", "col_energy": "Enerji",
+            "col_sleep": "Uyku", "col_study": "Çalışma", "col_exercise": "Egzersiz dk", "col_water": "Su L",
+            "col_nutrition": "Beslenme", "col_task": "Görev %", "col_steps": "Adım", "col_targets": "Hedefler",
+            "col_tasks": "Görevler", "col_end_note": "Gün Sonu Notu", "col_productivity": "Verimlilik", "col_wellness": "Sağlık", "col_risk": "Risk",
+            "col_created": "Oluşturma", "col_updated": "Güncelleme", "col_bmi_status": "BMI Durumu",
+            "software_engineering": "Yazılım Mühendisliği", "improve_productivity": "Verimliliği Artır",
+        },
+        "English": {
+            "student_profile": "Student Data Profile", "student": "Student", "students": "Students",
+            "records": "Tracking Records", "latest_student": "Latest Student", "active_goal": "Active Goal",
+            "id": "ID", "age": "Age", "height": "Height", "weight": "Weight", "semester_word": "Semester",
+            "bmi": "BMI", "goal": "Goal", "database_records": "Database Records", "last_tracking_date": "Last Tracking Date",
+            "database_loaded": "Professional database loaded: {profiles} profile record(s), {records} tracking record(s).",
+            "saved_profiles": "Saved Student Profiles", "linked_records": "Linked Student Tracking Records",
+            "no_profiles": "No saved student profile records yet.", "timeline": "Student Performance Timeline",
+            "ai_memory": "AI Memory Summary", "last_reflection": "Last reflection", "profile_advice": "The profile is connected with daily tracking records.",
+            "col_student": "Student", "col_student_id": "Student ID", "col_faculty": "Faculty", "col_semester": "Semester",
+            "col_goal": "Main Goal", "col_date": "Date", "col_note": "Daily Note", "col_mood": "Mood State",
+            "col_focus": "Focus State", "col_stress": "Stress State", "col_mode": "Daily Mode", "col_energy": "Energy",
+            "col_sleep": "Sleep", "col_study": "Study", "col_exercise": "Exercise min", "col_water": "Water L",
+            "col_nutrition": "Nutrition", "col_task": "Task %", "col_steps": "Steps", "col_targets": "Targets",
+            "col_tasks": "Tasks", "col_end_note": "End-of-Day Note", "col_productivity": "Productivity", "col_wellness": "Wellness", "col_risk": "Risk",
+            "col_created": "Created", "col_updated": "Updated", "col_bmi_status": "BMI Status",
+            "software_engineering": "Software Engineering", "improve_productivity": "Improve Productivity",
+        },
+        "Deutsch": {
+            "student_profile": "Studentisches Datenprofil", "student": "Student", "students": "Studierende",
+            "records": "Tracking-Datensätze", "latest_student": "Letzter Student", "active_goal": "Aktives Ziel",
+            "id": "ID", "age": "Alter", "height": "Größe", "weight": "Gewicht", "semester_word": "Semester",
+            "bmi": "BMI", "goal": "Ziel", "database_records": "Datenbankeinträge", "last_tracking_date": "Letztes Tracking-Datum",
+            "database_loaded": "Professionelle Datenbank geladen: {profiles} Profil-Datensatz/Datensätze, {records} Tracking-Datensatz/Datensätze.",
+            "saved_profiles": "Gespeicherte Studentenprofile", "linked_records": "Verknüpfte Studententracking-Daten",
+            "no_profiles": "Noch keine gespeicherten Studentenprofile vorhanden.", "timeline": "Leistungs-Zeitachse des Studenten",
+            "ai_memory": "KI-Gedächtnisübersicht", "last_reflection": "Letzte Reflexion", "profile_advice": "Das Profil ist mit den täglichen Tracking-Daten verbunden.",
+            "col_student": "Student", "col_student_id": "Studenten-ID", "col_faculty": "Fakultät", "col_semester": "Semester",
+            "col_goal": "Hauptziel", "col_date": "Datum", "col_note": "Tagesnotiz", "col_mood": "Stimmung",
+            "col_focus": "Fokusstatus", "col_stress": "Stressstatus", "col_mode": "Tagesmodus", "col_energy": "Energie",
+            "col_sleep": "Schlaf", "col_study": "Lernen", "col_exercise": "Training min", "col_water": "Wasser L",
+            "col_nutrition": "Ernährung", "col_task": "Aufgaben %", "col_steps": "Schritte", "col_targets": "Ziele",
+            "col_tasks": "Aufgaben", "col_end_note": "Tagesabschluss-Notiz", "col_productivity": "Produktivität", "col_wellness": "Wellness", "col_risk": "Risiko",
+            "col_created": "Erstellt", "col_updated": "Aktualisiert", "col_bmi_status": "BMI-Status",
+            "software_engineering": "Software Engineering", "improve_productivity": "Produktivität verbessern",
+        },
+        "Русский": {
+            "student_profile": "Профиль данных студента", "student": "Студент", "students": "Студенты",
+            "records": "Записи отслеживания", "latest_student": "Последний студент", "active_goal": "Активная цель",
+            "id": "ID", "age": "Возраст", "height": "Рост", "weight": "Вес", "semester_word": "Семестр",
+            "bmi": "BMI", "goal": "Цель", "database_records": "Записи базы данных", "last_tracking_date": "Последняя дата отслеживания",
+            "database_loaded": "Профессиональная база данных загружена: {profiles} профиль(ей), {records} запись(ей) отслеживания.",
+            "saved_profiles": "Сохранённые профили студентов", "linked_records": "Связанные записи отслеживания студента",
+            "no_profiles": "Сохранённых профилей студентов пока нет.", "timeline": "Временная линия успеваемости студента",
+            "ai_memory": "Сводка памяти ИИ", "last_reflection": "Последняя рефлексия", "profile_advice": "Профиль связан с ежедневными записями отслеживания.",
+            "col_student": "Студент", "col_student_id": "ID студента", "col_faculty": "Факультет", "col_semester": "Семестр",
+            "col_goal": "Главная цель", "col_date": "Дата", "col_note": "Дневная заметка", "col_mood": "Настроение",
+            "col_focus": "Фокус", "col_stress": "Стресс", "col_mode": "Режим дня", "col_energy": "Энергия",
+            "col_sleep": "Сон", "col_study": "Учёба", "col_exercise": "Тренировка мин", "col_water": "Вода л",
+            "col_nutrition": "Питание", "col_task": "Задачи %", "col_steps": "Шаги", "col_targets": "Цели",
+            "col_tasks": "Задачи", "col_end_note": "Итоговая заметка", "col_productivity": "Продуктивность", "col_wellness": "Здоровье", "col_risk": "Риск",
+            "col_created": "Создано", "col_updated": "Обновлено", "col_bmi_status": "BMI статус",
+            "software_engineering": "Программная инженерия", "improve_productivity": "Повысить продуктивность",
+        },
+        "Español": {
+            "student_profile": "Perfil de datos del estudiante", "student": "Estudiante", "students": "Estudiantes",
+            "records": "Registros de seguimiento", "latest_student": "Último estudiante", "active_goal": "Objetivo activo",
+            "id": "ID", "age": "Edad", "height": "Altura", "weight": "Peso", "semester_word": "Semestre",
+            "bmi": "BMI", "goal": "Objetivo", "database_records": "Registros de base de datos", "last_tracking_date": "Última fecha de seguimiento",
+            "database_loaded": "Base de datos profesional cargada: {profiles} perfil(es), {records} registro(s) de seguimiento.",
+            "saved_profiles": "Perfiles de estudiantes guardados", "linked_records": "Registros de seguimiento vinculados",
+            "no_profiles": "Todavía no hay perfiles de estudiantes guardados.", "timeline": "Línea temporal de rendimiento del estudiante",
+            "ai_memory": "Resumen de memoria IA", "last_reflection": "Última reflexión", "profile_advice": "El perfil está conectado con los registros diarios de seguimiento.",
+            "col_student": "Estudiante", "col_student_id": "ID del estudiante", "col_faculty": "Facultad", "col_semester": "Semestre",
+            "col_goal": "Objetivo principal", "col_date": "Fecha", "col_note": "Nota diaria", "col_mood": "Estado de ánimo",
+            "col_focus": "Estado de enfoque", "col_stress": "Estado de estrés", "col_mode": "Modo del día", "col_energy": "Energía",
+            "col_sleep": "Sueño", "col_study": "Estudio", "col_exercise": "Ejercicio min", "col_water": "Agua L",
+            "col_nutrition": "Nutrición", "col_task": "Tareas %", "col_steps": "Pasos", "col_targets": "Objetivos",
+            "col_tasks": "Tareas", "col_end_note": "Nota final del día", "col_productivity": "Productividad", "col_wellness": "Bienestar", "col_risk": "Riesgo",
+            "col_created": "Creado", "col_updated": "Actualizado", "col_bmi_status": "Estado BMI",
+            "software_engineering": "Ingeniería de software", "improve_productivity": "Mejorar la productividad",
+        },
+    }
+    lang_pack = packs.get(st.session_state.language, packs["English"])
+    return lang_pack.get(key, packs["English"].get(key, key))
+
+
+def _translate_known_value(value):
+    if value is None:
+        return "-"
+    value = str(value)
+    normalized = value.strip().lower()
+    faculty_keys = {"yazılım mühendisliği", "software engineering", "программная инженерия", "ingeniería de software"}
+    goal_keys = {"verimliliği artır", "improve productivity", "produktivität verbessern", "повысить продуктивность", "mejorar la productividad"}
+    if normalized in faculty_keys:
+        return _db_text("software_engineering")
+    if normalized in goal_keys:
+        return _db_text("improve_productivity")
+    # Translate common categorical values without corrupting free text.
+    small_map = {
+        "normal": t.get("normal", "Normal"),
+        "underweight": t.get("underweight", "Underweight"),
+        "overweight": t.get("overweight", "Overweight"),
+        "high range": t.get("high_range", "High Range"),
+    }
+    return small_map.get(normalized, value)
+
+
+def _professional_profiles_view(df):
+    if df is None or df.empty:
+        return pd.DataFrame()
+    out = df.copy()
+    cols = [c for c in ["id", "name", "student_id", "faculty", "semester", "age", "height_cm", "weight_kg", "bmi", "bmi_status", "goal", "created_at", "updated_at"] if c in out.columns]
+    out = out[cols]
+    for col in ["faculty", "goal", "bmi_status"]:
+        if col in out.columns:
+            out[col] = out[col].apply(_translate_known_value)
+    rename = {
+        "id": _db_text("id"), "name": _db_text("col_student"), "student_id": _db_text("col_student_id"),
+        "faculty": _db_text("col_faculty"), "semester": _db_text("col_semester"), "age": _db_text("age"),
+        "height_cm": f"{_db_text('height')} (cm)", "weight_kg": f"{_db_text('weight')} (kg)", "bmi": _db_text("bmi"),
+        "bmi_status": _db_text("col_bmi_status"), "goal": _db_text("col_goal"), "created_at": _db_text("col_created"),
+        "updated_at": _db_text("col_updated"),
+    }
+    return out.rename(columns=rename)
+
+
 def _professional_tracking_view(df):
-    if df.empty:
+    if df is None or df.empty:
         return df
     out = df.copy()
+    for col in ["faculty", "main_goal"]:
+        if col in out.columns:
+            out[col] = out[col].apply(_translate_known_value)
     rename = {
-        "student_name": "Öğrenci", "student_id": "Öğrenci ID", "faculty": "Bölüm", "semester": "Dönem",
-        "main_goal": "Ana Hedef", "record_date": "Tarih", "mood_text": "Günlük Not",
-        "mood_state": "Duygu Durumu", "focus_state": "Odak Durumu", "stress_state": "Stres Durumu",
-        "daily_mode": "Günün Modu", "energy_level": "Enerji", "sleep_hours": "Uyku", "study_hours": "Çalışma",
-        "exercise_minutes": "Egzersiz dk", "water_liters": "Su L", "nutrition_quality": "Beslenme",
-        "task_completion": "Görev %", "steps": "Adım", "daily_targets": "Hedefler", "today_tasks": "Görevler",
-        "learned_note": "Gün Sonu Notu", "productivity_score": "Verimlilik", "wellness_score": "Sağlık", "risk_score": "Risk"
+        "student_name": _db_text("col_student"), "student_id": _db_text("col_student_id"), "faculty": _db_text("col_faculty"),
+        "semester": _db_text("col_semester"), "main_goal": _db_text("col_goal"), "record_date": _db_text("col_date"),
+        "mood_text": _db_text("col_note"), "mood_state": _db_text("col_mood"), "focus_state": _db_text("col_focus"),
+        "stress_state": _db_text("col_stress"), "daily_mode": _db_text("col_mode"), "energy_level": _db_text("col_energy"),
+        "sleep_hours": _db_text("col_sleep"), "study_hours": _db_text("col_study"), "exercise_minutes": _db_text("col_exercise"),
+        "water_liters": _db_text("col_water"), "nutrition_quality": _db_text("col_nutrition"), "task_completion": _db_text("col_task"),
+        "steps": _db_text("col_steps"), "daily_targets": _db_text("col_targets"), "today_tasks": _db_text("col_tasks"),
+        "learned_note": _db_text("col_end_note"), "productivity_score": _db_text("col_productivity"),
+        "wellness_score": _db_text("col_wellness"), "risk_score": _db_text("col_risk"),
     }
     cols = [c for c in [
         "student_name", "student_id", "faculty", "semester", "main_goal", "record_date",
@@ -4618,8 +4762,7 @@ def _professional_tracking_view(df):
         "task_completion", "steps", "daily_targets", "today_tasks", "learned_note",
         "productivity_score", "wellness_score", "risk_score"
     ] if c in out.columns]
-    out = out[cols].rename(columns=rename)
-    return out
+    return out[cols].rename(columns=rename)
 
 
 def _render_student_summary_card(profile, records):
@@ -4627,19 +4770,21 @@ def _render_student_summary_card(profile, records):
     bmi_status, bmi_advice = get_bmi_status(bmi)
     total_records = len(records) if records is not None else 0
     last_date = "-" if records is None or records.empty else str(records["record_date"].iloc[-1])[:10]
+    faculty = _translate_known_value(profile.get("faculty", "-"))
+    goal = _translate_known_value(profile.get("goal", "-"))
     st.markdown(
         f"""
         <div class="premium-report-card">
-            <h3>👤 Student Data Profile</h3>
-            <p><b>{profile.get('name','Student')}</b> · {profile.get('faculty','-')} · Semester {profile.get('semester','-')}</p>
-            <p>ID: <b>{profile.get('student_id','0000')}</b> · Age: {profile.get('age','-')} · Height: {profile.get('height_cm','-')} cm · Weight: {profile.get('weight_kg','-')} kg</p>
-            <p>BMI: <b>{bmi}</b> ({bmi_status}) · Goal: <b>{profile.get('goal','-')}</b></p>
-            <p>Database Records: <b>{total_records}</b> · Last Tracking Date: <b>{last_date}</b></p>
+            <h3>👤 {_db_text('student_profile')}</h3>
+            <p><b>{profile.get('name','Student')}</b> · {faculty} · {_db_text('semester_word')} {profile.get('semester','-')}</p>
+            <p>{_db_text('id')}: <b>{profile.get('student_id','0000')}</b> · {_db_text('age')}: {profile.get('age','-')} · {_db_text('height')}: {profile.get('height_cm','-')} cm · {_db_text('weight')}: {profile.get('weight_kg','-')} kg</p>
+            <p>{_db_text('bmi')}: <b>{bmi}</b> ({_translate_known_value(bmi_status)}) · {_db_text('goal')}: <b>{goal}</b></p>
+            <p>{_db_text('database_records')}: <b>{total_records}</b> · {_db_text('last_tracking_date')}: <b>{last_date}</b></p>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    st.info(bmi_advice)
+    st.info(bmi_advice if bmi_advice else _db_text("profile_advice"))
 
 
 def render_database_history():
@@ -4651,16 +4796,16 @@ def render_database_history():
     _render_student_summary_card(latest_profile, db_records)
 
     k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Students", len(profiles) if not profiles.empty else 0)
-    k2.metric("Tracking Records", len(db_records) if not db_records.empty else 0)
-    k3.metric("Latest Student", latest_profile.get("name", "Student"))
-    k4.metric("Active Goal", latest_profile.get("goal", "-"))
+    k1.metric(_db_text("students"), len(profiles) if not profiles.empty else 0)
+    k2.metric(_db_text("records"), len(db_records) if not db_records.empty else 0)
+    k3.metric(_db_text("latest_student"), latest_profile.get("name", "Student"))
+    k4.metric(_db_text("active_goal"), _translate_known_value(latest_profile.get("goal", "-")))
 
     if db_records.empty:
         st.info(t["no_records"])
         if not profiles.empty:
-            with st.expander("👥 Saved Student Profiles", expanded=True):
-                st.dataframe(profiles, use_container_width=True)
+            with st.expander(f"👥 {_db_text('saved_profiles')}", expanded=True):
+                st.dataframe(_professional_profiles_view(profiles), use_container_width=True)
         return
 
     # Fill missing student fields in old records so the database view never looks disconnected.
@@ -4675,25 +4820,33 @@ def render_database_history():
             db_records[col] = default
         db_records[col] = db_records[col].fillna(default).replace("", default)
 
-    st.success(f"Professional database loaded: {len(profiles)} profile record(s), {len(db_records)} tracking record(s).")
+    st.success(_db_text("database_loaded").format(profiles=len(profiles), records=len(db_records)))
 
-    with st.expander("👤 Student Profiles Table", expanded=False):
+    with st.expander(f"👤 {_db_text('saved_profiles')}", expanded=False):
         if profiles.empty:
-            st.info("No saved profile records yet.")
+            st.info(_db_text("no_profiles"))
         else:
-            st.dataframe(profiles, use_container_width=True)
+            st.dataframe(_professional_profiles_view(profiles), use_container_width=True)
 
-    with st.expander("📊 Linked Student Tracking Records", expanded=True):
+    with st.expander(f"📊 {_db_text('linked_records')}", expanded=True):
         st.dataframe(_professional_tracking_view(db_records), use_container_width=True, height=360)
 
     chart_df = db_records.copy()
     chart_df["record_date"] = pd.to_datetime(chart_df["record_date"])
     chart_cols = [c for c in ["productivity_score", "wellness_score", "sleep_hours", "study_hours", "stress_level", "water_liters"] if c in chart_df.columns]
     if chart_cols:
-        st.markdown("### 📈 Student Performance Timeline")
-        st.line_chart(chart_df.set_index("record_date")[chart_cols])
+        chart_labels = {
+            "productivity_score": _db_text("col_productivity"),
+            "wellness_score": _db_text("col_wellness"),
+            "sleep_hours": _db_text("col_sleep"),
+            "study_hours": _db_text("col_study"),
+            "stress_level": _db_text("col_stress"),
+            "water_liters": _db_text("col_water"),
+        }
+        st.markdown(f"### 📈 {_db_text('timeline')}")
+        st.line_chart(chart_df.set_index("record_date")[chart_cols].rename(columns=chart_labels))
 
-    with st.expander("🧠 AI Memory Summary", expanded=True):
+    with st.expander(f"🧠 {_db_text('ai_memory')}", expanded=True):
         status_note = create_status_note(db_records, latest_profile)
         st.markdown(
             f"""
@@ -4706,7 +4859,7 @@ def render_database_history():
         )
         if "learned_note" in db_records.columns and db_records["learned_note"].fillna("").str.len().sum() > 0:
             last_note = db_records["learned_note"].fillna("").iloc[-1]
-            st.info(f"Last reflection: {last_note}")
+            st.info(f"{_db_text('last_reflection')}: {last_note}")
 
 # Run non-destructive migration after all original tables exist.
 professional_db_migration()
