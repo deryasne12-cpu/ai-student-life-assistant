@@ -1,6 +1,7 @@
 
 import io
 import sqlite3
+import html
 from datetime import date, timedelta
 
 import pandas as pd
@@ -2445,60 +2446,219 @@ def get_ai_recommendations(records):
     return messages
 
 
-def create_pdf_report(profile, weekly_summary, recommendations, status_note):
+
+def _safe_float(value, default=0.0):
+    try:
+        if pd.isna(value):
+            return default
+        return float(value)
+    except Exception:
+        return default
+
+
+def build_detailed_report_sections(records, profile=None, insights=None, user_inputs=None):
+    """Creates richer report content for the on-screen report and PDF export."""
+    profile = profile or {}
+    records = calculate_scores(records.copy()) if records is not None else calculate_scores(st.session_state.records.copy())
+    insights = insights or generate_deep_insights(records)
+    user_inputs = user_inputs or current_user_inputs()
+
+    avg_sleep = _safe_float(records.get("sleep_hours", pd.Series([0])).mean())
+    avg_study = _safe_float(records.get("study_hours", pd.Series([0])).mean())
+    avg_focus = _safe_float(records.get("focus_level", pd.Series([0])).mean())
+    avg_stress = _safe_float(records.get("stress_level", pd.Series([0])).mean())
+    avg_exercise = _safe_float(records.get("exercise_minutes", pd.Series([0])).mean())
+    avg_water = _safe_float(records.get("water_liters", pd.Series([0])).mean())
+    avg_task = _safe_float(records.get("task_completion", pd.Series([0])).mean())
+    avg_nutrition = _safe_float(records.get("nutrition_quality", pd.Series([0])).mean())
+    avg_productivity = _safe_float(records.get("productivity_score", pd.Series([0])).mean())
+    avg_wellness = _safe_float(records.get("wellness_score", pd.Series([0])).mean())
+
+    best_day = "-"
+    hard_day = "-"
+    if len(records) > 0 and "productivity_score" in records:
+        best_day = str(records.loc[records["productivity_score"].idxmax(), "date"])
+        hard_day = str(records.loc[records["productivity_score"].idxmin(), "date"])
+
+    academic_status = "Strong" if avg_productivity >= 70 else "Developing" if avg_productivity >= 50 else "Needs attention"
+    wellness_status = "Strong" if avg_wellness >= 70 else "Balanced" if avg_wellness >= 55 else "Needs recovery"
+    risk_status = "Low" if avg_stress <= 5 and avg_sleep >= 6.5 else "Medium" if avg_stress <= 7 else "High"
+
+    study_gap = max(0, 5 - avg_study)
+    water_gap = max(0, 2.5 - avg_water)
+
+    executive = [
+        f"{profile.get('name', 'Student')}, this weekly report evaluates academic output, recovery, nutrition, exercise and behavioral consistency together.",
+        f"Overall productivity is {avg_productivity:.1f}/100 and wellness is {avg_wellness:.1f}/100. The current profile is {academic_status.lower()} academically and {wellness_status.lower()} physically.",
+        f"Best performance day: {best_day}. Hardest day: {hard_day}. Current risk level: {risk_status}.",
+    ]
+
+    academic = [
+        f"Average study time is {avg_study:.1f} hours. Target benchmark is 5 hours, so the weekly study gap is about {study_gap:.1f} hours per day.",
+        f"Average focus score is {avg_focus:.1f}/10 and task completion is {avg_task:.1f}%. This means the system should prioritize fewer tasks with deeper focus blocks.",
+        "Recommended academic structure: one deep-work block, one practice block, and one short review block per study day.",
+    ]
+
+    wellness = [
+        f"Average sleep is {avg_sleep:.1f} hours. Sleep is acceptable if it stays above 6.5 hours, but productivity will improve if it approaches 7.5-8 hours.",
+        f"Average stress is {avg_stress:.1f}/10. If stress rises while study hours fall, the system should switch to lighter planning and recovery-first recommendations.",
+        f"Average water intake is {avg_water:.1f}L. Hydration gap is around {water_gap:.1f}L compared with a 2.5L practical target.",
+    ]
+
+    nutrition = [
+        f"Nutrition quality average is {avg_nutrition:.1f}/10. Current calorie balance is {insights.get('calorie_gap', '-')}, net calories are {insights.get('net_cal', '-')} kcal.",
+        f"Protein target status: {user_inputs.get('protein_g', '-')}/{insights.get('protein_need', '-')}g. Protein consistency supports muscle recovery, satiety and stable energy.",
+        insights.get("nutrition_msg", "Nutrition should be reviewed together with energy, training and study workload."),
+    ]
+
+    exercise = [
+        f"Average exercise time is {avg_exercise:.1f} minutes. This supports mood and focus, but consistency matters more than one very long session.",
+        f"Estimated latest exercise burn: {user_inputs.get('exercise_burned', '-')} kcal. Exercise should be paired with recovery and adequate hydration.",
+        insights.get("exercise_msg", "Exercise plan should follow the selected goal and recovery state."),
+    ]
+
+    risks = []
+    if avg_sleep < 6.5:
+        risks.append("Sleep is below the recommended level; cognitive performance may drop.")
+    if avg_stress > 7:
+        risks.append("Stress is high; overload risk should be managed with smaller tasks and recovery breaks.")
+    if avg_water < 2.0:
+        risks.append("Hydration is below target; focus and recovery may be affected.")
+    if avg_study < 4:
+        risks.append("Study time is below target; academic output may stay moderate.")
+    if not risks:
+        risks.append("No critical risk detected; the main focus should be maintaining consistency.")
+
+    next_week = [
+        "Plan 3 deep-work blocks for the most difficult academic task.",
+        "Keep a fixed sleep window and protect at least 7 hours of sleep.",
+        "Set a hydration target and check progress twice per day.",
+        "Use exercise as a focus tool: walking or mobility on low-energy days, strength/cardio on high-energy days.",
+        "Review progress at the end of the week and compare productivity, wellness and stress together.",
+    ]
+
+    return {
+        "Executive Summary": executive,
+        "Academic Analysis": academic,
+        "Wellness & Recovery Analysis": wellness,
+        "Nutrition Analysis": nutrition,
+        "Exercise Analysis": exercise,
+        "Risk Interpretation": risks,
+        "Next Week Action Plan": next_week,
+    }
+
+
+def render_detailed_report_sections(records, profile=None, insights=None, user_inputs=None):
+    sections = build_detailed_report_sections(records, profile, insights, user_inputs)
+    section_items = list(sections.items())
+    for idx in range(0, len(section_items), 2):
+        cols = st.columns(2)
+        for col, (title, items) in zip(cols, section_items[idx:idx+2]):
+            with col:
+                body = "".join(f"<li>{item}</li>" for item in items)
+                st.markdown(
+                    f"""
+                    <div class="premium-report-card">
+                        <h3>{title}</h3>
+                        <ul>{body}</ul>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+
+def create_pdf_report(profile, weekly_summary, recommendations, status_note, records=None, insights=None, user_inputs=None):
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
-    y = height - 50
 
-    pdf.setFont("Helvetica-Bold", 18)
-    pdf.drawString(50, y, t["pdf_title"])
-    y -= 35
-    pdf.setFont("Helvetica", 11)
+    try:
+        from reportlab.pdfbase import pdfmetrics
+        from reportlab.pdfbase.ttfonts import TTFont
+        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+        bold_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+        if os.path.exists(font_path) and os.path.exists(bold_path):
+            pdfmetrics.registerFont(TTFont("DejaVu", font_path))
+            pdfmetrics.registerFont(TTFont("DejaVu-Bold", bold_path))
+            regular_font, bold_font = "DejaVu", "DejaVu-Bold"
+        else:
+            regular_font, bold_font = "Helvetica", "Helvetica-Bold"
+    except Exception:
+        regular_font, bold_font = "Helvetica", "Helvetica-Bold"
 
-    for line in [
-        f"{t['student_label']}: {profile.get('name', 'Student')}",
+    margin = 46
+    y = height - 46
+
+    def new_page():
+        nonlocal y
+        pdf.showPage()
+        y = height - 46
+
+    def ensure(space=60):
+        if y < space:
+            new_page()
+
+    def draw_title(text, size=18):
+        nonlocal y
+        ensure(90)
+        pdf.setFont(bold_font, size)
+        pdf.drawString(margin, y, str(text))
+        y -= size + 13
+
+    def draw_line(text, size=10, indent=0, leading=14):
+        nonlocal y
+        pdf.setFont(regular_font, size)
+        max_chars = 88 - int(indent / 3)
+        import textwrap
+        for part in textwrap.wrap(str(text), width=max_chars) or [""]:
+            ensure(55)
+            pdf.drawString(margin + indent, y, part)
+            y -= leading
+
+    def draw_bullet(text, size=10):
+        draw_line("• " + str(text), size=size, indent=10, leading=15)
+
+    draw_title(t.get("pdf_title", "AI Student Weekly Performance Report"), 18)
+    pdf.setFont(regular_font, 10)
+
+    profile_lines = [
+        f"{t.get('student_label','Student')}: {profile.get('name', 'Student')}",
         f"Student ID: {profile.get('student_id', '0000')}",
-        f"{t['faculty']}: {profile.get('faculty', t['faculty_software'])}",
-        f"{t['semester']}: {profile.get('semester', 2)}",
-        f"{t['goal']}: {profile.get('goal', t['goal_improve_productivity'])}",
-    ]:
-        pdf.drawString(50, y, line)
+        f"{t.get('faculty','Faculty')}: {profile.get('faculty', t.get('faculty_software','Software Engineering'))}",
+        f"{t.get('semester','Semester')}: {profile.get('semester', 2)}",
+        f"{t.get('goal','Goal')}: {profile.get('goal', t.get('goal_improve_productivity','Improve Productivity'))}",
+    ]
+    for line in profile_lines:
+        draw_line(line, size=10, leading=15)
+
+    y -= 10
+    draw_title(t.get("student_status_summary", "Student Status Summary"), 14)
+    draw_line(status_note, size=9.5, leading=14)
+
+    y -= 8
+    draw_title("Detailed AI Report", 14)
+    sections = build_detailed_report_sections(records if records is not None else st.session_state.records, profile, insights, user_inputs)
+    for title, items in sections.items():
+        ensure(85)
+        pdf.setFont(bold_font, 12)
+        pdf.drawString(margin, y, title)
         y -= 18
+        for item in items:
+            draw_bullet(item, size=9.2)
+        y -= 7
 
-    y -= 20
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(50, y, t["student_status_summary"])
-    y -= 22
-    pdf.setFont("Helvetica", 10)
-
-    for i in range(0, len(status_note), 90):
-        pdf.drawString(60, y, status_note[i:i + 90])
-        y -= 16
-
-    y -= 15
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(50, y, t["weekly_metrics"])
-    y -= 25
-    pdf.setFont("Helvetica", 11)
-
+    draw_title(t.get("weekly_metrics", "Weekly Metrics"), 14)
+    pdf.setFont(regular_font, 9.5)
+    metric_col = weekly_summary.columns[0]
+    value_col = weekly_summary.columns[1]
     for _, row in weekly_summary.iterrows():
-        pdf.drawString(60, y, f"{row[t['metric']]}: {row[t['value']]}")
-        y -= 18
+        ensure(55)
+        draw_line(f"{row[metric_col]}: {row[value_col]}", size=9.3, leading=13)
 
-    y -= 20
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(50, y, t["ai_coach_recommendations"])
-    y -= 25
-    pdf.setFont("Helvetica", 10)
-
+    y -= 8
+    draw_title(t.get("ai_coach_recommendations", "AI Coach Recommendations"), 14)
     for _, msg in recommendations:
-        pdf.drawString(60, y, f"- {msg}"[:95])
-        y -= 18
-        if y < 80:
-            pdf.showPage()
-            y = height - 50
-            pdf.setFont("Helvetica", 10)
+        draw_bullet(msg, size=9.3)
 
     pdf.save()
     buffer.seek(0)
@@ -2846,6 +3006,59 @@ def coach_assessment_text(records):
     p1, p2, rec, gain = data.get(lang, data["English"])
     return px, p1, p2, rec, gain
 
+
+def _home_notes_right_html():
+    """Compact notes panel shown on the right side of the main welcome dashboard."""
+    lang = st.session_state.language
+    ui = {
+        "Türkçe": {"title": "📝 Notlarım", "count": "kayıtlı not", "empty": "Henüz not yok. İlk notunu ekle.", "hint": "Kaydettiğin notlar burada görünür.", "date": "Bugün"},
+        "English": {"title": "📝 My Notes", "count": "saved notes", "empty": "No notes yet. Add your first one.", "hint": "Saved notes appear here.", "date": "Today"},
+        "Deutsch": {"title": "📝 Meine Notizen", "count": "gespeicherte Notizen", "empty": "Noch keine Notizen. Füge die erste hinzu.", "hint": "Gespeicherte Notizen erscheinen hier.", "date": "Heute"},
+        "Español": {"title": "📝 Mis notas", "count": "notas guardadas", "empty": "Aún no hay notas. Añade la primera.", "hint": "Las notas guardadas aparecen aquí.", "date": "Hoy"},
+        "Русский": {"title": "📝 Мои заметки", "count": "сохранённых заметок", "empty": "Заметок пока нет. Добавь первую.", "hint": "Сохранённые заметки появятся здесь.", "date": "Сегодня"},
+    }.get(lang, {})
+    try:
+        notes = load_daily_notes(limit=5)
+    except Exception:
+        notes = pd.DataFrame()
+
+    if notes.empty:
+        note_items = f"""
+            <div class="welcome-note-empty">
+                <div class="welcome-note-empty-icon">📘</div>
+                <b>{ui.get('empty', 'No notes yet.')}</b>
+                <small>{ui.get('hint', 'Saved notes appear here.')}</small>
+            </div>
+        """
+        count = "0"
+    else:
+        count = str(len(notes))
+        cards = []
+        for _, row in notes.iterrows():
+            raw_note = str(row.get("note_text", ""))
+            note = html.escape(raw_note[:110] + ("..." if len(raw_note) > 110 else ""))
+            dt = html.escape(str(row.get("note_date", ui.get("date", "Today"))))
+            cards.append(f"""
+                <div class="welcome-note-item">
+                    <div class="welcome-note-dot">✓</div>
+                    <div><b>{note}</b><small>{dt}</small></div>
+                </div>
+            """)
+        note_items = "".join(cards)
+
+    return f"""
+        <div class="welcome-notes-panel">
+            <div class="welcome-notes-header">
+                <div class="welcome-notes-icon">🧠</div>
+                <div>
+                    <b>{ui.get('title', 'My Notes')}</b>
+                    <small>{count} {ui.get('count', 'saved notes')}</small>
+                </div>
+            </div>
+            <div class="welcome-notes-body">{note_items}</div>
+        </div>
+    """
+
 def render_home_booster():
     records = calculate_scores(st.session_state.records)
     profile = st.session_state.profile
@@ -2866,6 +3079,36 @@ def render_home_booster():
 
     st.markdown(
         f"""
+        <style>
+        .welcome-card {{ grid-template-columns: minmax(0, 1.45fr) minmax(360px, .75fr) !important; align-items: stretch !important; }}
+        .welcome-notes-panel {{
+            min-height: 330px;
+            padding: 28px;
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at 8% 12%, rgba(96,165,250,.26), transparent 34%),
+                radial-gradient(circle at 92% 88%, rgba(139,92,246,.20), transparent 34%),
+                linear-gradient(145deg, rgba(15,23,42,.70), rgba(30,41,99,.42));
+            border: 1px solid rgba(96,165,250,.34);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 22px 55px rgba(0,0,0,.24);
+            display: flex;
+            flex-direction: column;
+        }}
+        .welcome-notes-header {{ display:flex; align-items:center; gap:14px; margin-bottom:18px; }}
+        .welcome-notes-icon {{ width:50px; height:50px; border-radius:16px; display:grid; place-items:center; font-size:24px; background:linear-gradient(135deg, rgba(59,130,246,.46), rgba(139,92,246,.36)); border:1px solid rgba(147,197,253,.24); }}
+        .welcome-notes-header b {{ display:block; color:#f8fafc; font-size:24px; letter-spacing:-.03em; }}
+        .welcome-notes-header small {{ display:block; margin-top:4px; color:#93c5fd; font-weight:800; }}
+        .welcome-notes-body {{ display:flex; flex-direction:column; gap:12px; flex:1; }}
+        .welcome-note-item {{ display:flex; gap:12px; align-items:flex-start; padding:14px 15px; border-radius:17px; background:rgba(15,23,42,.52); border:1px solid rgba(147,197,253,.14); }}
+        .welcome-note-dot {{ width:25px; height:25px; border-radius:9px; display:grid; place-items:center; background:linear-gradient(135deg,#60a5fa,#8b5cf6); color:white; font-weight:900; flex:0 0 auto; }}
+        .welcome-note-item b {{ display:block; color:#f8fafc; font-size:15px; line-height:1.35; }}
+        .welcome-note-item small {{ display:block; margin-top:6px; color:#93c5fd; font-weight:800; }}
+        .welcome-note-empty {{ flex:1; min-height:215px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; border-radius:22px; background:rgba(15,23,42,.35); border:1px solid rgba(147,197,253,.16); }}
+        .welcome-note-empty-icon {{ font-size:48px; margin-bottom:14px; filter:drop-shadow(0 20px 30px rgba(96,165,250,.32)); }}
+        .welcome-note-empty b {{ color:#f8fafc; font-size:19px; }}
+        .welcome-note-empty small {{ color:#bfdbfe; margin-top:10px; font-weight:750; }}
+        @media (max-width: 1100px) {{ .welcome-card {{ grid-template-columns: 1fr !important; }} }}
+        </style>
         <div class="welcome-card">
             <div>
                 <h3>{t["welcome_title"].format(name=name)}</h3>
@@ -2882,13 +3125,7 @@ def render_home_booster():
                     <small>{t["welcome_profile_hint"]}</small>
                 </div>
             </div>
-            <div class="ai-avatar-card">
-                <div class="ai-avatar">🤖</div>
-                <b>{t["ai_mission_title"]}</b>
-                <div class="animated-mission-box">
-                    {''.join(f'<div class="mission-slide"><b>⚡ {item}</b><small>{t.get("welcome_profile_hint", "Personalized by your profile.")}</small></div>' for item in get_dynamic_daily_mission())}
-                </div>
-            </div>
+            {_home_notes_right_html()}
         </div>
         """,
         unsafe_allow_html=True,
@@ -3267,7 +3504,6 @@ def render_dashboard_tabs():
     with tab1:
         # Daily page keeps the product overview, but other tabs stay clean.
         render_home_booster()
-        render_home_notes_and_accountability()
 
         px = premium_texts()
 
@@ -3849,6 +4085,8 @@ def render_dashboard_tabs():
             }
         )
         render_premium_weekly_report(records)
+        st.markdown("### 🧠 Detailed AI Report")
+        render_detailed_report_sections(records, st.session_state.profile, insights, u)
         st.dataframe(weekly_summary, use_container_width=True)
 
         r1, r2 = st.columns(2)
@@ -3863,7 +4101,7 @@ def render_dashboard_tabs():
         st.download_button(t["download_csv"], csv, "weekly_student_report.csv", "text/csv")
 
         if PDF_AVAILABLE:
-            pdf_file = create_pdf_report(st.session_state.profile, weekly_summary, recommendations, status_note)
+            pdf_file = create_pdf_report(st.session_state.profile, weekly_summary, recommendations, status_note, records, insights, u)
             st.download_button(t["download_pdf"], pdf_file, "weekly_student_report.pdf", "application/pdf")
         else:
             st.warning(t["pdf_not_active"])
@@ -5480,119 +5718,189 @@ def get_live_accountability_items():
 
 
 def render_home_notes_and_accountability():
-    """Premium notes board matching the compact blue glass mockup."""
+    """Single unified blue-glass notes board: list + add note inside one premium container."""
     t_local = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"])
     recent = load_daily_notes(limit=8)
     note_count = 0 if recent.empty else len(recent)
 
     notes_title_clean = t_local["notes_panel_title"].replace("📝 ", "")
     save_title_clean = t_local["note_add"].replace("➕ ", "")
-    empty_title = t_local["no_notes"]
     memory_label = t_local["memory_link"]
     placeholder = t_local["note_placeholder"]
+
+    lang = st.session_state.language
+    note_ui = {
+        "Türkçe": {
+            "list_title": "Notlarım",
+            "empty_big": "Henüz hiç not eklemedin.",
+            "empty_small": "İlk notunu sağdaki panelden ekle; burada düzenli şekilde görünecek.",
+            "hero_empty": "Henüz not yok. İlk notunu ekle.",
+            "hero_count": "kayıtlı not",
+            "input_title": "Notu Kaydet",
+            "input_help": "Aklına gelen görevi, fikri veya ders notunu kısa yaz. Sistem bunu öğrenci hafızasına bağlar.",
+            "delete": "Notu sil",
+        },
+        "English": {
+            "list_title": "My Notes",
+            "empty_big": "No notes added yet.",
+            "empty_small": "Add your first note from the right panel; it will appear here cleanly.",
+            "hero_empty": "No notes yet. Add your first one.",
+            "hero_count": "saved notes",
+            "input_title": "Save Note",
+            "input_help": "Write a task, idea, or study note briefly. The system connects it to student memory.",
+            "delete": "Delete note",
+        },
+        "Deutsch": {
+            "list_title": "Meine Notizen",
+            "empty_big": "Noch keine Notizen hinzugefügt.",
+            "empty_small": "Füge rechts deine erste Notiz hinzu; sie erscheint hier sauber geordnet.",
+            "hero_empty": "Noch keine Notizen. Füge die erste hinzu.",
+            "hero_count": "gespeicherte Notizen",
+            "input_title": "Notiz speichern",
+            "input_help": "Schreibe kurz eine Aufgabe, Idee oder Lernnotiz. Das System verbindet sie mit dem Studenten-Gedächtnis.",
+            "delete": "Notiz löschen",
+        },
+        "Русский": {
+            "list_title": "Мои заметки",
+            "empty_big": "Заметок пока нет.",
+            "empty_small": "Добавь первую заметку справа; она аккуратно появится здесь.",
+            "hero_empty": "Заметок пока нет. Добавь первую.",
+            "hero_count": "сохранённых заметок",
+            "input_title": "Сохранить заметку",
+            "input_help": "Коротко запиши задачу, идею или учебную заметку. Система связывает её с памятью студента.",
+            "delete": "Удалить заметку",
+        },
+        "Español": {
+            "list_title": "Mis notas",
+            "empty_big": "Aún no hay notas.",
+            "empty_small": "Añade tu primera nota desde el panel derecho; aparecerá aquí de forma ordenada.",
+            "hero_empty": "Aún no hay notas. Añade la primera.",
+            "hero_count": "notas guardadas",
+            "input_title": "Guardar nota",
+            "input_help": "Escribe brevemente una tarea, idea o nota de estudio. El sistema la conecta con la memoria del estudiante.",
+            "delete": "Eliminar nota",
+        },
+    }.get(lang, {})
 
     st.markdown(
         """
         <style>
-        .notes-premium-board {
+        .notes-oneboard {
             position: relative;
-            margin: 24px 0 32px 0;
-            padding: 28px 30px 30px 30px;
-            border-radius: 28px;
+            margin: 24px 0 34px 0;
+            padding: 30px 32px 34px 32px;
+            border-radius: 30px;
             background:
-                radial-gradient(circle at 12% 6%, rgba(59,130,246,.24), transparent 32%),
-                radial-gradient(circle at 88% 8%, rgba(249,115,22,.14), transparent 30%),
-                linear-gradient(135deg, rgba(8,20,38,.94), rgba(12,26,50,.88) 48%, rgba(20,24,42,.84));
-            border: 1px solid rgba(96,165,250,.32);
-            box-shadow: 0 34px 90px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.05);
+                radial-gradient(circle at 9% 8%, rgba(59,130,246,.30), transparent 31%),
+                radial-gradient(circle at 92% 6%, rgba(249,115,22,.13), transparent 28%),
+                radial-gradient(circle at 70% 88%, rgba(124,58,237,.17), transparent 32%),
+                linear-gradient(135deg, rgba(8,22,44,.96), rgba(10,24,48,.91) 46%, rgba(17,24,39,.88));
+            border: 1px solid rgba(96,165,250,.34);
+            box-shadow:
+                0 34px 90px rgba(0,0,0,.40),
+                inset 0 1px 0 rgba(255,255,255,.055);
             overflow: hidden;
         }
-        .notes-premium-board::before {
+        .notes-oneboard::before {
             content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
+            position:absolute;
+            inset:0;
+            pointer-events:none;
             background:
-                linear-gradient(115deg, transparent 0%, rgba(255,255,255,.035) 48%, transparent 72%),
-                radial-gradient(circle at 72% 44%, rgba(96,165,250,.10), transparent 28%);
+                linear-gradient(120deg, transparent 0%, rgba(255,255,255,.035) 46%, transparent 70%),
+                radial-gradient(circle at 82% 37%, rgba(96,165,250,.10), transparent 24%);
+        }
+        .notes-oneboard-head,
+        .notes-oneboard-hero,
+        .notes-oneboard-grid {
+            position: relative;
+            z-index: 1;
         }
         .notes-memory-pill {
-            position: relative;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             padding: 10px 16px;
             border-radius: 999px;
-            background: linear-gradient(135deg, rgba(59,130,246,.26), rgba(124,58,237,.22));
-            border: 1px solid rgba(147,197,253,.28);
+            background: linear-gradient(135deg, rgba(59,130,246,.28), rgba(124,58,237,.24));
+            border: 1px solid rgba(147,197,253,.30);
             color: #dbeafe;
             font-weight: 850;
             box-shadow: 0 12px 26px rgba(37,99,235,.16);
         }
-        .notes-board-title {
-            position: relative;
-            margin-top: 24px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
+        .notes-main-title {
+            display:flex;
+            align-items:center;
+            gap:14px;
+            margin: 24px 0 10px 0;
         }
-        .notes-board-title .title-icon {
-            width: 50px;
-            height: 50px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(59,130,246,.22), rgba(168,85,247,.16));
+        .notes-main-title .notes-title-icon {
+            width: 52px;
+            height: 52px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(96,165,250,.24), rgba(168,85,247,.16));
             border: 1px solid rgba(147,197,253,.20);
             font-size: 2rem;
         }
-        .notes-board-title h3 {
-            margin: 0;
-            color: #f8fafc;
-            font-size: 2.15rem;
-            letter-spacing: -.045em;
+        .notes-main-title h3 {
+            margin:0;
+            color:#f8fafc;
+            font-size:2.18rem;
+            letter-spacing:-.045em;
         }
-        .notes-board-subtitle {
-            position: relative;
-            margin: 16px 0 22px 0;
-            max-width: 960px;
-            color: #dbeafe;
-            font-size: 1.02rem;
-            line-height: 1.65;
+        .notes-oneboard-sub {
+            max-width: 950px;
+            color:#dbeafe;
+            font-size:1.02rem;
+            line-height:1.65;
+            margin: 0 0 22px 0;
         }
-        .notes-hero-strip {
-            position: relative;
+        .notes-oneboard-hero {
             min-height: 112px;
             padding: 24px 28px;
             border-radius: 22px;
             background:
-                radial-gradient(circle at 86% 45%, rgba(56,189,248,.22), transparent 24%),
-                linear-gradient(135deg, rgba(30,64,175,.24), rgba(15,23,42,.58));
-            border: 1px solid rgba(96,165,250,.35);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 22px;
-            margin-bottom: 22px;
-        }
-        .notes-hero-strip b { color:#f8fafc; font-size:1.13rem; }
-        .notes-hero-strip small { display:block; color:#93c5fd; margin-top:9px; font-size:.94rem; }
-        .notes-hero-art {
-            min-width: 120px;
-            text-align: center;
-            font-size: 4.4rem;
-            filter: drop-shadow(0 18px 28px rgba(59,130,246,.28));
-            opacity: .95;
-        }
-        .notes-card-title-row {
+                radial-gradient(circle at 86% 45%, rgba(56,189,248,.24), transparent 24%),
+                linear-gradient(135deg, rgba(30,64,175,.29), rgba(15,23,42,.58));
+            border: 1px solid rgba(96,165,250,.36);
             display:flex;
             align-items:center;
             justify-content:space-between;
-            gap:12px;
-            margin-bottom: 18px;
+            gap: 20px;
+            margin: 18px 0 24px 0;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
         }
-        .notes-card-heading {
+        .notes-oneboard-hero b { color:#f8fafc; font-size:1.18rem; }
+        .notes-oneboard-hero small { display:block; color:#93c5fd; margin-top:9px; font-size:.95rem; }
+        .notes-hero-art { font-size:4.4rem; min-width:120px; text-align:center; filter: drop-shadow(0 18px 28px rgba(59,130,246,.28)); }
+        .notes-oneboard-grid {
+            display:grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+        .notes-inner-card {
+            min-height: 335px;
+            padding: 24px;
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at 15% 14%, rgba(124,58,237,.18), transparent 35%),
+                radial-gradient(circle at 78% 20%, rgba(59,130,246,.13), transparent 32%),
+                linear-gradient(135deg, rgba(15,23,42,.74), rgba(15,23,42,.48));
+            border: 1px solid rgba(168,85,247,.32);
+            box-shadow: 0 20px 54px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.04);
+        }
+        .notes-inner-card.add {
+            border-color: rgba(96,165,250,.40);
+            background:
+                radial-gradient(circle at 14% 12%, rgba(59,130,246,.23), transparent 35%),
+                radial-gradient(circle at 90% 90%, rgba(124,58,237,.26), transparent 36%),
+                linear-gradient(135deg, rgba(15,23,42,.74), rgba(30,64,175,.36));
+        }
+        .notes-section-title {
             display:flex;
             align-items:center;
             gap:12px;
@@ -5600,42 +5908,26 @@ def render_home_notes_and_accountability():
             font-size:1.42rem;
             font-weight:900;
             letter-spacing:-.025em;
+            margin-bottom: 18px;
         }
-        .notes-mini-action-set { display:flex; gap:8px; }
-        .notes-mini-action {
-            width:38px; height:38px;
-            display:flex; align-items:center; justify-content:center;
-            border-radius:12px;
-            background:rgba(15,23,42,.46);
-            border:1px solid rgba(148,163,184,.22);
-            color:#bfdbfe;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-        }
-        .notes-panel-shell {
-            min-height: 335px;
-            padding: 24px;
-            border-radius: 24px;
-            background:
-                radial-gradient(circle at 16% 20%, rgba(124,58,237,.18), transparent 36%),
-                radial-gradient(circle at 78% 22%, rgba(59,130,246,.12), transparent 32%),
-                linear-gradient(135deg, rgba(15,23,42,.72), rgba(15,23,42,.46));
-            border: 1px solid rgba(168,85,247,.34);
-            box-shadow: 0 20px 54px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
-        }
-        .notes-panel-shell.add {
-            border-color: rgba(96,165,250,.38);
-            background:
-                radial-gradient(circle at 14% 12%, rgba(59,130,246,.22), transparent 34%),
-                radial-gradient(circle at 90% 90%, rgba(124,58,237,.24), transparent 35%),
-                linear-gradient(135deg, rgba(15,23,42,.76), rgba(30,64,175,.34));
+        .notes-section-title .round-icon {
+            width:42px;
+            height:42px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:14px;
+            background:linear-gradient(135deg, rgba(59,130,246,.32), rgba(139,92,246,.30));
+            border:1px solid rgba(147,197,253,.24);
+            box-shadow:0 12px 26px rgba(59,130,246,.14);
         }
         .notes-empty-state {
-            min-height: 230px;
+            min-height: 245px;
             border-radius: 22px;
-            border: 1px solid rgba(148,163,184,.22);
+            border: 1px solid rgba(147,197,253,.22);
             background:
-                radial-gradient(circle at 50% 38%, rgba(59,130,246,.12), transparent 30%),
-                rgba(15,23,42,.38);
+                radial-gradient(circle at 50% 38%, rgba(59,130,246,.13), transparent 30%),
+                rgba(15,23,42,.36);
             display:flex;
             flex-direction:column;
             align-items:center;
@@ -5644,34 +5936,30 @@ def render_home_notes_and_accountability():
             padding: 28px;
             color:#cbd5e1;
         }
-        .notes-empty-state .big-icon { font-size:3.35rem; margin-bottom:14px; opacity:.92; }
-        .notes-empty-state b { color:#f8fafc; font-size:1.12rem; }
+        .notes-empty-state .big-icon { font-size:3.2rem; margin-bottom:14px; opacity:.95; }
+        .notes-empty-state b { color:#f8fafc; font-size:1.14rem; }
         .notes-empty-state small { color:#bfdbfe; margin-top:10px; }
         .notes-list-card {
-            padding: 15px 16px;
+            padding: 16px 17px;
             border-radius: 17px;
             background:
-                linear-gradient(135deg, rgba(30,64,175,.20), rgba(15,23,42,.52));
-            border: 1px solid rgba(147,197,253,.20);
+                linear-gradient(135deg, rgba(30,64,175,.22), rgba(15,23,42,.54));
+            border: 1px solid rgba(147,197,253,.22);
             margin-bottom: 12px;
             box-shadow: 0 12px 28px rgba(0,0,0,.16);
         }
-        .notes-list-card b { color:#f8fafc; font-size:1.02rem; }
+        .notes-list-card b { color:#f8fafc; font-size:1.03rem; }
         .notes-list-card small { display:block; color:#93c5fd; margin-top:7px; }
-        .note-input-help {
-            color:#bfdbfe;
-            margin: 4px 0 18px 0;
-            line-height:1.55;
-        }
+        .note-input-help { color:#bfdbfe; margin: 0 0 18px 0; line-height:1.55; }
         div[data-testid="stTextArea"] textarea {
-            background: linear-gradient(135deg, rgba(30,64,175,.26), rgba(15,23,42,.50)) !important;
+            background: linear-gradient(135deg, rgba(30,64,175,.36), rgba(15,23,42,.40)) !important;
             color: #eaf2ff !important;
-            border: 1px solid rgba(147,197,253,.38) !important;
+            border: 1px solid rgba(147,197,253,.42) !important;
             border-radius: 18px !important;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 14px 32px rgba(2,6,23,.16) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 14px 32px rgba(2,6,23,.18) !important;
             font-weight: 650 !important;
         }
-        div[data-testid="stTextArea"] textarea::placeholder { color: rgba(191,219,254,.68) !important; }
+        div[data-testid="stTextArea"] textarea::placeholder { color: rgba(191,219,254,.72) !important; }
         div[data-testid="stForm"] { border: 0 !important; padding: 0 !important; background: transparent !important; }
         div[data-testid="stFormSubmitButton"] button {
             min-height: 58px;
@@ -5683,61 +5971,58 @@ def render_home_notes_and_accountability():
             box-shadow: 0 18px 36px rgba(59,130,246,.22), 0 12px 30px rgba(139,92,246,.20) !important;
         }
         @media (max-width: 1100px) {
+            .notes-oneboard-grid { grid-template-columns: 1fr; }
             .notes-hero-art { display:none; }
-            .notes-board-title h3 { font-size:1.75rem; }
+            .notes-main-title h3 { font-size:1.78rem; }
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
-    hero_title = empty_title if recent.empty else f"{note_count} {notes_title_clean.lower()}"
+    hero_title = note_ui.get("hero_empty", "No notes yet") if recent.empty else f"{note_count} {note_ui.get('hero_count', 'saved notes')}"
     hero_sub = memory_label if recent.empty else str(recent.iloc[0]["note_date"])
 
     st.markdown(
         f"""
-        <div class="notes-premium-board">
-            <span class="notes-memory-pill">🧠 {memory_label}</span>
-            <div class="notes-board-title">
-                <span class="title-icon">📝</span>
-                <h3>{notes_title_clean}</h3>
+        <div class="notes-oneboard">
+            <div class="notes-oneboard-head">
+                <span class="notes-memory-pill">🧠 {memory_label}</span>
+                <div class="notes-main-title">
+                    <span class="notes-title-icon">📝</span>
+                    <h3>{notes_title_clean}</h3>
+                </div>
+                <p class="notes-oneboard-sub">{t_local['notes_panel_subtitle']}</p>
             </div>
-            <p class="notes-board-subtitle">{t_local['notes_panel_subtitle']}</p>
-            <div class="notes-hero-strip">
+            <div class="notes-oneboard-hero">
                 <div>
                     <b>🕊️ {hero_title}</b>
                     <small>{hero_sub}</small>
                 </div>
                 <div class="notes-hero-art">📘</div>
             </div>
-        </div>
+            <div class="notes-oneboard-grid">
         """,
         unsafe_allow_html=True,
     )
 
-    notes_col, write_col = st.columns([1.08, .92], gap="large")
+    notes_col, write_col = st.columns([1.15, .85], gap="large")
 
     with notes_col:
         st.markdown(
-            """
-            <div class="notes-panel-shell">
-                <div class="notes-card-title-row">
-                    <div class="notes-card-heading">🔖 Notlarım</div>
-                    <div class="notes-mini-action-set">
-                        <span class="notes-mini-action">≡</span>
-                        <span class="notes-mini-action">▦</span>
-                    </div>
-                </div>
+            f"""
+            <div class="notes-inner-card">
+                <div class="notes-section-title"><span class="round-icon">🔖</span>{note_ui.get('list_title', 'My Notes')}</div>
             """,
             unsafe_allow_html=True,
         )
         if recent.empty:
             st.markdown(
-                """
+                f"""
                 <div class="notes-empty-state">
                     <div class="big-icon">📋</div>
-                    <b>Henüz hiç not eklemedin.</b>
-                    <small>İlk notunu eklemek için sağdaki paneli kullan.</small>
+                    <b>{note_ui.get('empty_big', 'No notes added yet.')}</b>
+                    <small>{note_ui.get('empty_small', 'Add your first note from the right panel.')}</small>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -5758,7 +6043,7 @@ def render_home_notes_and_accountability():
                     )
                 with c_delete:
                     st.write("")
-                    if st.button("🗑️", key=f"delete_note_v39_{row_id}", help="Delete note"):
+                    if st.button("🗑️", key=f"delete_note_v40_{row_id}", help=note_ui.get("delete", "Delete note")):
                         delete_daily_note(row_id)
                         st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
@@ -5766,19 +6051,17 @@ def render_home_notes_and_accountability():
     with write_col:
         st.markdown(
             f"""
-            <div class="notes-panel-shell add">
-                <div class="notes-card-title-row">
-                    <div class="notes-card-heading">➕ {save_title_clean}</div>
-                </div>
-                <p class="note-input-help">{placeholder}</p>
+            <div class="notes-inner-card add">
+                <div class="notes-section-title"><span class="round-icon">➕</span>{note_ui.get('input_title', save_title_clean)}</div>
+                <p class="note-input-help">{note_ui.get('input_help', placeholder)}</p>
             """,
             unsafe_allow_html=True,
         )
-        with st.form(key=f"home_note_form_v39_{st.session_state.language}", clear_on_submit=True):
+        with st.form(key=f"home_note_form_v40_{st.session_state.language}", clear_on_submit=True):
             new_note = st.text_area(
                 "",
                 placeholder=placeholder,
-                key=f"home_note_text_v39_{st.session_state.language}",
+                key=f"home_note_text_v40_{st.session_state.language}",
                 height=185,
             )
             submitted = st.form_submit_button(t_local["note_add"], use_container_width=True)
@@ -5789,6 +6072,8 @@ def render_home_notes_and_accountability():
                 else:
                     st.warning(placeholder)
         st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
 # Run non-destructive migration after all original tables exist.
 professional_db_migration()
