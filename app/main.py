@@ -1,6 +1,7 @@
 
 import io
 import sqlite3
+import html
 from datetime import date, timedelta
 
 import pandas as pd
@@ -2846,49 +2847,58 @@ def coach_assessment_text(records):
     p1, p2, rec, gain = data.get(lang, data["English"])
     return px, p1, p2, rec, gain
 
-def _compact_home_notes_html():
-    """Build a compact right-side notes panel for the home welcome card."""
+
+def _home_notes_right_html():
+    """Compact notes panel shown on the right side of the main welcome dashboard."""
     lang = st.session_state.language
     ui = {
-        "Türkçe": {"title":"📝 Notlarım", "empty":"Henüz not yok. İlk notunu ekle.", "date":"Bugün", "add":"Yeni not eklemek için aşağıdaki küçük paneli kullan.", "saved":"kayıtlı not"},
-        "English": {"title":"📝 My Notes", "empty":"No notes yet. Add your first note.", "date":"Today", "add":"Use the small panel below to add a new note.", "saved":"saved notes"},
-        "Deutsch": {"title":"📝 Meine Notizen", "empty":"Noch keine Notizen. Füge die erste hinzu.", "date":"Heute", "add":"Nutze das kleine Panel unten, um eine neue Notiz hinzuzufügen.", "saved":"gespeicherte Notizen"},
-        "Español": {"title":"📝 Mis notas", "empty":"Aún no hay notas. Añade la primera.", "date":"Hoy", "add":"Usa el panel pequeño de abajo para añadir una nota.", "saved":"notas guardadas"},
-        "Русский": {"title":"📝 Мои заметки", "empty":"Заметок пока нет. Добавь первую.", "date":"Сегодня", "add":"Используй небольшую панель ниже, чтобы добавить заметку.", "saved":"сохранённых заметок"},
+        "Türkçe": {"title": "📝 Notlarım", "count": "kayıtlı not", "empty": "Henüz not yok. İlk notunu ekle.", "hint": "Kaydettiğin notlar burada görünür.", "date": "Bugün"},
+        "English": {"title": "📝 My Notes", "count": "saved notes", "empty": "No notes yet. Add your first one.", "hint": "Saved notes appear here.", "date": "Today"},
+        "Deutsch": {"title": "📝 Meine Notizen", "count": "gespeicherte Notizen", "empty": "Noch keine Notizen. Füge die erste hinzu.", "hint": "Gespeicherte Notizen erscheinen hier.", "date": "Heute"},
+        "Español": {"title": "📝 Mis notas", "count": "notas guardadas", "empty": "Aún no hay notas. Añade la primera.", "hint": "Las notas guardadas aparecen aquí.", "date": "Hoy"},
+        "Русский": {"title": "📝 Мои заметки", "count": "сохранённых заметок", "empty": "Заметок пока нет. Добавь первую.", "hint": "Сохранённые заметки появятся здесь.", "date": "Сегодня"},
     }.get(lang, {})
     try:
-        notes = load_daily_notes(limit=4)
+        notes = load_daily_notes(limit=5)
     except Exception:
         notes = pd.DataFrame()
-    if notes.empty:
-        notes_html = f"""
-        <div class="home-note-empty">
-            <span class="home-note-empty-icon">📋</span>
-            <b>{ui.get('empty', 'No notes yet.')}</b>
-            <small>{ui.get('add', 'Add a new note below.')}</small>
-        </div>"""
-        count_text = "0"
-    else:
-        count_text = str(len(notes))
-        items = []
-        for _, row in notes.iterrows():
-            txt = str(row.get("note_text", ""))[:72]
-            dt = str(row.get("note_date", ui.get("date", "Today")))
-            items.append(f"""
-            <div class="home-note-item">
-                <div><b>✅ {txt}</b><small>{dt}</small></div>
-            </div>""")
-        notes_html = "".join(items)
-    return f"""
-    <div class="home-notes-card">
-        <div class="home-notes-top">
-            <span class="home-notes-icon">🧠</span>
-            <div><b>{ui.get('title', 'My Notes')}</b><small>{count_text} {ui.get('saved', 'saved notes')}</small></div>
-        </div>
-        <div class="home-notes-list">{notes_html}</div>
-    </div>
-    """
 
+    if notes.empty:
+        note_items = f"""
+            <div class="welcome-note-empty">
+                <div class="welcome-note-empty-icon">📘</div>
+                <b>{ui.get('empty', 'No notes yet.')}</b>
+                <small>{ui.get('hint', 'Saved notes appear here.')}</small>
+            </div>
+        """
+        count = "0"
+    else:
+        count = str(len(notes))
+        cards = []
+        for _, row in notes.iterrows():
+            raw_note = str(row.get("note_text", ""))
+            note = html.escape(raw_note[:110] + ("..." if len(raw_note) > 110 else ""))
+            dt = html.escape(str(row.get("note_date", ui.get("date", "Today"))))
+            cards.append(f"""
+                <div class="welcome-note-item">
+                    <div class="welcome-note-dot">✓</div>
+                    <div><b>{note}</b><small>{dt}</small></div>
+                </div>
+            """)
+        note_items = "".join(cards)
+
+    return f"""
+        <div class="welcome-notes-panel">
+            <div class="welcome-notes-header">
+                <div class="welcome-notes-icon">🧠</div>
+                <div>
+                    <b>{ui.get('title', 'My Notes')}</b>
+                    <small>{count} {ui.get('count', 'saved notes')}</small>
+                </div>
+            </div>
+            <div class="welcome-notes-body">{note_items}</div>
+        </div>
+    """
 
 def render_home_booster():
     records = calculate_scores(st.session_state.records)
@@ -2907,35 +2917,38 @@ def render_home_booster():
     quote = get_motivation_quote(avg_productivity, avg_stress, avg_sleep)
     energy_label = t["energy_good"] if avg_sleep >= 6.5 and avg_stress <= 6 else t["energy_watch"]
     risk_label = t["risk_high"] if avg_stress >= 7 or avg_sleep < 5.5 else t["risk_medium"] if avg_stress >= 5.5 or avg_sleep < 6.5 else t["risk_low"]
-    notes_html = _compact_home_notes_html()
 
     st.markdown(
         f"""
         <style>
-        .home-notes-card {{
-            height: 100%;
-            min-height: 365px;
+        .welcome-card {{ grid-template-columns: minmax(0, 1.45fr) minmax(360px, .75fr) !important; align-items: stretch !important; }}
+        .welcome-notes-panel {{
+            min-height: 330px;
             padding: 28px;
             border-radius: 26px;
             background:
-                radial-gradient(circle at 15% 10%, rgba(96,165,250,.22), transparent 34%),
-                radial-gradient(circle at 96% 92%, rgba(124,58,237,.20), transparent 38%),
-                linear-gradient(135deg, rgba(15,23,42,.68), rgba(30,41,79,.48));
-            border: 1px solid rgba(96,165,250,.28);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 18px 45px rgba(0,0,0,.25);
+                radial-gradient(circle at 8% 12%, rgba(96,165,250,.26), transparent 34%),
+                radial-gradient(circle at 92% 88%, rgba(139,92,246,.20), transparent 34%),
+                linear-gradient(145deg, rgba(15,23,42,.70), rgba(30,41,99,.42));
+            border: 1px solid rgba(96,165,250,.34);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 22px 55px rgba(0,0,0,.24);
+            display: flex;
+            flex-direction: column;
         }}
-        .home-notes-top {{display:flex;align-items:center;gap:14px;margin-bottom:18px;}}
-        .home-notes-icon {{display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg, rgba(59,130,246,.42), rgba(139,92,246,.36));font-size:24px;}}
-        .home-notes-top b {{display:block;font-size:24px;color:#f8fafc;}}
-        .home-notes-top small {{display:block;color:#93c5fd;margin-top:4px;font-weight:700;}}
-        .home-notes-list {{display:flex;flex-direction:column;gap:12px;}}
-        .home-note-item {{padding:14px 16px;border-radius:18px;background:rgba(15,23,42,.56);border:1px solid rgba(148,163,184,.18);}}
-        .home-note-item b {{display:block;color:#fff;font-size:16px;}}
-        .home-note-item small {{display:block;color:#93c5fd;margin-top:6px;font-weight:700;}}
-        .home-note-empty {{height:235px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:22px;background:rgba(15,23,42,.35);border:1px solid rgba(148,163,184,.16);}}
-        .home-note-empty-icon {{font-size:44px;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(96,165,250,.35));}}
-        .home-note-empty b {{font-size:20px;color:#f8fafc;}}
-        .home-note-empty small {{margin-top:10px;color:#bfdbfe;font-weight:700;}}
+        .welcome-notes-header {{ display:flex; align-items:center; gap:14px; margin-bottom:18px; }}
+        .welcome-notes-icon {{ width:50px; height:50px; border-radius:16px; display:grid; place-items:center; font-size:24px; background:linear-gradient(135deg, rgba(59,130,246,.46), rgba(139,92,246,.36)); border:1px solid rgba(147,197,253,.24); }}
+        .welcome-notes-header b {{ display:block; color:#f8fafc; font-size:24px; letter-spacing:-.03em; }}
+        .welcome-notes-header small {{ display:block; margin-top:4px; color:#93c5fd; font-weight:800; }}
+        .welcome-notes-body {{ display:flex; flex-direction:column; gap:12px; flex:1; }}
+        .welcome-note-item {{ display:flex; gap:12px; align-items:flex-start; padding:14px 15px; border-radius:17px; background:rgba(15,23,42,.52); border:1px solid rgba(147,197,253,.14); }}
+        .welcome-note-dot {{ width:25px; height:25px; border-radius:9px; display:grid; place-items:center; background:linear-gradient(135deg,#60a5fa,#8b5cf6); color:white; font-weight:900; flex:0 0 auto; }}
+        .welcome-note-item b {{ display:block; color:#f8fafc; font-size:15px; line-height:1.35; }}
+        .welcome-note-item small {{ display:block; margin-top:6px; color:#93c5fd; font-weight:800; }}
+        .welcome-note-empty {{ flex:1; min-height:215px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; border-radius:22px; background:rgba(15,23,42,.35); border:1px solid rgba(147,197,253,.16); }}
+        .welcome-note-empty-icon {{ font-size:48px; margin-bottom:14px; filter:drop-shadow(0 20px 30px rgba(96,165,250,.32)); }}
+        .welcome-note-empty b {{ color:#f8fafc; font-size:19px; }}
+        .welcome-note-empty small {{ color:#bfdbfe; margin-top:10px; font-weight:750; }}
+        @media (max-width: 1100px) {{ .welcome-card {{ grid-template-columns: 1fr !important; }} }}
         </style>
         <div class="welcome-card">
             <div>
@@ -2953,27 +2966,11 @@ def render_home_booster():
                     <small>{t["welcome_profile_hint"]}</small>
                 </div>
             </div>
-            {notes_html}
+            {_home_notes_right_html()}
         </div>
         """,
         unsafe_allow_html=True,
     )
-
-    note_label = {
-        "Türkçe": "➕ Hızlı not ekle", "English": "➕ Add quick note", "Deutsch": "➕ Schnellnotiz hinzufügen",
-        "Español": "➕ Añadir nota rápida", "Русский": "➕ Добавить быструю заметку"
-    }.get(st.session_state.language, "➕ Add quick note")
-    placeholder = TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"]).get("note_placeholder", "Write a note...")
-    with st.expander(note_label, expanded=False):
-        with st.form(key=f"home_compact_note_form_{st.session_state.language}", clear_on_submit=True):
-            new_note = st.text_area("", placeholder=placeholder, height=100)
-            submitted = st.form_submit_button(note_label, use_container_width=True)
-            if submitted:
-                if save_daily_note(new_note, "Note", "Normal"):
-                    st.success(TRANSLATIONS.get(st.session_state.language, TRANSLATIONS["English"]).get("note_added", "Note saved."))
-                    st.rerun()
-                else:
-                    st.warning(placeholder)
 
     k1, k2, k3, k4 = st.columns(4)
     k1.metric(t["productivity_kpi"], f"{avg_productivity:.0f}/100")
@@ -2985,6 +2982,7 @@ def render_home_booster():
     s1.metric(f"🔥 {t['study_streak']}", f"{study_streak} {t['day_unit']}")
     s2.metric(f"💧 {t['water_streak']}", f"{water_streak} {t['day_unit']}")
     s3.metric(f"🏃 {t['exercise_streak']}", f"{exercise_streak} {t['day_unit']}")
+
 
 def render_student_bottom_summary():
     records = calculate_scores(st.session_state.records)
@@ -3347,6 +3345,7 @@ def render_dashboard_tabs():
     with tab1:
         # Daily page keeps the product overview, but other tabs stay clean.
         render_home_booster()
+
         px = premium_texts()
 
         with st.form("daily_tracking_form_v22", clear_on_submit=False):
