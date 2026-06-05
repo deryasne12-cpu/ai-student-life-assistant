@@ -3507,49 +3507,153 @@ def render_premium_weekly_report(records):
     st.markdown(html, unsafe_allow_html=True)
 
 def render_compact_notes_dashboard():
-    """Small notes dashboard under the welcome card: add + list notes without separate bulky panels."""
+    """Premium notes dashboard: one cohesive board with notes on the left and note input on the right."""
     lang = st.session_state.language
     ui = {
-        "Türkçe": {"title":"📝 Notlarım", "count":"kayıtlı not", "empty":"Henüz not yok. İlk notunu ekle.", "placeholder":"Örn: Big Data quiz tekrar edilecek, SQL soruları çözülecek...", "add":"➕ Notu Kaydet", "delete":"Notu sil"},
-        "English": {"title":"📝 My Notes", "count":"saved notes", "empty":"No notes yet. Add your first one.", "placeholder":"Ex: Review Big Data quiz, solve SQL questions...", "add":"➕ Save Note", "delete":"Delete note"},
-        "Deutsch": {"title":"📝 Meine Notizen", "count":"gespeicherte Notizen", "empty":"Noch keine Notizen. Füge die erste hinzu.", "placeholder":"z.B. Big-Data-Quiz wiederholen, SQL-Aufgaben lösen...", "add":"➕ Notiz speichern", "delete":"Notiz löschen"},
-        "Español": {"title":"📝 Mis notas", "count":"notas guardadas", "empty":"Aún no hay notas. Añade la primera.", "placeholder":"Ej: repasar quiz de Big Data, resolver preguntas SQL...", "add":"➕ Guardar nota", "delete":"Eliminar nota"},
-        "Русский": {"title":"📝 Мои заметки", "count":"сохранённых заметок", "empty":"Заметок пока нет. Добавь первую.", "placeholder":"Напр.: повторить Big Data quiz, решить SQL-задачи...", "add":"➕ Сохранить заметку", "delete":"Удалить заметку"},
+        "Türkçe": {
+            "title":"📝 Notlarım", "count":"kayıtlı not", "empty":"Henüz not yok. İlk notunu ekle.",
+            "empty_sub":"Kaydettiğin notlar burada düzenli şekilde görünecek.",
+            "placeholder":"Örn: Big Data quiz tekrar edilecek, SQL soruları çözülecek...",
+            "add":"➕ Notu Kaydet", "delete":"Notu sil", "input_title":"➕ Notu Kaydet",
+            "input_desc":"Kısa bir görev, fikir veya ders notu yaz. Sistem bunu öğrenci hafızasına bağlar.",
+            "memory":"🧠 Öğrenci hafızası aktif"
+        },
+        "English": {
+            "title":"📝 My Notes", "count":"saved notes", "empty":"No notes yet. Add your first one.",
+            "empty_sub":"Saved notes will appear here in an organized dashboard.",
+            "placeholder":"Ex: Review Big Data quiz, solve SQL questions...",
+            "add":"➕ Save Note", "delete":"Delete note", "input_title":"➕ Save Note",
+            "input_desc":"Write a short task, idea, or study note. The system connects it to student memory.",
+            "memory":"🧠 Student memory active"
+        },
+        "Deutsch": {
+            "title":"📝 Meine Notizen", "count":"gespeicherte Notizen", "empty":"Noch keine Notizen. Füge die erste hinzu.",
+            "empty_sub":"Gespeicherte Notizen erscheinen hier übersichtlich.",
+            "placeholder":"z.B. Big-Data-Quiz wiederholen, SQL-Aufgaben lösen...",
+            "add":"➕ Notiz speichern", "delete":"Notiz löschen", "input_title":"➕ Notiz speichern",
+            "input_desc":"Schreibe eine kurze Aufgabe, Idee oder Lernnotiz. Das System verbindet sie mit dem Studenten-Gedächtnis.",
+            "memory":"🧠 Studentengedächtnis aktiv"
+        },
+        "Español": {
+            "title":"📝 Mis notas", "count":"notas guardadas", "empty":"Aún no hay notas. Añade la primera.",
+            "empty_sub":"Las notas guardadas aparecerán aquí de forma organizada.",
+            "placeholder":"Ej: repasar quiz de Big Data, resolver preguntas SQL...",
+            "add":"➕ Guardar nota", "delete":"Eliminar nota", "input_title":"➕ Guardar nota",
+            "input_desc":"Escribe una tarea, idea o nota de estudio. El sistema la conecta con la memoria del estudiante.",
+            "memory":"🧠 Memoria del estudiante activa"
+        },
+        "Русский": {
+            "title":"📝 Мои заметки", "count":"сохранённых заметок", "empty":"Заметок пока нет. Добавь первую.",
+            "empty_sub":"Сохранённые заметки будут отображаться здесь аккуратно.",
+            "placeholder":"Напр.: повторить Big Data quiz, решить SQL-задачи...",
+            "add":"➕ Сохранить заметку", "delete":"Удалить заметку", "input_title":"➕ Сохранить заметку",
+            "input_desc":"Напиши короткую задачу, идею или учебную заметку. Система сохранит её в памяти студента.",
+            "memory":"🧠 Память студента активна"
+        },
     }.get(lang, {})
-    recent = load_daily_notes(limit=5)
+    recent = load_daily_notes(limit=6)
     count = 0 if recent.empty else len(recent)
 
     st.markdown(f"""
     <style>
-    .compact-notes-board {{
-        margin: 22px 0 32px 0;
-        padding: 22px;
-        border-radius: 26px;
+    .premium-notes-shell {{
+        margin: 22px 0 34px 0;
+        padding: 30px 32px 34px 32px;
+        border-radius: 30px;
         background:
-            radial-gradient(circle at 8% 12%, rgba(59,130,246,.20), transparent 32%),
-            radial-gradient(circle at 92% 90%, rgba(139,92,246,.18), transparent 30%),
-            linear-gradient(135deg, rgba(8,22,44,.86), rgba(17,24,39,.72));
-        border:1px solid rgba(96,165,250,.24);
-        box-shadow:0 20px 55px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+            radial-gradient(circle at 8% 8%, rgba(59,130,246,.24), transparent 33%),
+            radial-gradient(circle at 96% 84%, rgba(139,92,246,.23), transparent 34%),
+            linear-gradient(135deg, rgba(8,24,50,.94), rgba(13,21,42,.90) 48%, rgba(30,28,65,.82));
+        border: 1px solid rgba(96,165,250,.30);
+        box-shadow: 0 26px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.06);
     }}
-    .compact-notes-title {{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }}
-    .compact-notes-title b {{ color:#f8fafc; font-size:23px; letter-spacing:-.02em; }}
-    .compact-notes-title small {{ color:#93c5fd; font-weight:800; margin-left:6px; }}
-    .compact-note-list {{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }}
-    .compact-note-card {{ padding:14px 16px; border-radius:16px; background:rgba(15,23,42,.46); border:1px solid rgba(147,197,253,.16); }}
-    .compact-note-card b {{ color:#f8fafc; }}
-    .compact-note-card small {{ display:block; color:#93c5fd; margin-top:5px; }}
-    .compact-note-empty {{ min-height:130px; display:grid; place-items:center; text-align:center; color:#cbd5e1; border-radius:18px; background:rgba(15,23,42,.28); border:1px dashed rgba(147,197,253,.20); }}
+    .premium-notes-top {{
+        display:flex; align-items:flex-start; justify-content:space-between; gap:22px; margin-bottom:24px;
+    }}
+    .premium-notes-badge {{
+        display:inline-flex; align-items:center; gap:9px; padding:10px 16px; border-radius:999px;
+        background:linear-gradient(135deg, rgba(59,130,246,.22), rgba(139,92,246,.22));
+        border:1px solid rgba(147,197,253,.28); color:#cfe3ff; font-weight:850; margin-bottom:18px;
+    }}
+    .premium-notes-title {{ display:flex; align-items:center; gap:14px; color:#f8fafc; font-size:30px; font-weight:950; letter-spacing:-.03em; }}
+    .premium-notes-title small {{ color:#93c5fd; font-size:15px; font-weight:900; margin-left:8px; }}
+    .premium-notes-desc {{ color:#d7e2f2; font-size:17px; line-height:1.65; margin-top:14px; max-width:900px; }}
+    .premium-memory-card {{
+        margin: 2px 0 26px 0; padding: 22px 26px; border-radius: 22px;
+        background: linear-gradient(135deg, rgba(30,64,125,.42), rgba(15,23,42,.60));
+        border:1px solid rgba(96,165,250,.30);
+        display:flex; align-items:center; justify-content:space-between; min-height:92px;
+    }}
+    .premium-memory-card b {{ color:#f8fafc; font-size:20px; }}
+    .premium-memory-card span {{ color:#9cc7ff; display:block; margin-top:8px; font-weight:700; }}
+    .premium-memory-card .book-icon {{ font-size:54px; filter:drop-shadow(0 0 22px rgba(96,165,250,.55)); opacity:.95; }}
+    .notes-column-card, .note-input-card {{
+        padding: 24px;
+        border-radius: 24px;
+        min-height: 330px;
+        border:1px solid rgba(96,165,250,.25);
+        background:
+            radial-gradient(circle at 10% 10%, rgba(139,92,246,.16), transparent 28%),
+            linear-gradient(145deg, rgba(10,20,42,.90), rgba(16,24,50,.80));
+        box-shadow: 0 18px 45px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+    }}
+    .notes-column-card {{ border-color:rgba(168,85,247,.34); }}
+    .note-input-card {{ border-color:rgba(96,165,250,.34); }}
+    .notes-subtitle {{ color:#f8fafc; font-size:22px; font-weight:950; display:flex; gap:12px; align-items:center; margin-bottom:18px; }}
+    .notes-empty-box {{
+        height:220px; display:grid; place-items:center; text-align:center; border-radius:20px;
+        background:linear-gradient(135deg, rgba(15,23,42,.42), rgba(30,41,59,.22));
+        border:1px solid rgba(147,197,253,.16); color:#dbeafe;
+    }}
+    .notes-empty-box .empty-icon {{ font-size:48px; opacity:.9; margin-bottom:10px; }}
+    .notes-empty-box b {{ font-size:21px; color:#f8fafc; }}
+    .notes-empty-box span {{ display:block; color:#9cc7ff; margin-top:9px; font-weight:700; }}
+    .compact-note-card {{
+        padding:15px 16px; border-radius:16px; margin-bottom:10px;
+        background:linear-gradient(135deg, rgba(30,41,59,.58), rgba(15,23,42,.42));
+        border:1px solid rgba(147,197,253,.18); color:#f8fafc;
+    }}
+    .compact-note-card b {{ color:#f8fafc; font-size:16px; }}
+    .compact-note-card small {{ display:block; color:#93c5fd; margin-top:6px; font-weight:800; }}
+    .note-input-hint {{ color:#cbd5e1; font-size:16px; line-height:1.55; margin:2px 0 18px 0; }}
+    div[data-testid="stTextArea"] textarea {{
+        background: linear-gradient(135deg, rgba(30,55,95,.72), rgba(22,30,62,.72)) !important;
+        color:#f8fafc !important; border:1px solid rgba(147,197,253,.28) !important;
+        border-radius:18px !important; min-height:150px !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.05) !important;
+    }}
+    div[data-testid="stTextArea"] textarea::placeholder {{ color:#a8c8f8 !important; opacity:.88 !important; }}
+    div.stButton > button[kind="secondary"], div.stFormSubmitButton > button {{
+        border-radius:16px !important;
+        background:linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+        border:0 !important; color:white !important; font-weight:900 !important;
+        min-height:54px !important; box-shadow:0 12px 30px rgba(59,130,246,.25) !important;
+    }}
     </style>
-    <div class="compact-notes-board">
-      <div class="compact-notes-title"><b>{html.escape(ui.get('title','My Notes'))}</b><small>{count} {html.escape(ui.get('count','saved notes'))}</small></div>
+    <div class="premium-notes-shell">
+        <div class="premium-notes-top">
+            <div>
+                <div class="premium-notes-badge">{html.escape(ui.get('memory','Student memory active'))}</div>
+                <div class="premium-notes-title">{html.escape(ui.get('title','My Notes'))}<small>{count} {html.escape(ui.get('count','saved notes'))}</small></div>
+                <div class="premium-notes-desc">{html.escape(ui.get('input_desc','Write a short task, idea, or study note.'))}</div>
+            </div>
+        </div>
+        <div class="premium-memory-card">
+            <div><b>{html.escape(ui.get('empty','No notes yet. Add your first one.') if count == 0 else ui.get('title','My Notes'))}</b><span>{html.escape(ui.get('empty_sub','Saved notes will appear here.'))}</span></div>
+            <div class="book-icon">📘</div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    left, right = st.columns([1.35, .65], gap="large")
+    left, right = st.columns([1.18, 1.0], gap="large")
+
     with left:
+        st.markdown(f'<div class="notes-column-card"><div class="notes-subtitle">🔖 {html.escape(ui.get("title","My Notes").replace("📝 ",""))}</div>', unsafe_allow_html=True)
         if recent.empty:
-            st.markdown(f'<div class="compact-note-empty">📘<br><b>{html.escape(ui.get("empty", "No notes yet."))}</b></div>', unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="notes-empty-box"><div><div class="empty-icon">📋</div><b>{html.escape(ui.get("empty", "No notes yet."))}</b><span>{html.escape(ui.get("empty_sub", "Saved notes will appear here."))}</span></div></div>',
+                unsafe_allow_html=True
+            )
         else:
             for _, row in recent.iterrows():
                 row_id = int(row["id"])
@@ -3568,15 +3672,19 @@ def render_compact_notes_dashboard():
                     if st.button("🗑️", key=f"delete_compact_note_{row_id}", help=ui.get("delete", "Delete note")):
                         delete_daily_note(row_id)
                         st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
     with right:
+        st.markdown(f'<div class="note-input-card"><div class="notes-subtitle">{html.escape(ui.get("input_title","Save Note"))}</div><div class="note-input-hint">{html.escape(ui.get("input_desc","Write a note."))}</div>', unsafe_allow_html=True)
         with st.form(key=f"compact_note_form_{st.session_state.language}", clear_on_submit=True):
-            new_note = st.text_area("", placeholder=ui.get("placeholder", "Write a note..."), height=120, key=f"compact_note_text_{st.session_state.language}")
+            new_note = st.text_area("", placeholder=ui.get("placeholder", "Write a note..."), height=140, key=f"compact_note_text_{st.session_state.language}")
             submitted = st.form_submit_button(ui.get("add", "Save Note"), use_container_width=True)
             if submitted:
                 if save_daily_note(new_note, "Note", "Normal"):
                     st.rerun()
                 else:
                     st.warning(ui.get("placeholder", "Write a note..."))
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_dashboard_tabs():
