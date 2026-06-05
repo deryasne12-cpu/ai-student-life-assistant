@@ -1,5 +1,6 @@
 
 import io
+import os
 import sqlite3
 import html
 from datetime import date, timedelta
@@ -2572,12 +2573,34 @@ def create_pdf_report(profile, weekly_summary, recommendations, status_note, rec
     pdf = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
 
+    # Turkish/Unicode-safe PDF fonts. Helvetica breaks characters like ğ, ş, ı, İ.
+    # We try common Linux + Python package paths used by local machines and Streamlit Cloud.
     try:
         from reportlab.pdfbase import pdfmetrics
         from reportlab.pdfbase.ttfonts import TTFont
-        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-        bold_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-        if os.path.exists(font_path) and os.path.exists(bold_path):
+        candidate_regular = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/local/share/fonts/DejaVuSans.ttf",
+            "/app/.heroku/python/lib/python3.11/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf",
+            "/home/adminuser/venv/lib/python3.11/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf",
+        ]
+        candidate_bold = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "/usr/local/share/fonts/DejaVuSans-Bold.ttf",
+            "/app/.heroku/python/lib/python3.11/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Bold.ttf",
+            "/home/adminuser/venv/lib/python3.11/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Bold.ttf",
+        ]
+        try:
+            import matplotlib
+            mpl_font_dir = os.path.join(os.path.dirname(matplotlib.__file__), "mpl-data", "fonts", "ttf")
+            candidate_regular.append(os.path.join(mpl_font_dir, "DejaVuSans.ttf"))
+            candidate_bold.append(os.path.join(mpl_font_dir, "DejaVuSans-Bold.ttf"))
+        except Exception:
+            pass
+
+        font_path = next((fp for fp in candidate_regular if os.path.exists(fp)), None)
+        bold_path = next((fp for fp in candidate_bold if os.path.exists(fp)), None)
+        if font_path and bold_path:
             pdfmetrics.registerFont(TTFont("DejaVu", font_path))
             pdfmetrics.registerFont(TTFont("DejaVu-Bold", bold_path))
             regular_font, bold_font = "DejaVu", "DejaVu-Bold"
@@ -3008,54 +3031,41 @@ def coach_assessment_text(records):
 
 
 def _home_notes_right_html():
-    """Compact notes panel shown on the right side of the main welcome dashboard."""
+    """Right side of the welcome dashboard: animated daily mission feed, not notes."""
     lang = st.session_state.language
     ui = {
-        "Türkçe": {"title": "📝 Notlarım", "count": "kayıtlı not", "empty": "Henüz not yok. İlk notunu ekle.", "hint": "Kaydettiğin notlar burada görünür.", "date": "Bugün"},
-        "English": {"title": "📝 My Notes", "count": "saved notes", "empty": "No notes yet. Add your first one.", "hint": "Saved notes appear here.", "date": "Today"},
-        "Deutsch": {"title": "📝 Meine Notizen", "count": "gespeicherte Notizen", "empty": "Noch keine Notizen. Füge die erste hinzu.", "hint": "Gespeicherte Notizen erscheinen hier.", "date": "Heute"},
-        "Español": {"title": "📝 Mis notas", "count": "notas guardadas", "empty": "Aún no hay notas. Añade la primera.", "hint": "Las notas guardadas aparecen aquí.", "date": "Hoy"},
-        "Русский": {"title": "📝 Мои заметки", "count": "сохранённых заметок", "empty": "Заметок пока нет. Добавь первую.", "hint": "Сохранённые заметки появятся здесь.", "date": "Сегодня"},
+        "Türkçe": {"title": "📌 Bugünkü Görevler", "subtitle": "Profiline göre anlık değişen görev akışı", "hint": "Küçük görev, net ilerleme."},
+        "English": {"title": "📌 Today's Tasks", "subtitle": "Live task feed based on your profile", "hint": "Small task, clear progress."},
+        "Deutsch": {"title": "📌 Heutige Aufgaben", "subtitle": "Live-Aufgaben basierend auf deinem Profil", "hint": "Kleine Aufgabe, klarer Fortschritt."},
+        "Español": {"title": "📌 Tareas de hoy", "subtitle": "Flujo de tareas según tu perfil", "hint": "Tarea pequeña, progreso claro."},
+        "Русский": {"title": "📌 Задачи на сегодня", "subtitle": "Живая лента задач по твоему профилю", "hint": "Маленькая задача, ясный прогресс."},
     }.get(lang, {})
-    try:
-        notes = load_daily_notes(limit=5)
-    except Exception:
-        notes = pd.DataFrame()
+    missions = get_dynamic_daily_mission()[:4]
+    # Keep four animated slides. Fallback to translated default missions.
+    if not missions:
+        missions = [t.get("mission_study", "Complete one study block"), t.get("mission_water", "Drink water"), t.get("mission_walk", "Walk or stretch"), t.get("mission_sleep", "Protect sleep")]
+    while len(missions) < 4:
+        missions.append(missions[-1])
 
-    if notes.empty:
-        note_items = f"""
-            <div class="welcome-note-empty">
-                <div class="welcome-note-empty-icon">📘</div>
-                <b>{ui.get('empty', 'No notes yet.')}</b>
-                <small>{ui.get('hint', 'Saved notes appear here.')}</small>
-            </div>
-        """
-        count = "0"
-    else:
-        count = str(len(notes))
-        cards = []
-        for _, row in notes.iterrows():
-            raw_note = str(row.get("note_text", ""))
-            note = html.escape(raw_note[:110] + ("..." if len(raw_note) > 110 else ""))
-            dt = html.escape(str(row.get("note_date", ui.get("date", "Today"))))
-            cards.append(f"""
-                <div class="welcome-note-item">
-                    <div class="welcome-note-dot">✓</div>
-                    <div><b>{note}</b><small>{dt}</small></div>
-                </div>
-            """)
-        note_items = "".join(cards)
-
+    slides = "".join(
+        f"""
+        <div class=\"mission-slide-pro\">
+            <span class=\"mission-icon\">⚡</span>
+            <b>{html.escape(str(item))}</b>
+            <small>{html.escape(ui.get('hint', 'Small task, clear progress.'))}</small>
+        </div>
+        """ for item in missions[:4]
+    )
     return f"""
-        <div class="welcome-notes-panel">
-            <div class="welcome-notes-header">
-                <div class="welcome-notes-icon">🧠</div>
+        <div class=\"welcome-mission-panel\">
+            <div class=\"mission-panel-head\">
+                <div class=\"mission-panel-icon\">🤖</div>
                 <div>
-                    <b>{ui.get('title', 'My Notes')}</b>
-                    <small>{count} {ui.get('count', 'saved notes')}</small>
+                    <b>{html.escape(ui.get('title', 'Today Tasks'))}</b>
+                    <small>{html.escape(ui.get('subtitle', 'Live task feed'))}</small>
                 </div>
             </div>
-            <div class="welcome-notes-body">{note_items}</div>
+            <div class=\"mission-rotator\">{slides}</div>
         </div>
     """
 
@@ -3080,33 +3090,41 @@ def render_home_booster():
     st.markdown(
         f"""
         <style>
-        .welcome-card {{ grid-template-columns: minmax(0, 1.45fr) minmax(360px, .75fr) !important; align-items: stretch !important; }}
-        .welcome-notes-panel {{
+        .welcome-card {{ grid-template-columns: minmax(0, 1.35fr) minmax(380px, .85fr) !important; align-items: stretch !important; }}
+        .welcome-mission-panel {{
             min-height: 330px;
             padding: 28px;
             border-radius: 26px;
             background:
-                radial-gradient(circle at 8% 12%, rgba(96,165,250,.26), transparent 34%),
-                radial-gradient(circle at 92% 88%, rgba(139,92,246,.20), transparent 34%),
-                linear-gradient(145deg, rgba(15,23,42,.70), rgba(30,41,99,.42));
+                radial-gradient(circle at 10% 10%, rgba(96,165,250,.28), transparent 34%),
+                radial-gradient(circle at 92% 84%, rgba(139,92,246,.26), transparent 34%),
+                linear-gradient(145deg, rgba(15,23,42,.70), rgba(30,41,99,.44));
             border: 1px solid rgba(96,165,250,.34);
             box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 22px 55px rgba(0,0,0,.24);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }}
-        .welcome-notes-header {{ display:flex; align-items:center; gap:14px; margin-bottom:18px; }}
-        .welcome-notes-icon {{ width:50px; height:50px; border-radius:16px; display:grid; place-items:center; font-size:24px; background:linear-gradient(135deg, rgba(59,130,246,.46), rgba(139,92,246,.36)); border:1px solid rgba(147,197,253,.24); }}
-        .welcome-notes-header b {{ display:block; color:#f8fafc; font-size:24px; letter-spacing:-.03em; }}
-        .welcome-notes-header small {{ display:block; margin-top:4px; color:#93c5fd; font-weight:800; }}
-        .welcome-notes-body {{ display:flex; flex-direction:column; gap:12px; flex:1; }}
-        .welcome-note-item {{ display:flex; gap:12px; align-items:flex-start; padding:14px 15px; border-radius:17px; background:rgba(15,23,42,.52); border:1px solid rgba(147,197,253,.14); }}
-        .welcome-note-dot {{ width:25px; height:25px; border-radius:9px; display:grid; place-items:center; background:linear-gradient(135deg,#60a5fa,#8b5cf6); color:white; font-weight:900; flex:0 0 auto; }}
-        .welcome-note-item b {{ display:block; color:#f8fafc; font-size:15px; line-height:1.35; }}
-        .welcome-note-item small {{ display:block; margin-top:6px; color:#93c5fd; font-weight:800; }}
-        .welcome-note-empty {{ flex:1; min-height:215px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; border-radius:22px; background:rgba(15,23,42,.35); border:1px solid rgba(147,197,253,.16); }}
-        .welcome-note-empty-icon {{ font-size:48px; margin-bottom:14px; filter:drop-shadow(0 20px 30px rgba(96,165,250,.32)); }}
-        .welcome-note-empty b {{ color:#f8fafc; font-size:19px; }}
-        .welcome-note-empty small {{ color:#bfdbfe; margin-top:10px; font-weight:750; }}
+        .mission-panel-head {{ display:flex; align-items:center; gap:14px; margin-bottom:20px; }}
+        .mission-panel-icon {{ width:50px; height:50px; border-radius:16px; display:grid; place-items:center; font-size:24px; background:linear-gradient(135deg, rgba(59,130,246,.48), rgba(139,92,246,.36)); border:1px solid rgba(147,197,253,.24); }}
+        .mission-panel-head b {{ display:block; color:#f8fafc; font-size:24px; letter-spacing:-.03em; }}
+        .mission-panel-head small {{ display:block; margin-top:4px; color:#93c5fd; font-weight:800; }}
+        .mission-rotator {{ position:relative; flex:1; min-height:210px; border-radius:22px; background:rgba(15,23,42,.32); border:1px solid rgba(147,197,253,.15); overflow:hidden; }}
+        .mission-slide-pro {{ position:absolute; inset:0; padding:34px; display:flex; flex-direction:column; justify-content:center; opacity:0; transform:translateY(18px) scale(.98); animation: missionFlow 16s infinite; }}
+        .mission-slide-pro:nth-child(1) {{ animation-delay:0s; }}
+        .mission-slide-pro:nth-child(2) {{ animation-delay:4s; }}
+        .mission-slide-pro:nth-child(3) {{ animation-delay:8s; }}
+        .mission-slide-pro:nth-child(4) {{ animation-delay:12s; }}
+        .mission-slide-pro .mission-icon {{ font-size:34px; margin-bottom:14px; filter:drop-shadow(0 14px 22px rgba(96,165,250,.28)); }}
+        .mission-slide-pro b {{ color:#f8fafc; font-size:24px; line-height:1.22; letter-spacing:-.025em; }}
+        .mission-slide-pro small {{ margin-top:12px; color:#c7d2fe; font-weight:750; }}
+        @keyframes missionFlow {{
+            0% {{ opacity:0; transform:translateY(18px) scale(.98); }}
+            8% {{ opacity:1; transform:translateY(0) scale(1); }}
+            24% {{ opacity:1; transform:translateY(0) scale(1); }}
+            32% {{ opacity:0; transform:translateY(-16px) scale(.985); }}
+            100% {{ opacity:0; transform:translateY(-16px) scale(.985); }}
+        }}
         @media (max-width: 1100px) {{ .welcome-card {{ grid-template-columns: 1fr !important; }} }}
         </style>
         <div class="welcome-card">
@@ -3488,6 +3506,79 @@ def render_premium_weekly_report(records):
     """
     st.markdown(html, unsafe_allow_html=True)
 
+def render_compact_notes_dashboard():
+    """Small notes dashboard under the welcome card: add + list notes without separate bulky panels."""
+    lang = st.session_state.language
+    ui = {
+        "Türkçe": {"title":"📝 Notlarım", "count":"kayıtlı not", "empty":"Henüz not yok. İlk notunu ekle.", "placeholder":"Örn: Big Data quiz tekrar edilecek, SQL soruları çözülecek...", "add":"➕ Notu Kaydet", "delete":"Notu sil"},
+        "English": {"title":"📝 My Notes", "count":"saved notes", "empty":"No notes yet. Add your first one.", "placeholder":"Ex: Review Big Data quiz, solve SQL questions...", "add":"➕ Save Note", "delete":"Delete note"},
+        "Deutsch": {"title":"📝 Meine Notizen", "count":"gespeicherte Notizen", "empty":"Noch keine Notizen. Füge die erste hinzu.", "placeholder":"z.B. Big-Data-Quiz wiederholen, SQL-Aufgaben lösen...", "add":"➕ Notiz speichern", "delete":"Notiz löschen"},
+        "Español": {"title":"📝 Mis notas", "count":"notas guardadas", "empty":"Aún no hay notas. Añade la primera.", "placeholder":"Ej: repasar quiz de Big Data, resolver preguntas SQL...", "add":"➕ Guardar nota", "delete":"Eliminar nota"},
+        "Русский": {"title":"📝 Мои заметки", "count":"сохранённых заметок", "empty":"Заметок пока нет. Добавь первую.", "placeholder":"Напр.: повторить Big Data quiz, решить SQL-задачи...", "add":"➕ Сохранить заметку", "delete":"Удалить заметку"},
+    }.get(lang, {})
+    recent = load_daily_notes(limit=5)
+    count = 0 if recent.empty else len(recent)
+
+    st.markdown(f"""
+    <style>
+    .compact-notes-board {{
+        margin: 22px 0 32px 0;
+        padding: 22px;
+        border-radius: 26px;
+        background:
+            radial-gradient(circle at 8% 12%, rgba(59,130,246,.20), transparent 32%),
+            radial-gradient(circle at 92% 90%, rgba(139,92,246,.18), transparent 30%),
+            linear-gradient(135deg, rgba(8,22,44,.86), rgba(17,24,39,.72));
+        border:1px solid rgba(96,165,250,.24);
+        box-shadow:0 20px 55px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+    }}
+    .compact-notes-title {{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }}
+    .compact-notes-title b {{ color:#f8fafc; font-size:23px; letter-spacing:-.02em; }}
+    .compact-notes-title small {{ color:#93c5fd; font-weight:800; margin-left:6px; }}
+    .compact-note-list {{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }}
+    .compact-note-card {{ padding:14px 16px; border-radius:16px; background:rgba(15,23,42,.46); border:1px solid rgba(147,197,253,.16); }}
+    .compact-note-card b {{ color:#f8fafc; }}
+    .compact-note-card small {{ display:block; color:#93c5fd; margin-top:5px; }}
+    .compact-note-empty {{ min-height:130px; display:grid; place-items:center; text-align:center; color:#cbd5e1; border-radius:18px; background:rgba(15,23,42,.28); border:1px dashed rgba(147,197,253,.20); }}
+    </style>
+    <div class="compact-notes-board">
+      <div class="compact-notes-title"><b>{html.escape(ui.get('title','My Notes'))}</b><small>{count} {html.escape(ui.get('count','saved notes'))}</small></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    left, right = st.columns([1.35, .65], gap="large")
+    with left:
+        if recent.empty:
+            st.markdown(f'<div class="compact-note-empty">📘<br><b>{html.escape(ui.get("empty", "No notes yet."))}</b></div>', unsafe_allow_html=True)
+        else:
+            for _, row in recent.iterrows():
+                row_id = int(row["id"])
+                c1, c2 = st.columns([10, 1])
+                with c1:
+                    st.markdown(
+                        f"""
+                        <div class="compact-note-card">
+                            <b>✅ {html.escape(str(row.get('note_text','')))}</b>
+                            <small>{html.escape(str(row.get('note_date','')))}</small>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                with c2:
+                    if st.button("🗑️", key=f"delete_compact_note_{row_id}", help=ui.get("delete", "Delete note")):
+                        delete_daily_note(row_id)
+                        st.rerun()
+    with right:
+        with st.form(key=f"compact_note_form_{st.session_state.language}", clear_on_submit=True):
+            new_note = st.text_area("", placeholder=ui.get("placeholder", "Write a note..."), height=120, key=f"compact_note_text_{st.session_state.language}")
+            submitted = st.form_submit_button(ui.get("add", "Save Note"), use_container_width=True)
+            if submitted:
+                if save_daily_note(new_note, "Note", "Normal"):
+                    st.rerun()
+                else:
+                    st.warning(ui.get("placeholder", "Write a note..."))
+
+
 def render_dashboard_tabs():
     tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
         [
@@ -3504,6 +3595,7 @@ def render_dashboard_tabs():
     with tab1:
         # Daily page keeps the product overview, but other tabs stay clean.
         render_home_booster()
+        render_compact_notes_dashboard()
 
         px = premium_texts()
 
